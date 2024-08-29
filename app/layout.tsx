@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import "@/app/_styles/globals.css";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import Header from "./_components/Header";
 import Sidebar from "./_components/Sidebar";
 
-const inter = Inter({ subsets: ["latin"] });
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Kanban",
@@ -18,10 +21,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Header />
-        {children}
-        <Sidebar />
+      <body className={jakarta.className}>
+        <main className="flex">
+          <Sidebar />
+          <section>
+            <Header />
+            {children}
+          </section>
+        </main>
       </body>
     </html>
   );
