@@ -10,9 +10,9 @@ module.exports = {
       colors: {
         background: {
           light: "#FFFFFF",
-          "light-secondary": "#F4F7FD",
+          "light-2": "#F4F7FD",
           dark: "#2B2C37",
-          "dark-secondary": "#20212C",
+          "dark-2": "#20212C",
         },
         button: {
           primary: "#635FC7",
@@ -23,10 +23,9 @@ module.exports = {
           "destructive-hover": "#FF9898",
         },
         text: {
-          light: "#000112",
-          "light-muted": "#828FA3",
-          dark: "#FFFFFF",
-          "dark-muted": "#828FA3",
+          "light": "#FFFFFF",
+          "metallic-grey": "#828FA3",
+          "dark": "#000112",
         },
         fontSize: {
           "heading-xl": "24px",

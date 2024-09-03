@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className={jakarta.className}>
         <main className="flex">
           <Sidebar />
-          <section>
+          <section className="size-full min-h-screen">
             <Header />
             {children}
           </section>
