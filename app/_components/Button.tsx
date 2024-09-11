@@ -41,7 +41,7 @@ const button = cva(
       },
       size: {
         sm: ["text-sm", "py-1", "min-h-9", "px-3"],
-        md: ["text-sm", "py-2", "min-h-10", "px-5"],
+        md: ["text-xs", "py-3", "min-h-9", "px-6"],
         lg: ["text-md", "py-2", "px-4", "min-h-11", "px-5"],
       },
     },

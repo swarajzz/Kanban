@@ -1,10 +1,17 @@
+"use client";
+
 import React from "react";
 import logo from "@/public/logo-light.svg";
 import Image from "next/image";
-import boardIcon from "@/public/icon-board.svg";
-import lightIcon from "@/public/icon-light-theme.svg";
-import darkIcon from "@/public/icon-dark-theme.svg";
-import hideSidebar from "@/public/icon-hide-sidebar.svg";
+// import boardIcon from "@/public/icon-board.svg";
+// import lightIcon from "@/public/icon-light-theme.svg";
+// import darkIcon from "@/public/icon-dark-theme.svg";
+// import hideSidebar from "@/public/icon-hide-sidebar.svg";
+// import {hideSidebar} from ""
+import { LightTheme } from "@/public/sidebar";
+import { DarkTheme } from "@/public/sidebar";
+import { IconBoard } from "@/public/sidebar";
+import { VisibilityOn } from "@/public";
 
 function Sidebar() {
   return (
@@ -19,17 +26,17 @@ function Sidebar() {
           </h2>
           <ul className="ml-2 flex flex-col gap-6">
             <li className="flex items-center gap-3">
-              <Image src={boardIcon} alt="Board Icon" /> <span>Web Design</span>
+              <Image src={IconBoard} alt="Board Icon" /> <span>Web Design</span>
             </li>
             <li className="flex items-center gap-3">
-              <Image src={boardIcon} alt="Board Icon" />{" "}
+              <Image src={IconBoard} alt="Board Icon" />{" "}
               <span>Machine Learning</span>
             </li>
             <li className="flex items-center gap-3">
-              <Image src={boardIcon} alt="Board Icon" /> <span>DSA</span>
+              <Image src={IconBoard} alt="Board Icon" /> <span>DSA</span>
             </li>
             <li className="flex items-center gap-3 text-accent-200">
-              <Image src={boardIcon} alt="Board Icon" />{" "}
+              <Image src={IconBoard} alt="Board Icon" />{" "}
               <span>+ Create New Board</span>
             </li>
           </ul>
@@ -39,7 +46,7 @@ function Sidebar() {
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-center gap-3 rounded-lg bg-primary-600 px-10 py-2">
           <div>
-            <Image src={lightIcon} alt="logo" />
+            <Image src={LightTheme} alt="logo" />
           </div>
 
           <label className="cursor-pointer">
@@ -49,11 +56,11 @@ function Sidebar() {
           </label>
 
           <div>
-            <Image src={darkIcon} alt="logo" />
+            <Image src={DarkTheme} alt="logo" />
           </div>
         </div>
-        <div className="mb-10 flex gap-4">
-          <Image src={hideSidebar} alt="Hide eye icon" width={20} height={20} />
+        <div className="mb-10 flex gap-2">
+          <VisibilityOn />
           <span className="text-base">Hide Sidebar</span>
         </div>
       </div>

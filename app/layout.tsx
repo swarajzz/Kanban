@@ -21,10 +21,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${jakarta.className} text-primary-300 text-sm font-bold`}>
-        <main className="flex">
+      <body
+        className={`${jakarta.className} text-sm font-bold text-primary-300`}
+      >
+        <main className="flex min-h-screen">
           <Sidebar />
-          <section className="size-full">
+          <section className="flex size-full h-screen flex-col">
             <Header />
             {children}
           </section>
