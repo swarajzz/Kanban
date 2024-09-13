@@ -1,23 +1,16 @@
 "use client";
 
 import React from "react";
-import logo from "@/public/logo-light.svg";
+import { LogoLight, VisibilityOff } from "@/public/svgs";
 import Image from "next/image";
-// import boardIcon from "@/public/icon-board.svg";
-// import lightIcon from "@/public/icon-light-theme.svg";
-// import darkIcon from "@/public/icon-dark-theme.svg";
-// import hideSidebar from "@/public/icon-hide-sidebar.svg";
-// import {hideSidebar} from ""
-import { LightTheme } from "@/public/sidebar";
-import { DarkTheme } from "@/public/sidebar";
-import { IconBoard } from "@/public/sidebar";
-import { VisibilityOn } from "@/public";
+
+import { LightTheme, DarkTheme, IconBoard } from "@/public/sidebar";
 
 function Sidebar() {
   return (
     <section className="bg-background-dark flex w-80 flex-col items-center justify-between justify-items-center border-r border-primary-400 bg-primary-500">
       <div className="w-full px-5">
-        <Image src={logo} alt="logo" className="mt-8" />
+        <Image src={LogoLight} alt="logo" className="mt-8" />
         <span>User</span>
 
         <div className="mt-12 flex flex-col gap-4">
@@ -60,7 +53,7 @@ function Sidebar() {
           </div>
         </div>
         <div className="mb-10 flex gap-2">
-          <VisibilityOn />
+          <Image src={VisibilityOff} alt="Visbility icon " height={24} width={24} />
           <span className="text-base">Hide Sidebar</span>
         </div>
       </div>

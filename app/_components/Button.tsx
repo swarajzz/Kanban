@@ -15,7 +15,7 @@ const button = cva(
     "ring-theme-300",
     "disabled:cursor-not-allowed",
     "rounded-full",
-    "font-semibold"
+    "font-bold"
   ],
   {
     variants: {
@@ -41,7 +41,7 @@ const button = cva(
       },
       size: {
         sm: ["text-sm", "py-1", "min-h-9", "px-3"],
-        md: ["text-xs", "py-3", "min-h-9", "px-6"],
+        md: ["text-xs", "py-4", "min-h-9", "px-10"],
         lg: ["text-md", "py-2", "px-4", "min-h-11", "px-5"],
       },
     },
