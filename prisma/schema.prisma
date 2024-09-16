@@ -1,0 +1,64 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model User {
+  id      String    @id @default(uuid())
+  name    String
+  email   String
+  boards  Board[]
+  Task    Task[]
+  subTask subTask[]
+}
+
+model Board {
+  id        String   @id @default(uuid())
+  name      String
+  columns   Column[]
+  createdBy User     @relation(fields: [userId], references: [id])
+  createdAt DateTime
+  updatedAt DateTime
+  userId    String
+}
+
+model Column {
+  id      Int     @id @default(autoincrement())
+  name    String
+  Board   Board?  @relation(fields: [boardId], references: [id])
+  boardId String?
+  Task    Task[]
+}
+
+model Task {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String
+  status      String
+  subTasks    subTask[]
+  createdBy   User      @relation(fields: [userId], references: [id])
+  createdAt   DateTime
+  updatedAt   DateTime
+  Column      Column?   @relation(fields: [columnId], references: [id])
+  columnId    Int?
+  userId      String
+}
+
+model subTask {
+  id          Int      @id @default(autoincrement())
+  title       String
+  isCompleted Boolean
+  createdBy   User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime
+  updatedAt   DateTime
+  Task        Task?    @relation(fields: [taskId], references: [id])
+  taskId      Int?
+  userId      String
+}
