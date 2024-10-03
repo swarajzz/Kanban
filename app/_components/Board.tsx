@@ -2,18 +2,10 @@
 import React, { useRef } from "react";
 import { Button } from "./Button";
 import NewBoard from "./NewBoard";
+import useDialogRef from "../_hooks/useDialogRef";
 
 function Board() {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-
-  function toggleDialog() {
-    if (!dialogRef.current) {
-      return;
-    }
-    dialogRef.current.hasAttribute("open")
-      ? dialogRef.current.close()
-      : dialogRef.current.showModal();
-  }
+  const { dialogRef, toggleDialog } = useDialogRef();
 
   return (
     <div className="flex size-full items-center bg-primary-600">
