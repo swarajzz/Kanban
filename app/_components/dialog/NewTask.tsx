@@ -1,7 +1,7 @@
 "use client";
 import React, { RefObject } from "react";
-import { Button } from "./Button";
-import CrossIcon from "./CrossIcon";
+import CrossIcon from "../ui/CrossIcon";
+import { Button } from "../ui/Button";
 
 function NewTask({
   dialogRef,

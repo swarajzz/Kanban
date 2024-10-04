@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "@/app/_styles/globals.css";
 import { Plus_Jakarta_Sans } from "next/font/google";
-import Header from "./_components/Header";
-import Sidebar from "./_components/Sidebar";
+import Sidebar from "@/app/_components/layout/Sidebar";
+import Header from "@/app/_components/layout/Header";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${jakarta.className} text-sm font-bold text-primary-300`}
+        className={`${jakarta.className} text-sm font-medium text-primary-300`}
       >
         <main className="flex min-h-screen">
           <Sidebar />

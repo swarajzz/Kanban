@@ -1,7 +1,7 @@
 "use client";
 import React, { RefObject } from "react";
-import { Button } from "./Button";
-import CrossIcon from "./CrossIcon";
+import { Button } from "../ui/Button";
+import CrossIcon from "../ui/CrossIcon";
 
 function NewBoard({
   dialogRef,

@@ -1,7 +1,4 @@
-import Image from "next/image";
-import Header from "./_components/Header";
-import Board from "./_components/Board";
-import Sidebar from "./_components/Sidebar";
+import Board from "./_components/layout/Board";
 
 export default function Home() {
   return (

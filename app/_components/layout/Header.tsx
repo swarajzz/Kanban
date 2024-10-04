@@ -2,9 +2,9 @@
 import React from "react";
 import { EditMenuIcon } from "@/public/svgs";
 import Image from "next/image";
-import { Button } from "./Button";
-import NewTask from "./NewTask";
-import useDialogRef from "../_hooks/useDialogRef";
+import { Button } from "../ui/Button";
+import useDialogRef from "@/app/_hooks/useDialogRef";
+import NewTask from "../dialog/NewTask";
 
 export default function Header() {
   const { dialogRef, toggleDialog } = useDialogRef();

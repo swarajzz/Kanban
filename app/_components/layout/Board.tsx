@@ -1,8 +1,7 @@
 "use client";
-import React, { useRef } from "react";
-import { Button } from "./Button";
-import NewBoard from "./NewBoard";
-import useDialogRef from "../_hooks/useDialogRef";
+import { Button } from "../ui/Button";
+import NewBoard from "../dialog/NewBoard";
+import useDialogRef from "../../_hooks/useDialogRef";
 
 function Board() {
   const { dialogRef, toggleDialog } = useDialogRef();
