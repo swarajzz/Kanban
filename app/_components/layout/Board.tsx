@@ -11,8 +11,7 @@ function Board() {
       <div className="mx-auto flex flex-col items-center gap-4">
         <h1 className="text-2xl">Welcome to Kanban Task Management</h1>
         <div className="text-center">
-          You can start selecting a created board or if you want you can create
-          a new one
+          You can start selecting a created board or if you want you can create a new one
         </div>
         <Button size="md" intent={"primary"} onClick={toggleDialog}>
           + Create New Board

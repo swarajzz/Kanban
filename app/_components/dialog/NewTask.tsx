@@ -2,6 +2,7 @@
 import React, { RefObject } from "react";
 import CrossIcon from "../ui/CrossIcon";
 import { Button } from "../ui/Button";
+import DialogPanel from "./DialogPanel";
 
 function NewTask({
   dialogRef,
@@ -24,13 +25,12 @@ function NewTask({
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <div className="relative my-8 w-full max-w-md transform overflow-hidden rounded-lg bg-primary-500 text-left shadow-xl transition-all">
-            <div className="flex items-center justify-between px-6 py-7">
-              <h2 className="text-lg text-white">Add New Task</h2>
-              <CrossIcon width={24} height={24} toggleDialog={toggleDialog} />
-            </div>
-
-            <form className="flex flex-col gap-4 px-8 pb-4 txt-xs">
+          <DialogPanel
+            className="relative my-8 w-full max-w-md transform overflow-hidden rounded-lg bg-primary-500 text-left shadow-xl transition-all"
+            title="Add New Task"
+            toggleDialog={toggleDialog}
+          >
+            <form className="txt-xs flex flex-col gap-4 px-8 pb-4">
               <div className="flex flex-col">
                 <label className="mb-2 text-sm text-white" htmlFor="boardName">
                   Title
@@ -119,7 +119,7 @@ function NewTask({
                 Create Task
               </Button>
             </div>
-          </div>
+          </DialogPanel>
         </div>
       </div>
     </dialog>
