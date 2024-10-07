@@ -1,12 +1,13 @@
-"use client";
-
-import React from "react";
 import { LogoLight, VisibilityOff } from "@/public/svgs";
 import Image from "next/image";
 
 import { LightTheme, DarkTheme, IconBoard } from "@/public/sidebar";
+import prisma from "@/app/_lib/prisma";
+import BoardList from "../ui/BoardList";
 
-function Sidebar() {
+async function Sidebar() {
+  const allBoards = await prisma.board.findMany();
+
   return (
     <section className="bg-background-dark flex w-80 flex-col items-center justify-between justify-items-center border-r border-primary-400 bg-primary-500">
       <div className="w-full px-5">
@@ -17,23 +18,8 @@ function Sidebar() {
           <h2 className="mb-2 text-xs font-semibold uppercase tracking-widest">
             All Boards (X)
           </h2>
-          <ul className="ml-2 flex flex-col gap-6">
-            <li className="flex items-center gap-3">
-              <Image src={IconBoard} alt="Board Icon" /> <span>Web Design</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <Image src={IconBoard} alt="Board Icon" />{" "}
-              <span>Machine Learning</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <Image src={IconBoard} alt="Board Icon" /> <span>DSA</span>
-            </li>
-            <li className="flex items-center gap-3 text-accent-200">
-              <Image src={IconBoard} alt="Board Icon" />{" "}
-              <span>+ Create New Board</span>
-            </li>
-          </ul>
-          {/* <div>+ Create New Board</div> */}
+
+          <BoardList allBoards={allBoards} />
         </div>
       </div>
       <div className="flex flex-col gap-6">
@@ -53,7 +39,12 @@ function Sidebar() {
           </div>
         </div>
         <div className="mb-10 flex gap-2">
-          <Image src={VisibilityOff} alt="Visbility icon " height={24} width={24} />
+          <Image
+            src={VisibilityOff}
+            alt="Visbility icon "
+            height={24}
+            width={24}
+          />
           <span className="text-base">Hide Sidebar</span>
         </div>
       </div>
