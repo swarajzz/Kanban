@@ -11,12 +11,11 @@ datasource db {
 }
 
 model User {
-  id      String    @id @default(uuid())
-  name    String
-  email   String
-  boards  Board[]
-  Task    Task[]
-  subTask subTask[]
+  id     String  @id @default(uuid())
+  name   String
+  email  String  
+  boards Board[]
+  tasks  Task[]
 }
 
 model Board {
@@ -24,17 +23,17 @@ model Board {
   name      String
   columns   Column[]
   createdBy User     @relation(fields: [userId], references: [id])
-  createdAt DateTime
-  updatedAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   userId    String
 }
 
 model Column {
-  id      Int     @id @default(autoincrement())
+  id      Int    @id @default(autoincrement())
   name    String
-  Board   Board?  @relation(fields: [boardId], references: [id])
-  boardId String?
-  Task    Task[]
+  tasks   Task[]
+  board   Board  @relation(fields: [boardId], references: [id])
+  boardId String
 }
 
 model Task {
@@ -42,23 +41,21 @@ model Task {
   title       String
   description String
   status      String
-  subTasks    subTask[]
+  subTasks    SubTask[]
   createdBy   User      @relation(fields: [userId], references: [id])
-  createdAt   DateTime
-  updatedAt   DateTime
-  Column      Column?   @relation(fields: [columnId], references: [id])
-  columnId    Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  column      Column    @relation(fields: [columnId], references: [id])
+  columnId    Int
   userId      String
 }
 
-model subTask {
+model SubTask {
   id          Int      @id @default(autoincrement())
   title       String
   isCompleted Boolean
-  createdBy   User     @relation(fields: [userId], references: [id])
-  createdAt   DateTime
-  updatedAt   DateTime
-  Task        Task?    @relation(fields: [taskId], references: [id])
-  taskId      Int?
-  userId      String
+  tasks       Task    @relation(fields: [taskId], references: [id])
+  taskId      Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
