@@ -4,6 +4,7 @@ import Image from "next/image";
 import { LightTheme, DarkTheme, IconBoard } from "@/public/sidebar";
 import prisma from "@/app/_lib/prisma";
 import BoardList from "../ui/BoardList";
+import Link from "next/link";
 
 async function Sidebar() {
   const allBoards = await prisma.board.findMany();
@@ -11,7 +12,9 @@ async function Sidebar() {
   return (
     <section className="bg-background-dark flex min-h-screen min-w-64 flex-col items-center justify-between justify-items-center border-r border-primary-400 bg-primary-500">
       <div className="self-start px-5">
-        <Image src={LogoLight} alt="logo" className="mt-8" />
+        <Link href={"/"}>
+          <Image src={LogoLight} alt="logo" className="mt-8" />
+        </Link>
         <span>User</span>
 
         <div className="mt-12 flex flex-col gap-4">
