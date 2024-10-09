@@ -9,8 +9,8 @@ async function Sidebar() {
   const allBoards = await prisma.board.findMany();
 
   return (
-    <section className="bg-background-dark flex w-80 flex-col items-center justify-between justify-items-center border-r border-primary-400 bg-primary-500">
-      <div className="w-full px-5">
+    <section className="bg-background-dark flex min-h-screen min-w-64 flex-col items-center justify-between justify-items-center border-r border-primary-400 bg-primary-500">
+      <div className="px-5">
         <Image src={LogoLight} alt="logo" className="mt-8" />
         <span>User</span>
 
