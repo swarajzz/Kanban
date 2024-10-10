@@ -7,7 +7,7 @@ function Board() {
   const { dialogRef, toggleDialog } = useDialogRef();
 
   return (
-    <div className="flex size-full items-center bg-primary-600">
+    <div className="flex text-center size-full items-center bg-primary-600">
       <div className="mx-auto flex flex-col items-center gap-4">
         <h1 className="text-2xl">Welcome to Kanban Task Management</h1>
         <div className="text-center">
