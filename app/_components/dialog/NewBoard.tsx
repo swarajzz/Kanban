@@ -46,7 +46,15 @@ function NewBoard({
                 </div>
                 <div className="flex items-center gap-4">
                   <input
-                    placeholder="e.g Todo"
+                    placeholder="e.g Doing"
+                    className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
+                    type="text"
+                  />
+                  <CrossIcon />
+                </div>
+                <div className="flex items-center gap-4">
+                  <input
+                    placeholder="e.g Done"
                     className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
                     type="text"
                   />

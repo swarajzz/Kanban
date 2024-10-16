@@ -7,7 +7,10 @@ import Link from "next/link";
 function BoardListItem({ board: { name } }: { board: BoardProps }) {
   return (
     <li>
-      <Link className="flex items-center gap-3" href={`/${name}`}>
+      <Link
+        className="flex items-center gap-3"
+        href={`/${name.replace(/\s+/g, "-").toLowerCase()}`}
+      >
         <Image src={IconBoard} alt="Board Icon" />
         <span>{name}</span>
       </Link>
