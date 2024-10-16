@@ -1,6 +1,6 @@
 import { ColumnProps } from "@/app/_types/types";
 import React from "react";
-import Tasks from "./Tasks";
+import Tasks from "../Task/Tasks";
 
 function Column({ column: { name, tasks } }: { column: ColumnProps }) {
   return (

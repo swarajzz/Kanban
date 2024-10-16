@@ -1,6 +1,5 @@
 import { TaskProps } from "@/app/_types/types";
 import TaskItem from "./TaskItem";
-
 function Tasks({ tasks }: { tasks: TaskProps[] }) {
 
   return (

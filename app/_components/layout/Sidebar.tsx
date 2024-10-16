@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import { LightTheme, DarkTheme, IconBoard } from "@/public/sidebar";
 import prisma from "@/app/_lib/prisma";
-import BoardList from "../ui/BoardList";
+import BoardList from "../ui/Board/BoardList";
 import Link from "next/link";
 
 async function Sidebar() {
