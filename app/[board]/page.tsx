@@ -25,8 +25,6 @@ export default async function Board({
     },
   });
 
-  console.log(allColumns);
-
   return (
     <div className="size-full overflow-auto bg-primary-600">
       {allColumns.length > 0 ? (
