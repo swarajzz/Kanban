@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -25,4 +25,28 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+select {
+  appearance: none;
+  background-image: url("../../public/svgs/icon-down.svg");
+  background-repeat: no-repeat, repeat;
+  background-position:
+    right 0.7em top 50%,
+    0 0;
+  background-size:
+    0.65em auto,
+    100%;
+}
+
+input,
+textarea,
+select {
+  border: 1px solid #828fa3;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: transparent;
 }

@@ -1,6 +1,5 @@
 "use client";
-import React, { RefObject } from "react";
-import CrossIcon from "../ui/CrossIcon";
+import React, { RefObject, useState } from "react";
 import { Button } from "../ui/Button";
 import DialogPanel from "./DialogPanel";
 import Dialog from "./Dialog";
@@ -16,16 +15,23 @@ function TaskDialog({
   toggleDialog: () => void;
   task: TaskProps;
 }) {
+  const [isShow, setIsShow] = useState(false);
   const { title, description, subTasks } = task;
+
+  const toggleIsShow = () => {
+    setIsShow((prev) => !prev);
+  };
+
   return (
     <Dialog ref={dialogRef}>
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
           <DialogPanel
-            className="relative my-8 w-full max-w-md transform overflow-hidden rounded-lg bg-primary-500 text-left shadow-xl transition-all"
+            className="relative my-8 w-full max-w-md transform rounded-lg bg-primary-500 text-left shadow-xl transition-all"
             title={title}
             icon="grip"
             toggleDialog={toggleDialog}
+            toggleIsShow={toggleIsShow}
           >
             <form className="txt-xs flex flex-col gap-4 px-8 pb-4">
               <div className="border-grey-300 rounded bg-primary-500 text-primary-300">
@@ -73,6 +79,19 @@ function TaskDialog({
                 </div>
               </div>
             </form>
+
+            {isShow ? (
+              <ul className="absolute -right-12 top-16 flex w-48 flex-col gap-4 rounded-lg border border-primary-400 bg-primary-600 px-4 py-6 text-primary-300 shadow-sm">
+                <li className="cursor-pointer transition hover:text-accent-200">
+                  Edit Task
+                </li>
+                <li className="cursor-pointer text-accent-400 transition hover:text-accent-300">
+                  Delete Task
+                </li>
+              </ul>
+            ) : (
+              ""
+            )}
 
             <div className="mb-6 flex flex-col gap-5 px-4 sm:px-6">
               <Button size="md" intent={"primary"}>
