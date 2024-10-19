@@ -1,5 +1,5 @@
 import React from "react";
-import CloseIcon from "../ui/CrossIcon";
+import CloseIcon from "../ui/CloseIcon";
 import EllipsesVertical from "../ui/EllipsesVertical";
 
 function DialogHeading({
@@ -16,11 +16,11 @@ function DialogHeading({
   return (
     <div className="flex items-center justify-between px-6 py-7">
       <h2 className="text-lg text-white">{title}</h2>
-      {icon === "close"
-        ? toggleDialog && (
-            <CloseIcon width={24} height={24} toggleDialog={toggleDialog} />
-          )
-        : toggleIsShow && <EllipsesVertical toggleIsShow={toggleIsShow} />}
+      {icon === "close" ? (
+        <CloseIcon width={24} height={24} toggleDialog={toggleDialog} />
+      ) : (
+        <EllipsesVertical toggleIsShow={toggleIsShow} />
+      )}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 import React, { RefObject } from "react";
 import { Button } from "../ui/Button";
-import CrossIcon from "../ui/CrossIcon";
+import CloseIcon from "../ui/CloseIcon";
 import Dialog from "./Dialog";
 import DialogPanel from "./DialogPanel";
 
@@ -42,7 +42,7 @@ function NewBoard({
                     className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
                     type="text"
                   />
-                  <CrossIcon />
+                  <CloseIcon />
                 </div>
                 <div className="flex items-center gap-4">
                   <input
@@ -50,7 +50,7 @@ function NewBoard({
                     className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
                     type="text"
                   />
-                  <CrossIcon />
+                  <CloseIcon />
                 </div>
                 <div className="flex items-center gap-4">
                   <input
@@ -58,7 +58,7 @@ function NewBoard({
                     className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
                     type="text"
                   />
-                  <CrossIcon />
+                  <CloseIcon />
                 </div>
               </fieldset>
             </form>

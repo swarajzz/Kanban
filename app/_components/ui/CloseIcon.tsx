@@ -1,13 +1,13 @@
 import React from "react";
 
-function CrossIcon({
+function CloseIcon({
   width = 15,
   height = 15,
   toggleDialog,
 }: {
   width?: number;
   height?: number;
-  toggleDialog: () => void;
+  toggleDialog?: () => void;
 }) {
   return (
     <div
@@ -29,4 +29,4 @@ function CrossIcon({
   );
 }
 
-export default CrossIcon;
+export default CloseIcon;
