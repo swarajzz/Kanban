@@ -3,14 +3,25 @@ import useDialogRef from "@/app/_hooks/useDialogRef";
 import { TaskProps } from "@/app/_types/types";
 import { GripVertical } from "lucide-react";
 import TaskDialog from "../../dialog/TaskDialog";
+import { useState } from "react";
 
 function TaskItem({ task }: { task: TaskProps }) {
   const { dialogRef, toggleDialog } = useDialogRef();
+  const [isShow, setIsShow] = useState(false);
+
+  const handleClick = () => {
+    toggleDialog();
+    setIsShow(false);
+  };
+
+  const toggleIsShow = () => {
+    setIsShow((prev) => !prev);
+  };
 
   return (
     <>
       <li
-        onClick={toggleDialog}
+        onClick={handleClick}
         className="flex min-h-24 items-center gap-2 rounded-lg bg-primary-500 p-3"
       >
         <GripVertical />
@@ -23,6 +34,8 @@ function TaskItem({ task }: { task: TaskProps }) {
         dialogRef={dialogRef}
         toggleDialog={toggleDialog}
         task={task}
+        isShow={isShow}
+        toggleIsShow={toggleIsShow}
       />
     </>
   );

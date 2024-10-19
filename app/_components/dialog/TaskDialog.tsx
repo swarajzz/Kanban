@@ -10,17 +10,16 @@ function TaskDialog({
   dialogRef,
   toggleDialog,
   task,
+  isShow,
+  toggleIsShow,
 }: {
   dialogRef: RefObject<HTMLDialogElement>;
   toggleDialog: () => void;
   task: TaskProps;
+  isShow: boolean;
+  toggleIsShow: () => void;
 }) {
-  const [isShow, setIsShow] = useState(false);
   const { title, description, subTasks } = task;
-
-  const toggleIsShow = () => {
-    setIsShow((prev) => !prev);
-  };
 
   return (
     <Dialog ref={dialogRef}>
