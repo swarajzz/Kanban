@@ -5,7 +5,7 @@ type DialogPanelProps = {
   className: string;
   title: string;
   children: ReactNode;
-  toggleDialog: () => void;
+  toggleDialog?: () => void;
   toggleIsShow?: () => void;
   icon?: string;
 };
@@ -15,7 +15,7 @@ function DialogPanel({
   toggleDialog,
   toggleIsShow,
   title,
-  icon,
+  icon = "close",
   children,
 }: DialogPanelProps) {
   return (
