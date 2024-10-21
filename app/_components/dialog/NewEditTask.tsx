@@ -1,16 +1,20 @@
 "use client";
 import React, { RefObject } from "react";
-import CrossIcon from "../ui/CrossIcon";
 import { Button } from "../ui/Button";
 import DialogPanel from "./DialogPanel";
+import CloseIcon from "../ui/CloseIcon";
+import { TaskProps } from "@/app/_types/types";
 
-function NewTask({
+function NewEditTask({
   dialogRef,
   toggleDialog,
+  task,
 }: {
   dialogRef: RefObject<HTMLDialogElement>;
   toggleDialog: () => void;
+  task?: TaskProps;
 }) {
+  console.log(task);
   return (
     <dialog
       className="relative z-10 transition delay-100 duration-300 ease-in-out"
@@ -40,6 +44,7 @@ function NewTask({
                   className="border-grey-300 rounded bg-primary-500 px-4 py-2 text-white"
                   id="boardName"
                   type="text"
+                  defaultValue={task?.title}
                 />
               </div>
 
@@ -56,27 +61,46 @@ function NewTask({
                   id="description"
                   cols={5}
                   rows={5}
+                  defaultValue={task?.description}
                 />
               </div>
 
               <fieldset className="flex flex-col gap-3">
                 <legend className="mb-3 text-white">Subtasks</legend>
-                <div className="flex items-center gap-4">
-                  <input
-                    placeholder="e.g Todo"
-                    className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
-                    type="text"
-                  />
-                  <CrossIcon />
-                </div>
-                <div className="flex items-center gap-4">
-                  <input
-                    placeholder="e.g Todo"
-                    className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
-                    type="text"
-                  />
-                  <CrossIcon />
-                </div>
+
+                {task?.subTasks && task.subTasks.length > 0 ? (
+                  task.subTasks.map((subtask, index) => (
+                    <div key={index} className="flex items-center gap-4">
+                      <input
+                        placeholder={`e.g ${subtask.title}`}
+                        className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
+                        type="text"
+                        defaultValue={subtask.title}
+                      />
+                      <CloseIcon />
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    <div className="flex items-center gap-4">
+                      <input
+                        placeholder="e.g Todo"
+                        className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
+                        type="text"
+                      />
+                      <CloseIcon />
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <input
+                        placeholder="e.g Todo"
+                        className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
+                        type="text"
+                      />
+                      <CloseIcon />
+                    </div>
+                  </>
+                )}
+
                 <Button size="md" intent={"secondary"} className="">
                   + Add New Subtask
                 </Button>
@@ -92,6 +116,7 @@ function NewTask({
                     name="status"
                     id="status-select"
                     className="border-grey-300 relative w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
+                    defaultValue={task?.status}
                   >
                     <option value="Todo">Todo</option>
                     <option value="Done">Done</option>
@@ -116,7 +141,7 @@ function NewTask({
 
             <div className="mb-6 flex flex-col gap-5 px-4 sm:px-6">
               <Button size="md" intent={"primary"}>
-                Create Task
+                {task ? "Save Changes" : "Create Task"}
               </Button>
             </div>
           </DialogPanel>
@@ -126,4 +151,4 @@ function NewTask({
   );
 }
 
-export default NewTask;
+export default NewEditTask;

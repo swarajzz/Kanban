@@ -4,7 +4,7 @@ import { EditMenuIcon } from "@/public/svgs";
 import Image from "next/image";
 import { Button } from "../ui/Button";
 import useDialogRef from "@/app/_hooks/useDialogRef";
-import NewTask from "../dialog/NewTask";
+import NewEditTask from "../dialog/NewEditTask";
 
 export default function Header() {
   const { dialogRef, toggleDialog } = useDialogRef();
@@ -16,7 +16,7 @@ export default function Header() {
         <Button onClick={toggleDialog} size="md" intent={"primary"}>
           + Add new task
         </Button>
-        <NewTask dialogRef={dialogRef} toggleDialog={toggleDialog} />
+        <NewEditTask dialogRef={dialogRef} toggleDialog={toggleDialog} />
         <Image src={EditMenuIcon} alt="ellipses icon" />
       </div>
     </div>
