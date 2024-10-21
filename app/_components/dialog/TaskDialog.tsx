@@ -1,10 +1,11 @@
 "use client";
-import React, { RefObject, useState } from "react";
+import React, { RefObject } from "react";
 import { Button } from "../ui/Button";
 import DialogPanel from "./DialogPanel";
 import Dialog from "./Dialog";
 import { TaskProps } from "@/app/_types/types";
 import SubTaskItem from "../ui/Task/SubTaskItem";
+import TaskDropdown from "./TaskDropdown";
 
 function TaskDialog({
   dialogRef,
@@ -79,18 +80,7 @@ function TaskDialog({
               </div>
             </form>
 
-            {isShow ? (
-              <ul className="absolute -right-12 top-16 flex w-48 flex-col gap-4 rounded-lg border border-primary-400 bg-primary-600 px-4 py-6 text-primary-300 shadow-sm">
-                <li className="cursor-pointer transition hover:text-accent-200">
-                  Edit Task
-                </li>
-                <li className="cursor-pointer text-accent-400 transition hover:text-accent-300">
-                  Delete Task
-                </li>
-              </ul>
-            ) : (
-              ""
-            )}
+            {isShow ? <TaskDropdown task={task} /> : ""}
 
             <div className="mb-6 flex flex-col gap-5 px-4 sm:px-6">
               <Button size="md" intent={"primary"}>
