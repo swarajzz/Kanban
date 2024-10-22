@@ -11,14 +11,16 @@ function TaskDialog({
   dialogRef,
   toggleDialog,
   task,
-  isShow,
-  toggleIsShow,
+  isShowDropdown,
+  toggleShowDropdown,
+  toggleEditDialog,
 }: {
   dialogRef: RefObject<HTMLDialogElement>;
   toggleDialog: () => void;
   task: TaskProps;
-  isShow: boolean;
-  toggleIsShow: () => void;
+  isShowDropdown: boolean;
+  toggleShowDropdown: () => void;
+  toggleEditDialog: () => void;
 }) {
   const { title, description, subTasks } = task;
 
@@ -29,7 +31,7 @@ function TaskDialog({
         title={title}
         icon="grip"
         toggleDialog={toggleDialog}
-        toggleIsShow={toggleIsShow}
+        toggleShowDropdown={toggleShowDropdown}
       >
         <form className="txt-xs flex flex-col gap-4 px-8 pb-4">
           <div className="border-grey-300 rounded bg-primary-500 text-primary-300">
@@ -78,7 +80,15 @@ function TaskDialog({
           </div>
         </form>
 
-        {isShow ? <TaskDropdown task={task} /> : ""}
+        {isShowDropdown ? (
+          <TaskDropdown
+            toggleShowDropdown={toggleShowDropdown}
+            toggleDialog={toggleDialog}
+            toggleEditDialog={toggleEditDialog}
+          />
+        ) : (
+          ""
+        )}
 
         <div className="mb-6 flex flex-col gap-5 px-4 sm:px-6">
           <Button size="md" intent={"primary"}>

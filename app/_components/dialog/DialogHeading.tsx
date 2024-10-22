@@ -5,12 +5,12 @@ import EllipsesVertical from "../ui/EllipsesVertical";
 function DialogHeading({
   title,
   toggleDialog,
-  toggleIsShow,
+  toggleShowDropdown,
   icon = "close",
 }: {
   title: string;
   toggleDialog?: () => void;
-  toggleIsShow?: () => void;
+  toggleShowDropdown?: () => void;
   icon?: string;
 }) {
   return (
@@ -19,7 +19,7 @@ function DialogHeading({
       {icon === "close" ? (
         <CloseIcon width={24} height={24} toggleDialog={toggleDialog} />
       ) : (
-        <EllipsesVertical toggleIsShow={toggleIsShow} />
+        <EllipsesVertical toggleShowDropdown={toggleShowDropdown} />
       )}
     </div>
   );

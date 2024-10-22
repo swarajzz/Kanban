@@ -1,10 +1,14 @@
 import React from "react";
 
-function EllipsesVertical({ toggleIsShow }: { toggleIsShow?: () => void }) {
+function EllipsesVertical({
+  toggleShowDropdown,
+}: {
+  toggleShowDropdown?: () => void;
+}) {
   return (
     <div
       className="cursor-pointer fill-primary-300 stroke-primary-300 stroke-2 transition delay-75 hover:fill-accent-200 hover:stroke-accent-200"
-      onClick={toggleIsShow}
+      onClick={toggleShowDropdown}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

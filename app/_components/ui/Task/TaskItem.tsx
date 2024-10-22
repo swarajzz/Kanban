@@ -4,18 +4,23 @@ import { TaskProps } from "@/app/_types/types";
 import { GripVertical } from "lucide-react";
 import TaskDialog from "../../dialog/TaskDialog";
 import { useState } from "react";
+import NewEditTask from "../../dialog/NewEditTask";
 
 function TaskItem({ task }: { task: TaskProps }) {
-  const { dialogRef, toggleDialog } = useDialogRef();
-  const [isShow, setIsShow] = useState(false);
+  const { dialogRef: viewDialogRef, toggleDialog: toggleViewDialog } =
+    useDialogRef();
+  const { dialogRef: editDialogRef, toggleDialog: toggleEditDialog } =
+    useDialogRef();
+
+  const [isShowDropdown, setShowDropdown] = useState(true);
 
   const handleClick = () => {
-    toggleDialog();
-    setIsShow(false);
+    toggleViewDialog();
+    setShowDropdown(false);
   };
 
-  const toggleIsShow = () => {
-    setIsShow((prev) => !prev);
+  const toggleShowDropdown = () => {
+    setShowDropdown((prev) => !prev);
   };
 
   return (
@@ -30,12 +35,20 @@ function TaskItem({ task }: { task: TaskProps }) {
           <div className="text-xs text-primary-300">2 of 2 subtasks</div>
         </div>
       </li>
+
       <TaskDialog
-        dialogRef={dialogRef}
-        toggleDialog={toggleDialog}
+        dialogRef={viewDialogRef}
+        toggleDialog={toggleViewDialog}
         task={task}
-        isShow={isShow}
-        toggleIsShow={toggleIsShow}
+        isShowDropdown={isShowDropdown}
+        toggleShowDropdown={toggleShowDropdown}
+        toggleEditDialog={toggleEditDialog}
+      />
+
+      <NewEditTask
+        dialogRef={editDialogRef}
+        toggleDialog={toggleEditDialog}
+        task={task}
       />
     </>
   );
