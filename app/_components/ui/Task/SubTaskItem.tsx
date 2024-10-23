@@ -1,5 +1,4 @@
 import { SubTaskProps } from "@/app/_types/types";
-import { Check } from "lucide-react";
 import React from "react";
 
 function SubTaskItem({ subTask }: { subTask: SubTaskProps }) {
@@ -10,7 +9,7 @@ function SubTaskItem({ subTask }: { subTask: SubTaskProps }) {
         className="inline-flex w-full cursor-pointer items-center"
       >
         <div
-          className="relative flex cursor-pointer items-center rounded-full p-3"
+          className="peer relative flex cursor-pointer items-center rounded-full p-3"
           data-ripple-dark="true"
         >
           <input
@@ -35,7 +34,7 @@ function SubTaskItem({ subTask }: { subTask: SubTaskProps }) {
             </svg>
           </div>
         </div>
-        <h3 className="w-full cursor-pointer text-sm font-medium text-gray-900 dark:text-gray-300">
+        <h3 className="w-full cursor-pointer text-sm font-medium text-gray-900 peer-has-[:checked]:line-through dark:text-gray-300">
           {subTask.title}
         </h3>
       </label>
