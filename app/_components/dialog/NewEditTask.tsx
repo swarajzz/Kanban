@@ -1,10 +1,11 @@
 "use client";
-import React, { RefObject } from "react";
+import React, { RefObject, useState } from "react";
 import { Button } from "../ui/Button";
 import DialogPanel from "./DialogPanel";
 import CloseIcon from "../ui/CloseIcon";
 import { TaskProps } from "@/app/_types/types";
 import Dialog from "./Dialog";
+import { defaultSubtasks } from "@/app/_lib/utils/constants";
 
 function NewEditTask({
   dialogRef,
@@ -15,6 +16,14 @@ function NewEditTask({
   toggleDialog: () => void;
   task?: TaskProps;
 }) {
+  const { subTasks: initialSubTasks = [] } = task || {};
+
+  const [subTasks, setSubTasks] = useState(
+    initialSubTasks.length > 0 ? initialSubTasks : defaultSubtasks,
+  );
+
+  console.log(subTasks);
+
   return (
     <Dialog ref={dialogRef} toggleDialog={toggleDialog}>
       <DialogPanel
@@ -53,38 +62,17 @@ function NewEditTask({
           <fieldset className="flex flex-col gap-3">
             <legend className="mb-3 text-white">Subtasks</legend>
 
-            {task?.subTasks && task.subTasks.length > 0 ? (
-              task.subTasks.map((subtask, index) => (
-                <div key={index} className="flex items-center gap-4">
-                  <input
-                    placeholder={`e.g ${subtask.title}`}
-                    className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
-                    type="text"
-                    defaultValue={subtask.title}
-                  />
-                  <CloseIcon />
-                </div>
-              ))
-            ) : (
-              <>
-                <div className="flex items-center gap-4">
-                  <input
-                    placeholder="e.g Todo"
-                    className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
-                    type="text"
-                  />
-                  <CloseIcon />
-                </div>
-                <div className="flex items-center gap-4">
-                  <input
-                    placeholder="e.g Todo"
-                    className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
-                    type="text"
-                  />
-                  <CloseIcon />
-                </div>
-              </>
-            )}
+            {subTasks.map((subTask, index) => (
+              <div key={index} className="flex items-center gap-4">
+                <input
+                  placeholder={`e.g ${subTask?.placeholder ? subTask.placeholder : subTask.title}`}
+                  className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
+                  type="text"
+                  defaultValue={subTask.title}
+                />
+                <CloseIcon />
+              </div>
+            ))}
 
             <Button size="md" intent={"secondary"} className="">
               + Add New Subtask

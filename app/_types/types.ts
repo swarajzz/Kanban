@@ -12,6 +12,7 @@ export type SubTaskProps = {
   isCompleted: boolean;
   createdAt: Date;
   updatedAt: Date;
+  placeholder?: string;
 };
 
 export type TaskProps = {
