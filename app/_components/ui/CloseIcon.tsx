@@ -4,15 +4,17 @@ function CloseIcon({
   width = 15,
   height = 15,
   toggleDialog,
+  handleRemove,
 }: {
   width?: number;
   height?: number;
   toggleDialog?: () => void;
+  handleRemove?: () => void;
 }) {
   return (
     <div
       className="cursor-pointer fill-primary-300 transition delay-75 hover:fill-red-400"
-      onClick={toggleDialog}
+      onClick={toggleDialog ? toggleDialog : handleRemove}
     >
       <svg
         width={width}

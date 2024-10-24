@@ -27,7 +27,6 @@ function TaskDialog({
   return (
     <Dialog ref={dialogRef} toggleDialog={toggleDialog}>
       <DialogPanel
-        className="relative my-8 w-full max-w-md transform rounded-lg bg-primary-500 text-left shadow-xl transition-all"
         title={title}
         icon="grip"
         toggleDialog={toggleDialog}
@@ -39,7 +38,10 @@ function TaskDialog({
           </div>
 
           <fieldset className="flex flex-col gap-3">
-            <legend className="mb-3 text-white">Subtasks (2 of 2)</legend>
+            <legend className="mb-3 text-white">
+              Subtasks ({subTasks.filter((item) => item.isCompleted).length} of
+              {subTasks.length})
+            </legend>
 
             <ul className="flex w-full flex-col gap-3">
               {subTasks.map((subTask) => (

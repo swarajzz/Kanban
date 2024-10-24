@@ -14,11 +14,7 @@ function NewBoard({
 }) {
   return (
     <Dialog ref={dialogRef} toggleDialog={toggleDialog}>
-      <DialogPanel
-        className="relative my-8 w-full max-w-md transform overflow-hidden rounded-lg bg-primary-500 text-left shadow-xl transition-all"
-        title="Add New Board"
-        toggleDialog={toggleDialog}
-      >
+      <DialogPanel title="Add New Board" toggleDialog={toggleDialog}>
         <form className="flex flex-col gap-4 px-8 pb-4">
           <div className="flex flex-col">
             <label className="mb-2 text-sm text-white" htmlFor="boardName">

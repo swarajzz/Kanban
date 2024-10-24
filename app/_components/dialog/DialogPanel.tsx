@@ -2,7 +2,6 @@ import React, { ReactNode } from "react";
 import DialogHeading from "./DialogHeading";
 
 type DialogPanelProps = {
-  className: string;
   title: string;
   children: ReactNode;
   toggleDialog?: () => void;
@@ -11,7 +10,6 @@ type DialogPanelProps = {
 };
 
 function DialogPanel({
-  className,
   toggleDialog,
   toggleShowDropdown,
   title,
@@ -19,7 +17,7 @@ function DialogPanel({
   children,
 }: DialogPanelProps) {
   return (
-    <div className={className}>
+    <div className="relative min-w-[480px] my-8 w-full max-w-md transform overflow-hidden rounded-lg bg-primary-500 text-left shadow-xl transition-all">
       <DialogHeading
         title={title}
         toggleDialog={toggleDialog}

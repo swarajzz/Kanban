@@ -29,6 +29,7 @@ function NewEditTask({
     e.preventDefault();
 
     const newSubTask = {
+      id: crypto.randomUUID(),
       title: "",
       placeholder: getRandomPlaceholder(),
     };
@@ -36,13 +37,16 @@ function NewEditTask({
     setSubTasks([...subTasks, newSubTask]);
   };
 
+  const handleRemove = (id: string) => {
+    console.log(subTasks, id);
+    const updatedSubTasks = subTasks.filter((subtask) => subtask.id !== id);
+
+    setSubTasks(updatedSubTasks);
+  };
+
   return (
     <Dialog ref={dialogRef} toggleDialog={toggleDialog}>
-      <DialogPanel
-        className="relative my-8 w-full max-w-md transform overflow-hidden rounded-lg bg-primary-500 text-left shadow-xl transition-all"
-        title="Add New Task"
-        toggleDialog={toggleDialog}
-      >
+      <DialogPanel title="Add New Task" toggleDialog={toggleDialog}>
         <form className="txt-xs flex flex-col gap-4 px-8 pb-4">
           <div className="flex flex-col">
             <label className="mb-2 text-sm text-white" htmlFor="boardName">
@@ -77,12 +81,12 @@ function NewEditTask({
             {subTasks.map((subTask, index) => (
               <div key={index} className="flex items-center gap-4">
                 <input
-                  placeholder={`e.g ${subTask?.placeholder ? subTask.placeholder : subTask.title}`}
+                  placeholder={`e.g ${subTask?.placeholder || getRandomPlaceholder()}`}
                   className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
                   type="text"
                   defaultValue={subTask.title}
                 />
-                <CloseIcon />
+                <CloseIcon handleRemove={() => handleRemove(subTask.id)} />
               </div>
             ))}
 
