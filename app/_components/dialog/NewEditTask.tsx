@@ -3,9 +3,12 @@ import React, { RefObject, useState } from "react";
 import { Button } from "../ui/Button";
 import DialogPanel from "./DialogPanel";
 import CloseIcon from "../ui/CloseIcon";
-import { TaskProps } from "@/app/_types/types";
+import { SubTaskItem, TaskProps } from "@/app/_types/types";
 import Dialog from "./Dialog";
-import { defaultSubtasks } from "@/app/_lib/utils/constants";
+import {
+  defaultSubtasks,
+  getRandomPlaceholder,
+} from "@/app/_lib/utils/constants";
 
 function NewEditTask({
   dialogRef,
@@ -18,11 +21,20 @@ function NewEditTask({
 }) {
   const { subTasks: initialSubTasks = [] } = task || {};
 
-  const [subTasks, setSubTasks] = useState(
+  const [subTasks, setSubTasks] = useState<SubTaskItem[]>(
     initialSubTasks.length > 0 ? initialSubTasks : defaultSubtasks,
   );
 
-  console.log(subTasks);
+  const handleAddNew = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    const newSubTask = {
+      title: "",
+      placeholder: getRandomPlaceholder(),
+    };
+
+    setSubTasks([...subTasks, newSubTask]);
+  };
 
   return (
     <Dialog ref={dialogRef} toggleDialog={toggleDialog}>
@@ -74,7 +86,12 @@ function NewEditTask({
               </div>
             ))}
 
-            <Button size="md" intent={"secondary"} className="">
+            <Button
+              size="md"
+              intent={"secondary"}
+              className=""
+              onClick={handleAddNew}
+            >
               + Add New Subtask
             </Button>
           </fieldset>
