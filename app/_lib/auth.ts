@@ -13,6 +13,11 @@ const authConfig = {
       clientSecret: process.env.AUTH_GITHUB_SECRET,
     }),
   ],
+  callbacks: {
+    authorized({ auth, request }) {
+      return !!auth?.user;
+    },
+  },
 };
 
 export const {
