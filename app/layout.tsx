@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${jakarta.className} text-sm font-bold text-primary-300`}
+        className={`${jakarta.className} text-sm font-medium text-primary-300`}
       >
         <main className="flex overflow-hidden">
           <Sidebar />

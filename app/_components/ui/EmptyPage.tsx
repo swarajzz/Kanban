@@ -17,9 +17,9 @@ function EmptyPage({
 
   return (
     <div className="flex size-full items-center bg-primary-600 text-center">
-      <div className="mx-auto flex flex-col items-center gap-4">
-        <h1 className="text-2xl">{title}</h1>
-        <div className="text-center">
+      <div className="mx-auto flex flex-col items-center gap-4 font-bold">
+        <h1 className="text-xl">{title} 📝</h1>
+        <div className="text-center text-base font-medium text-primary-200">
           {subTitle}
         </div>
         <Button size="md" intent={"primary"} onClick={toggleDialog}>
