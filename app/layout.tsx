@@ -10,7 +10,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Kanban",
+  title: "Kanban / Task Management App",
   description: "Frontend Mentor | Kanban task management web app",
 };
 
@@ -28,7 +28,9 @@ export default function RootLayout({
           <Sidebar />
           <section className="flex w-full flex-col overflow-hidden">
             <Header />
-            {children}
+            <div className="size-full overflow-auto bg-primary-600">
+              {children}
+            </div>
           </section>
         </main>
       </body>
