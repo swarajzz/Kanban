@@ -1,12 +1,25 @@
 import prisma from "../_lib/prisma";
 import ColumnList from "../_components/ui/Column/ColumnList";
 import EmptyPage from "../_components/ui/EmptyPage";
+import { auth } from "../_lib/auth";
 
 export default async function Board({
   params: { board: boardName },
 }: {
   params: { board: string };
 }) {
+  const session = await auth();
+
+  const user = await prisma.user.findUnique({
+    where: {
+      email: session?.user?.email ?? "",
+    },
+  });
+
+  if (!user) {
+    throw new Error("User not Found");
+  }
+
   const allColumns = await prisma.column.findMany({
     where: {
       board: {
@@ -26,7 +39,7 @@ export default async function Board({
   });
 
   return (
-    <div className="size-full overflow-auto bg-primary-600">
+    <>
       {allColumns.length > 0 ? (
         <div className="flex gap-10 px-4 py-4">
           <ColumnList allColumns={allColumns} />
@@ -38,6 +51,6 @@ export default async function Board({
           btnText="Add New Column"
         />
       )}
-    </div>
+    </>
   );
 }
