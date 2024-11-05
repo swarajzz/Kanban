@@ -13,6 +13,7 @@ export default async function Board({
   const user = await prisma.user.findUnique({
     where: {
       email: session?.user?.email ?? "",
+      // email: "test@gmail.com",
     },
   });
 
@@ -20,14 +21,22 @@ export default async function Board({
     throw new Error("User not Found");
   }
 
+  const board = await prisma.board.findFirst({
+    where: {
+      name: {
+        contains: boardName.replace(/-/g, " "),
+        mode: "insensitive",
+      },
+    },
+  });
+
+  if (!board) {
+    throw new Error("Board not Found");
+  }
+
   const allColumns = await prisma.column.findMany({
     where: {
-      board: {
-        name: {
-          contains: boardName.replace(/-/g, " "),
-          mode: "insensitive",
-        },
-      },
+      boardId: board.id,
     },
     include: {
       tasks: {

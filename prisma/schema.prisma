@@ -11,11 +11,13 @@ datasource db {
 }
 
 model User {
-  id     String  @id @default(uuid())
-  name   String
-  email  String
-  boards Board[]
-  tasks  Task[]
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  boards    Board[]
+  tasks     Task[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Board {
@@ -26,6 +28,7 @@ model Board {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String
+  @@unique([userId, name])
 }
 
 model Column {
