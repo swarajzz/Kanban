@@ -5,10 +5,8 @@ import CloseIcon from "../ui/CloseIcon";
 import Dialog from "./Dialog";
 import DialogPanel from "./DialogPanel";
 import { createBoard } from "@/app/_lib/actions";
-import {
-  defaultColumns,
-  getRandomPlaceholderColumn,
-} from "@/app/_lib/utils/constants";
+import { defaultColumns } from "@/app/_lib/utils/constants";
+import { getRandomPlaceholderColumn } from "@/app/_lib/utils/helpers";
 
 function NewBoard({
   userId,
