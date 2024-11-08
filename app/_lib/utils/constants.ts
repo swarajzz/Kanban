@@ -1,4 +1,4 @@
-export const placeholders = [
+export const placeholders: string[] = [
   "Make coffee",
   "Drink coffee & smile",
   "Write down a creative idea",
@@ -31,12 +31,48 @@ export const placeholders = [
   "Reflect on the week and set intentions for the next",
 ];
 
+export const columnPlaceholders: string[] = [
+  "Backlog",
+  "In Review",
+  "Blocked",
+  "On Hold",
+  "In Progress",
+  "Ready for Testing",
+  "Waiting on Feedback",
+  "Scheduled",
+  "Ideas",
+  "To Discuss",
+  "Next Up",
+  "Sprint Goals",
+  "Follow-Up",
+  "Under Review",
+];
+
 export const defaultSubtasks = [
-  { title: "", placeholder: getRandomPlaceholder() },
-  { title: "", placeholder: getRandomPlaceholder() },
+  { id: crypto.randomUUID(), title: "", placeholder: "Make Coffee" },
+  { id: crypto.randomUUID(), title: "", placeholder: "Drink coffee & smile" },
+];
+
+export const defaultColumns = [
+  { id: crypto.randomUUID(), title: "", placeholder: "Todo" },
+  { id: crypto.randomUUID(), title: "", placeholder: "Doing" },
+  { id: crypto.randomUUID(), title: "", placeholder: "Done" },
 ];
 
 export function getRandomPlaceholder() {
   const randomIndex = Math.floor(Math.random() * placeholders.length);
   return placeholders[randomIndex];
+}
+
+export function getRandomPlaceholderColumn(usedColumnPlaceholders: string[]) {
+  const availablePlaceholders = columnPlaceholders.filter(
+    (placeholder) => !usedColumnPlaceholders.includes(placeholder),
+  );
+
+  const newPlaceholder =
+    availablePlaceholders[
+      Math.floor(Math.random() * availablePlaceholders.length)
+    ];
+
+  return newPlaceholder;
 }

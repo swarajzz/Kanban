@@ -18,14 +18,21 @@ function NewBoard({
   toggleDialog: () => void;
 }) {
   const [boardColumns, setBoardColumns] = useState(defaultColumns);
+  const [usedColumnPlaceholders, setColumnPlaceholders] = useState<string[]>(
+    [],
+  );
 
   function handleAdd() {
+    const newPlaceholder = getRandomPlaceholderColumn(usedColumnPlaceholders);
+
+    setColumnPlaceholders((prev) => [...prev, newPlaceholder]);
+
     setBoardColumns((prev) => [
       ...prev,
       {
         id: crypto.randomUUID(),
         title: "",
-        placeholder: getRandomPlaceholderColumn(),
+        placeholder: newPlaceholder,
       },
     ]);
   }
@@ -63,7 +70,7 @@ function NewBoard({
                   className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
                   type="text"
                   defaultValue={column.title}
-                  name={column.title}
+                  name={column.placeholder}
                 />
                 <CloseIcon handleRemove={() => handleRemove(column.id)} />
               </div>
@@ -71,10 +78,15 @@ function NewBoard({
           </fieldset>
 
           <div className="mb-6 flex flex-col gap-5">
-            <Button size="md" intent={"secondary"} onClick={handleAdd}>
+            <Button
+              type="button"
+              size="md"
+              intent={"secondary"}
+              onClick={handleAdd}
+            >
               + Add New Column
             </Button>
-            <Button size="md" intent={"primary"}>
+            <Button type="submit" size="md" intent={"primary"}>
               Create New Board
             </Button>
           </div>
