@@ -4,16 +4,18 @@ import { Button } from "../ui/Button";
 import CloseIcon from "../ui/CloseIcon";
 import Dialog from "./Dialog";
 import DialogPanel from "./DialogPanel";
-import { createNewBoard } from "@/app/_lib/actions";
+import { createBoard } from "@/app/_lib/actions";
 import {
   defaultColumns,
   getRandomPlaceholderColumn,
 } from "@/app/_lib/utils/constants";
 
 function NewBoard({
+  userId,
   dialogRef,
   toggleDialog,
 }: {
+  userId: string;
   dialogRef: RefObject<HTMLDialogElement>;
   toggleDialog: () => void;
 }) {
@@ -31,7 +33,6 @@ function NewBoard({
       ...prev,
       {
         id: crypto.randomUUID(),
-        title: "",
         placeholder: newPlaceholder,
       },
     ]);
@@ -43,10 +44,15 @@ function NewBoard({
     setBoardColumns((prev) => updatedColumns);
   }
 
+  const createBoardWithId = createBoard.bind(null, userId);
+
   return (
     <Dialog ref={dialogRef} toggleDialog={toggleDialog}>
       <DialogPanel title="Add New Board" toggleDialog={toggleDialog}>
-        <form action={createNewBoard} className="flex flex-col gap-4 px-8 pb-4">
+        <form
+          action={createBoardWithId}
+          className="flex flex-col gap-4 px-8 pb-4"
+        >
           <div className="flex flex-col">
             <label className="mb-2 text-sm text-white" htmlFor="boardName">
               Board Name
@@ -57,6 +63,7 @@ function NewBoard({
               id="boardName"
               name="boardName"
               type="text"
+              required
             />
           </div>
 
@@ -69,8 +76,8 @@ function NewBoard({
                   placeholder={`e.g ${column?.placeholder || ""}`}
                   className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
                   type="text"
-                  defaultValue={column.title}
                   name={column.placeholder}
+                  required
                 />
                 <CloseIcon handleRemove={() => handleRemove(column.id)} />
               </div>

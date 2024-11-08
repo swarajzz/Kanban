@@ -55,6 +55,7 @@ export default async function Board({
         </div>
       ) : (
         <EmptyPage
+          userId={session?.user?.id || ""}
           title="The board is empty. Create a new column to get started"
           subTitle=""
           btnText="Add New Column"
