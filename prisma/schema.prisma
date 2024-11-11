@@ -12,13 +12,13 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  name      String
-  email     String    @unique
-  boards    Board[]
-  tasks     Task[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  boards        Board[]
+  tasks         Task[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   emailVerified DateTime?
   image         String?
   accounts      Account[]
@@ -62,7 +62,7 @@ model Board {
   id        String   @id @default(uuid())
   name      String
   columns   Column[]
-  createdBy User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String
@@ -74,8 +74,10 @@ model Column {
   id      String @id @default(uuid())
   name    String
   tasks   Task[]
-  board   Board  @relation(fields: [boardId], references: [id])
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
   boardId String
+
+  @@unique([boardId, name])
 }
 
 model Task {
@@ -84,10 +86,10 @@ model Task {
   description String
   status      String
   subTasks    SubTask[]
-  createdBy   User      @relation(fields: [userId], references: [id])
+  createdBy   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  column      Column    @relation(fields: [columnId], references: [id])
+  column      Column    @relation(fields: [columnId], references: [id], onDelete: Cascade)
   columnId    String
   userId      String
 }
@@ -96,7 +98,7 @@ model SubTask {
   id          String   @id @default(uuid())
   title       String
   isCompleted Boolean
-  tasks       Task     @relation(fields: [taskId], references: [id])
+  tasks       Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
   taskId      String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
