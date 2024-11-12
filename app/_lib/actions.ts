@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import prisma from "./prisma";
 import { redirect } from "next/navigation";
 
-export async function createBoard(formData: FormData) {
+export async function createBoard(prevData, formData: FormData) {
   const boardName = formData.get("boardName") as string;
   const userId = formData.get("userId") as string;
 
@@ -37,4 +37,17 @@ export async function createBoard(formData: FormData) {
     }
     throw e;
   }
+}
+
+export async function deleteBoard(userId: string, boardName: string) {
+  console.log(userId, boardName);
+  await prisma.board.delete({
+    where: {
+      userId_name: {
+        name: boardName,
+        userId: userId,
+      },
+    },
+  });
+  redirect("/");
 }
