@@ -2,15 +2,15 @@
 // GET
 import prisma from "./prisma";
 
-// export async function getUser(email = session.user.email) {
-//   const user = await prisma.user.findUnique({
-//     where: {
-//       email: email,
-//     },
-//   });
+export async function getUser(id: string) {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: id,
+    },
+  });
 
-//   return user;
-// }
+  return user;
+}
 
 export async function getBoard(boardName: string) {
   const board = await prisma.board.findFirst({
@@ -21,6 +21,10 @@ export async function getBoard(boardName: string) {
       },
     },
   });
+
+  if (!board) {
+    throw new Error("Board not Found");
+  }
 
   return board;
 }

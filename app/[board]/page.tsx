@@ -2,6 +2,7 @@ import prisma from "../_lib/prisma";
 import ColumnList from "../_components/ui/Column/ColumnList";
 import EmptyPage from "../_components/ui/EmptyPage";
 import { auth } from "../_lib/auth";
+import { getBoard, getUser } from "../_lib/data-service";
 
 export default async function Board({
   params: { board: boardName },
@@ -10,29 +11,13 @@ export default async function Board({
 }) {
   const session = await auth();
 
-  const user = await prisma.user.findUnique({
-    where: {
-      email: session?.user?.email ?? "",
-      // email: "test@gmail.com",
-    },
-  });
-
+  const user = await getUser(session?.user?.id || "");
+  console.log(user);
   if (!user) {
     throw new Error("User not Found");
   }
 
-  const board = await prisma.board.findFirst({
-    where: {
-      name: {
-        contains: boardName.replace(/-/g, " "),
-        mode: "insensitive",
-      },
-    },
-  });
-
-  if (!board) {
-    throw new Error("Board not Found");
-  }
+  const board = await getBoard(boardName);
 
   const allColumns = await prisma.column.findMany({
     where: {
