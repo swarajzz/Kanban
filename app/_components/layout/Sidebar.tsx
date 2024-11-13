@@ -2,12 +2,14 @@ import { LogoLight, VisibilityOff } from "@/public/svgs";
 import Image from "next/image";
 
 import { LightTheme, DarkTheme, IconBoard } from "@/public/sidebar";
-import prisma from "@/app/_lib/prisma";
 import BoardList from "../ui/Board/BoardList";
 import Link from "next/link";
+import { auth } from "@/app/_lib/auth";
+import { getBoards } from "@/app/_lib/data-service";
 
 async function Sidebar() {
-  const allBoards = await prisma.board.findMany();
+  const session = await auth();
+  const allBoards = await getBoards(session?.user?.id || "");
 
   return (
     <section className="bg-background-dark flex min-h-screen min-w-64 flex-col items-center justify-between justify-items-center border-r border-primary-400 bg-primary-500">
@@ -15,7 +17,20 @@ async function Sidebar() {
         <Link href={"/"}>
           <Image src={LogoLight} alt="logo" className="mt-8" />
         </Link>
-        <span>User</span>
+
+        {session?.user?.image ? (
+          <div className="flex items-center mt-4 gap-2">
+            <img
+              className="h-8 rounded-full"
+              alt="user profile"
+              src={session.user.image}
+              referrerPolicy="no-referrer"
+            />
+            <span>{session.user.name}</span>
+          </div>
+        ) : (
+          ""
+        )}
 
         <div className="mt-12 flex flex-col gap-4">
           <h2 className="mb-2 text-xs font-semibold uppercase tracking-widest">
