@@ -16,13 +16,12 @@ model User {
   name          String
   email         String    @unique
   boards        Board[]
-  tasks         Task[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model Account {
@@ -63,19 +62,21 @@ model Board {
   name      String
   columns   Column[]
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  userId    String
 
   @@unique([userId, name])
 }
 
 model Column {
-  id      String @id @default(uuid())
-  name    String
-  tasks   Task[]
-  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
-  boardId String
+  id        String   @id @default(uuid())
+  name      String
+  tasks     Task[]
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([boardId, name])
 }
@@ -86,12 +87,10 @@ model Task {
   description String
   status      String
   subTasks    SubTask[]
-  createdBy   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
   column      Column    @relation(fields: [columnId], references: [id], onDelete: Cascade)
   columnId    String
-  userId      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model SubTask {
