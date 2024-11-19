@@ -1,11 +1,18 @@
 import React from "react";
 
-function Input({ element = "input", ...rest }) {
+function Input({
+  register,
+  name,
+  validationSchema,
+  element = "input",
+  ...rest
+}) {
   return (
     <>
       {element === "input" && (
         <input
-          className="border-grey-300 rounded bg-primary-500 px-4 py-2 text-white"
+          className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
+          {...register(name, validationSchema)}
           {...rest}
         />
       )}
@@ -13,6 +20,7 @@ function Input({ element = "input", ...rest }) {
         <>
           <select
             className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
+            {...register(name, validationSchema)}
             {...rest}
           />
 
@@ -34,6 +42,7 @@ function Input({ element = "input", ...rest }) {
       {element === "textarea" && (
         <textarea
           className="border-grey-300 rounded bg-primary-500 px-4 py-2 text-white"
+          {...register(name, validationSchema)}
           {...rest}
         />
       )}

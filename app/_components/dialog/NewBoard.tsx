@@ -6,11 +6,13 @@ import Dialog from "./Dialog";
 import DialogPanel from "./DialogPanel";
 import { createBoard } from "@/app/_lib/actions";
 import { defaultColumns } from "@/app/_lib/utils/constants";
-import {
-  getRandomPlaceholder,
-} from "@/app/_lib/utils/helpers";
+import { getRandomPlaceholder } from "@/app/_lib/utils/helpers";
 import { HashLoader } from "react-spinners";
 import { useFieldArray, useForm } from "react-hook-form";
+import Form from "../ui/Form/Form";
+import Input from "../ui/Form/Input";
+import FormRow from "../ui/Form/FormRow";
+import FieldSet from "../ui/Form/FieldSet";
 
 function NewBoard({
   userId,
@@ -25,7 +27,20 @@ function NewBoard({
   const [usedColumnPlaceholders, setColumnPlaceholders] = useState<string[]>(
     [],
   );
-  const { register, handleSubmit, watch, control, getValues } = useForm({
+
+  type FormFields = {
+    boardName: string;
+    columns: { name: string; placeholder: string }[];
+  };
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    control,
+    getValues,
+    formState: { errors },
+  } = useForm<FormFields>({
     defaultValues: {
       boardName: "",
       columns: Array.from({ length: 3 }, (_, i) => ({
@@ -40,43 +55,47 @@ function NewBoard({
     control,
   });
 
+  const processForm = async (data: FormFields) => {
+    console.log(data);
+  };
+
   return (
     <Dialog ref={dialogRef} toggleDialog={toggleDialog}>
       <DialogPanel title="Add New Board" toggleDialog={toggleDialog}>
-        <form className="flex flex-col gap-4 px-8 pb-4">
-          <div className="flex flex-col">
-            <label className="mb-2 text-sm text-white" htmlFor="boardName">
-              Board Name
-            </label>
-            <input
-              {...register("boardName", {
-                required: "This is required",
-              })}
+        <Form submitHandler={handleSubmit(processForm)}>
+          <FormRow label="boardName" error={errors?.boardName?.message}>
+            <Input
+              validationSchema={{
+                required: "Name is required",
+              }}
+              register={register}
               placeholder="e.g Web Design"
-              className="border-grey-300 rounded bg-primary-500 px-4 py-2 text-white"
               id="boardName"
               name="boardName"
               type="text"
               required
             />
-          </div>
+          </FormRow>
 
-          <fieldset className="flex flex-col gap-3">
-            <legend className="mb-3 text-white">Board Columns</legend>
-
-            {fields.map((field, index) => (
-              <div key={field.id} className="flex items-center gap-4">
-                <input
-                  placeholder={`e.g ${field.placeholder}`}
-                  className="border-grey-300 w-full max-w-xl rounded bg-primary-500 px-4 py-2 text-white"
-                  type="text"
-                  name={`field-${index}`}
-                  required
-                />
-                <CloseIcon handleRemove={() => remove(index)} />
-              </div>
-            ))}
-          </fieldset>
+          <FieldSet legend="Board Columns">
+            <ul className="flex flex-col gap-3">
+              {fields.map((field, index) => (
+                <li key={field.id} className="flex items-center gap-4">
+                  <Input
+                    register={register}
+                    validationSchema={{
+                      required: "Name is required",
+                    }}
+                    name={`columns.${index}.name`}
+                    placeholder={`e.g ${field.placeholder}`}
+                    type="text"
+                    required
+                  />
+                  <CloseIcon handleRemove={() => remove(index)} />
+                </li>
+              ))}
+            </ul>
+          </FieldSet>
 
           <input type="hidden" name="userId" value={userId} />
 
@@ -99,7 +118,7 @@ function NewBoard({
             </Button>
             {/* <HashLoader color="#635FC7" size={30} /> */}
           </div>
-        </form>
+        </Form>
       </DialogPanel>
     </Dialog>
   );
