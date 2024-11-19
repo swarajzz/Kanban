@@ -13,6 +13,7 @@ import Form from "../ui/Form/Form";
 import Input from "../ui/Form/Input";
 import FormRow from "../ui/Form/FormRow";
 import FieldSet from "../ui/Form/FieldSet";
+import { FormFields } from "@/app/_types/types";
 
 function NewBoard({
   userId,
@@ -43,10 +44,24 @@ function NewBoard({
   } = useForm<FormFields>({
     defaultValues: {
       boardName: "",
-      columns: Array.from({ length: 3 }, (_, i) => ({
-        name: "",
-        placeholder: getRandomPlaceholder(),
-      })),
+      // columns: Array.from({ length: 3 }, (_, i) => ({
+      //   name: "",
+      //   placeholder: getRandomPlaceholder(),
+      // })),
+      columns: [
+        {
+          name: "",
+          placeholder: "Todo",
+        },
+        {
+          name: "",
+          placeholder: "Doing",
+        },
+        {
+          name: "",
+          placeholder: "Done",
+        },
+      ],
     },
   });
 
@@ -66,14 +81,13 @@ function NewBoard({
           <FormRow label="boardName" error={errors?.boardName?.message}>
             <Input
               validationSchema={{
-                required: "Name is required",
+                required: "This field is required",
               }}
               register={register}
               placeholder="e.g Web Design"
               id="boardName"
               name="boardName"
               type="text"
-              required
             />
           </FormRow>
 
@@ -81,16 +95,21 @@ function NewBoard({
             <ul className="flex flex-col gap-3">
               {fields.map((field, index) => (
                 <li key={field.id} className="flex items-center gap-4">
-                  <Input
-                    register={register}
-                    validationSchema={{
-                      required: "Name is required",
-                    }}
-                    name={`columns.${index}.name`}
-                    placeholder={`e.g ${field.placeholder}`}
-                    type="text"
-                    required
-                  />
+                  <FormRow
+                    label="hidden"
+                    hidden={true}
+                    error={errors?.columns?.[index]?.name?.message}
+                  >
+                    <Input
+                      register={register}
+                      validationSchema={{
+                        required: "This field is required",
+                      }}
+                      name={`columns.${index}.name`}
+                      placeholder={`e.g ${field.placeholder}`}
+                      type="text"
+                    />
+                  </FormRow>
                   <CloseIcon handleRemove={() => remove(index)} />
                 </li>
               ))}
