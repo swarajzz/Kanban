@@ -33,3 +33,8 @@ export type ColumnProps = {
   boardId: string;
   tasks: TaskProps[];
 };
+
+export type NewboardFormFields = {
+  boardName: string;
+  columns: { name: string; placeholder: string }[];
+};

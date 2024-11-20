@@ -1,9 +1,21 @@
 "use client";
 
-function FormRow({ label, error, children }) {
+import { ReactElement } from "react";
+
+type FormRowProps = {
+  label: string;
+  hidden?: boolean;
+  error?: string | null;
+  children: ReactElement;
+};
+
+function FormRow({ label, hidden, error, children }: FormRowProps) {
   return (
-    <fieldset className="flex flex-col">
-      <label className="mb-2 text-sm text-white" htmlFor={children?.props?.id}>
+    <fieldset className="flex w-full flex-col">
+      <label
+        className={`mb-2 text-sm text-white ${hidden ? "visually-hidden" : ""}`}
+        htmlFor={children?.props?.id}
+      >
         {label}
       </label>
       {label === "Status" ? (
@@ -11,7 +23,7 @@ function FormRow({ label, error, children }) {
       ) : (
         <>{children}</>
       )}
-      {error && <span>{error}</span>}
+      {error && <span className="text-red-400">{error}</span>}
     </fieldset>
   );
 }

@@ -13,7 +13,7 @@ import Form from "../ui/Form/Form";
 import Input from "../ui/Form/Input";
 import FormRow from "../ui/Form/FormRow";
 import FieldSet from "../ui/Form/FieldSet";
-import { FormFields } from "@/app/_types/types";
+import { NewboardFormFields } from "@/app/_types/types";
 
 function NewBoard({
   userId,
@@ -24,30 +24,14 @@ function NewBoard({
   dialogRef: RefObject<HTMLDialogElement>;
   toggleDialog: () => void;
 }) {
-  const [boardColumns, setBoardColumns] = useState(defaultColumns);
-  const [usedColumnPlaceholders, setColumnPlaceholders] = useState<string[]>(
-    [],
-  );
-
-  type FormFields = {
-    boardName: string;
-    columns: { name: string; placeholder: string }[];
-  };
-
   const {
     register,
     handleSubmit,
-    watch,
     control,
-    getValues,
-    formState: { errors },
-  } = useForm<FormFields>({
+    formState: { errors, isSubmitting },
+  } = useForm<NewboardFormFields>({
     defaultValues: {
       boardName: "",
-      // columns: Array.from({ length: 3 }, (_, i) => ({
-      //   name: "",
-      //   placeholder: getRandomPlaceholder(),
-      // })),
       columns: [
         {
           name: "",
@@ -70,15 +54,16 @@ function NewBoard({
     control,
   });
 
-  const processForm = async (data: FormFields) => {
-    console.log(data);
+  const processForm = async (data: NewboardFormFields) => {
+    await createBoard(data, userId);
+    toggleDialog();
   };
 
   return (
     <Dialog ref={dialogRef} toggleDialog={toggleDialog}>
       <DialogPanel title="Add New Board" toggleDialog={toggleDialog}>
         <Form submitHandler={handleSubmit(processForm)}>
-          <FormRow label="boardName" error={errors?.boardName?.message}>
+          <FormRow label="Board Name" error={errors?.boardName?.message}>
             <Input
               validationSchema={{
                 required: "This field is required",
@@ -96,7 +81,7 @@ function NewBoard({
               {fields.map((field, index) => (
                 <li key={field.id} className="flex items-center gap-4">
                   <FormRow
-                    label="hidden"
+                    label={field.name}
                     hidden={true}
                     error={errors?.columns?.[index]?.name?.message}
                   >
@@ -116,8 +101,6 @@ function NewBoard({
             </ul>
           </FieldSet>
 
-          <input type="hidden" name="userId" value={userId} />
-
           <div className="mb-6 flex flex-col gap-5">
             <Button
               type="button"
@@ -132,10 +115,18 @@ function NewBoard({
             >
               + Add New Column
             </Button>
-            <Button type="submit" size="md" intent={"primary"}>
-              Create New Board
-            </Button>
-            {/* <HashLoader color="#635FC7" size={30} /> */}
+            {!isSubmitting ? (
+              <Button
+                disabled={isSubmitting}
+                type="submit"
+                size={"md"}
+                intent={"primary"}
+              >
+                Create New Board
+              </Button>
+            ) : (
+              <HashLoader className="self-center" color="#635FC7" size={30} />
+            )}
           </div>
         </Form>
       </DialogPanel>

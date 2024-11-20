@@ -14,8 +14,9 @@ const button = cva(
     "rouded-lg",
     "ring-theme-300",
     "disabled:cursor-not-allowed",
+    "disabled:bg-accent-100",
     "rounded-full",
-    "font-bold"
+    "font-bold",
   ],
   {
     variants: {
@@ -45,7 +46,7 @@ const button = cva(
         lg: ["text-md", "py-2", "px-4", "min-h-11", "px-5"],
       },
     },
-    compoundVariants: [{ intent: "primary", size: "md", class: "uppercase" }],
+    compoundVariants: [{ intent: "primary", size: "md" }],
     defaultVariants: {
       intent: "primary",
       size: "md",

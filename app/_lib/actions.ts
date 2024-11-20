@@ -3,25 +3,34 @@
 import { Prisma } from "@prisma/client";
 import prisma from "./prisma";
 import { redirect } from "next/navigation";
-import { getBoard } from "./data-service";
+import { getBoard, getSubtask } from "./data-service";
+import { auth } from "./auth";
 
-export async function createBoard(prevData, formData: FormData) {
-  const boardName = formData.get("boardName") as string;
-  const userId = formData.get("userId") as string;
+export async function createBoard(
+  data: {
+    boardName: string;
+    columns: {
+      name: string;
+      placeholder: string;
+    }[];
+  },
+  userId: string,
+) {
+  setTimeout(() => {}, 2000);
 
-  const columns = Array.from(formData)
-    .filter(([key, value]) => key.startsWith("column-"))
-    .map(([name, value]) => value as string);
-
-  columns.map((name) => console.log("YOLO", name));
-
+  const boardName = data.boardName;
+  const columns = data.columns;
   try {
     await prisma.board.create({
       data: {
         name: boardName,
-        userId: userId,
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
         columns: {
-          create: columns.map((columnName) => ({
+          create: columns.map(({ name: columnName }) => ({
             name: columnName,
           })),
         },
