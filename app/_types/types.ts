@@ -23,7 +23,6 @@ export type TaskProps = {
   createdAt: Date;
   updatedAt: Date;
   columnId: string;
-  userId: string;
   subTasks: SubTaskProps[];
 };
 
@@ -31,7 +30,6 @@ export type ColumnProps = {
   id: string;
   name: string;
   boardId: string;
-  tasks: TaskProps[];
 };
 
 export type NewboardFormFields = {

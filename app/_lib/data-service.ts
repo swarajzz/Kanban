@@ -37,6 +37,29 @@ export async function getBoards(id: string) {
   return boards;
 }
 
+export async function getColumns(boardId: string) {
+  const columns = prisma.column.findMany({
+    where: {
+      boardId: boardId,
+    },
+  });
+
+  return columns;
+}
+
+export async function getTasks(columnId: string) {
+  const tasks = await prisma.task.findMany({
+    where: {
+      columnId: columnId,
+    },
+    include: {
+      subTasks: true,
+    },
+  });
+
+  return tasks;
+}
+
 /////////////
 // CREATE
 // export async function createUser(newUser) {
