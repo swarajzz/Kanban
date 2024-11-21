@@ -1,3 +1,4 @@
+import { SubTaskProps } from "@/app/_types/types";
 import { columnPlaceholders, placeholders } from "./constants";
 
 export function getRandomPlaceholder() {
@@ -16,4 +17,8 @@ export function getRandomPlaceholderColumn(usedColumnPlaceholders: string[]) {
     ];
 
   return newPlaceholder;
+}
+
+export function getCompletedSubtasksLength(subTasks: SubTaskProps[]) {
+  return subTasks.filter((item) => item.isCompleted).length;
 }
