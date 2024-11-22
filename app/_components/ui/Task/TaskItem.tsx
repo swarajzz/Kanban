@@ -1,17 +1,28 @@
 "use client";
 import useDialogRef from "@/app/_hooks/useDialogRef";
-import { TaskProps } from "@/app/_types/types";
+import { BoardProps, ColumnProps, TaskProps } from "@/app/_types/types";
 import { GripVertical } from "lucide-react";
 import TaskDialog from "../../dialog/TaskDialog";
 import { useState } from "react";
 import NewEditTask from "../../dialog/NewEditTask";
 import { getCompletedSubtasksLength } from "@/app/_lib/utils/helpers";
+import { useBoardStore } from "@/app/_store/store";
 
-function TaskItem({ task, columnId }: { task: TaskProps; columnId: string }) {
+function TaskItem({
+  task,
+  board,
+  columns,
+}: {
+  task: TaskProps;
+  board: BoardProps;
+  columns: ColumnProps[];
+}) {
   const { dialogRef: viewDialogRef, toggleDialog: toggleViewDialog } =
     useDialogRef();
   const { dialogRef: editDialogRef, toggleDialog: toggleEditDialog } =
     useDialogRef();
+
+  useBoardStore.setState({ board });
 
   const { title, subTasks } = task;
 
@@ -47,6 +58,7 @@ function TaskItem({ task, columnId }: { task: TaskProps; columnId: string }) {
         dialogRef={viewDialogRef}
         toggleDialog={toggleViewDialog}
         task={task}
+        columns={columns}
         isShowDropdown={isShowDropdown}
         toggleShowDropdown={toggleShowDropdown}
         toggleEditDialog={toggleEditDialog}
@@ -57,7 +69,6 @@ function TaskItem({ task, columnId }: { task: TaskProps; columnId: string }) {
           dialogRef={editDialogRef}
           toggleDialog={toggleEditDialog}
           task={task}
-          columnId={columnId}
         />
       ) : (
         ""

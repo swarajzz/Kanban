@@ -10,15 +10,12 @@ export default async function Board({
 }) {
   const session = await auth();
   const board = await getBoard(boardName);
-
   const columns = await getColumns(board.id);
 
   return (
     <>
       {columns.length > 0 ? (
-        <div className="flex gap-10 px-4 py-4">
-          <ColumnList columns={columns} />
-        </div>
+        <ColumnList columns={columns} board={board} />
       ) : (
         <EmptyPage
           userId={session?.user?.id || ""}

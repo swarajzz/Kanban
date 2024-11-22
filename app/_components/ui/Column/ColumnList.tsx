@@ -1,13 +1,21 @@
-import { ColumnProps } from "@/app/_types/types";
+import { BoardProps, ColumnProps } from "@/app/_types/types";
 import Column from "./Column";
 
-function ColumnList({ columns }: { columns: ColumnProps[] }) {
+function ColumnList({
+  columns,
+  board,
+}: {
+  columns: ColumnProps[];
+  board: BoardProps;
+}) {
   return (
-    <ul className="flex gap-5">
-      {columns.map((column) => (
-        <Column key={column.id} column={column} />
-      ))}
-    </ul>
+    <div className="flex gap-10 px-4 py-4">
+      <ul className="flex gap-5">
+        {columns.map((column) => (
+          <Column key={column.id} column={column} board={board} />
+        ))}
+      </ul>
+    </div>
   );
 }
 

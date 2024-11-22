@@ -3,7 +3,7 @@ import React, { RefObject } from "react";
 import { Button } from "../ui/Button";
 import DialogPanel from "./DialogPanel";
 import Dialog from "./Dialog";
-import { TaskProps } from "@/app/_types/types";
+import { ColumnProps, TaskProps } from "@/app/_types/types";
 import TaskDropdown from "./TaskDropdown";
 import Form from "../ui/Form/Form";
 import FieldSet from "../ui/Form/FieldSet";
@@ -11,7 +11,11 @@ import FormRow from "../ui/Form/FormRow";
 import Input from "../ui/Form/Input";
 import { useFieldArray, useForm } from "react-hook-form";
 import CheckedSubtaskList from "../ui/Task/CheckedSubtaskList";
-import { getCompletedSubtasksLength } from "@/app/_lib/utils/helpers";
+import {
+  getColumnId,
+  getCompletedSubtasksLength,
+} from "@/app/_lib/utils/helpers";
+import { updateTask } from "@/app/_lib/actions";
 
 function TaskDialog({
   dialogRef,
@@ -20,6 +24,7 @@ function TaskDialog({
   toggleDialog,
   toggleShowDropdown,
   toggleEditDialog,
+  columns,
 }: {
   dialogRef: RefObject<HTMLDialogElement>;
   task: TaskProps;
@@ -27,8 +32,9 @@ function TaskDialog({
   toggleDialog: () => void;
   toggleShowDropdown: () => void;
   toggleEditDialog: () => void;
+  columns: ColumnProps[];
 }) {
-  const { title, description, subTasks } = task;
+  const { id: taskId, title, description, subTasks, status: taskStatus } = task;
   const completedSubtasks = getCompletedSubtasksLength(subTasks);
 
   const {
@@ -40,10 +46,8 @@ function TaskDialog({
   } = useForm({
     defaultValues: {
       checked_status: task.status ?? "",
-      checkSubtasks: task.subTasks.map(({ id, isCompleted, title }) => ({
-        id: id,
-        isCompleted: isCompleted,
-        title: title,
+      checkSubtasks: task.subTasks.map((subTask) => ({
+        ...subTask,
       })),
     },
   });
@@ -54,7 +58,9 @@ function TaskDialog({
   });
 
   const processForm = async (data) => {
-    console.log(data);
+    const columnId = getColumnId(columns, data.checked_status);
+    await updateTask(data, taskId, columnId);
+    toggleDialog();
   };
 
   return (
@@ -90,8 +96,11 @@ function TaskDialog({
                 -- select an option --
               </option>
 
-              <option value="Todo">Todo</option>
-              <option value="Done">Done</option>
+              {columns.map((column) => (
+                <option key={column.id} value={column.name}>
+                  {column.name}
+                </option>
+              ))}
             </Input>
           </FormRow>
 

@@ -49,6 +49,29 @@ export async function createBoard(
   }
 }
 
+export async function updateTask(data, taskId, columnId) {
+  const { checkSubtasks: subTasks, checked_status: status } = data;
+
+  await prisma.task.update({
+    where: {
+      id: taskId,
+    },
+    data: {
+      subTasks: {
+        update: subTasks.map((subTask) => ({
+          where: { id: subTask.id },
+          data: {
+            title: subTask.title,
+            isCompleted: subTask.isCompleted,
+          },
+        })),
+      },
+      status: status,
+      columnId: columnId,
+    },
+  });
+}
+
 export async function deleteBoard(boardName: string) {
   const board = await getBoard(boardName);
 
