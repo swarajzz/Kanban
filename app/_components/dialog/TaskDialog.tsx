@@ -3,7 +3,7 @@ import React, { RefObject } from "react";
 import { Button } from "../ui/Button";
 import DialogPanel from "./DialogPanel";
 import Dialog from "./Dialog";
-import { ColumnProps, TaskProps } from "@/app/_types/types";
+import { ColumnProps, SubTaskProps, TaskProps } from "@/app/_types/types";
 import TaskDropdown from "./TaskDropdown";
 import Form from "../ui/Form/Form";
 import FieldSet from "../ui/Form/FieldSet";
@@ -16,6 +16,7 @@ import {
   getCompletedSubtasksLength,
 } from "@/app/_lib/utils/helpers";
 import { updateTask } from "@/app/_lib/actions";
+import { HashLoader } from "react-spinners";
 
 function TaskDialog({
   dialogRef,
@@ -40,7 +41,6 @@ function TaskDialog({
   const {
     register,
     handleSubmit,
-    getValues,
     control,
     formState: { errors, isSubmitting },
   } = useForm({
@@ -57,7 +57,10 @@ function TaskDialog({
     control,
   });
 
-  const processForm = async (data) => {
+  const processForm = async (data: {
+    checked_status: string;
+    checkSubtasks: SubTaskProps[];
+  }) => {
     const columnId = getColumnId(columns, data.checked_status);
     await updateTask(data, taskId, columnId);
     toggleDialog();
@@ -105,9 +108,18 @@ function TaskDialog({
           </FormRow>
 
           <div className="mb-6 flex flex-col gap-5">
-            <Button type="submit" size="md" intent={"primary"}>
-              Save Task Changes
-            </Button>
+            {!isSubmitting ? (
+              <Button
+                disabled={isSubmitting}
+                type="submit"
+                size={"md"}
+                intent={"primary"}
+              >
+                Create New Board
+              </Button>
+            ) : (
+              <HashLoader className="self-center" color="#635FC7" size={30} />
+            )}
           </div>
         </Form>
 
