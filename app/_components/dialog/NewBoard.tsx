@@ -70,7 +70,6 @@ function NewBoard({
               }}
               register={register}
               placeholder="e.g Web Design"
-              id="boardName"
               name="boardName"
               type="text"
             />

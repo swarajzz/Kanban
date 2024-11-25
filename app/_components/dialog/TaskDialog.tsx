@@ -61,8 +61,10 @@ function TaskDialog({
     checked_status: string;
     checkSubtasks: SubTaskProps[];
   }) => {
+    const { checkSubtasks: updatedSubtasks, checked_status: status } = data;
+
     const columnId = getColumnId(columns, data.checked_status);
-    await updateTask(data, taskId, columnId);
+    await updateTask({ updatedSubtasks, status, taskId, columnId });
     toggleDialog();
   };
 
