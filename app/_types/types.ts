@@ -15,6 +15,24 @@ export type SubTaskProps = {
   placeholder?: string;
 };
 
+export type UpdateSubtaskProps = {
+  id: string;
+  title: string;
+  isCompleted?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+  placeholder?: string;
+};
+
+export type UpdateTaskProps = {
+  updatedSubtasks: UpdateSubtaskProps[];
+  deleteSubtasks?: SubTaskProps[];
+  status: string;
+  taskId: string;
+  columnId: string;
+  description?: string;
+};
+
 export type TaskProps = {
   id: string;
   title: string;

@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import prisma from "./prisma";
 import { redirect } from "next/navigation";
 import { getBoard, getSubtask } from "./data-service";
-import { auth } from "./auth";
+import { SubTaskProps, UpdateTaskProps } from "../_types/types";
 
 export async function createBoard(
   data: {
@@ -49,8 +49,15 @@ export async function createBoard(
   }
 }
 
-export async function updateTask(data, taskId, columnId) {
-  const { checkSubtasks: subTasks, checked_status: status } = data;
+export async function updateTask({
+  updatedSubtasks,
+  deleteSubtasks = [],
+  status,
+  taskId,
+  columnId,
+  description,
+}: UpdateTaskProps) {
+  console.log(taskId, columnId);
 
   await prisma.task.update({
     where: {
@@ -58,14 +65,20 @@ export async function updateTask(data, taskId, columnId) {
     },
     data: {
       subTasks: {
-        update: subTasks.map((subTask) => ({
+        update: updatedSubtasks.map((subTask: SubTaskProps) => ({
           where: { id: subTask.id },
           data: {
             title: subTask.title,
             isCompleted: subTask.isCompleted,
           },
         })),
+        deleteMany: {
+          id: {
+            in: deleteSubtasks.map((subTask: SubTaskProps) => subTask.id),
+          },
+        },
       },
+      description: description,
       status: status,
       columnId: columnId,
     },

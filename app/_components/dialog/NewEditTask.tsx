@@ -2,10 +2,15 @@
 import React, { RefObject, useState } from "react";
 import { Button } from "../ui/Button";
 import DialogPanel from "./DialogPanel";
-import { SubTaskItem, TaskProps } from "@/app/_types/types";
+import {
+  ColumnProps,
+  SubTaskProps,
+  TaskProps,
+  UpdateSubtaskProps,
+} from "@/app/_types/types";
 import Dialog from "./Dialog";
-import { getRandomPlaceholder } from "@/app/_lib/utils/helpers";
-import { createTask, updateTask } from "@/app/_lib/actions";
+import { getColumnId, getRandomPlaceholder } from "@/app/_lib/utils/helpers";
+import { updateTask } from "@/app/_lib/actions";
 import { useFieldArray, useForm } from "react-hook-form";
 import SubtaskList from "../ui/Subtask/SubtaskList";
 import Form from "../ui/Form/Form";
@@ -17,27 +22,20 @@ function NewEditTask({
   dialogRef,
   toggleDialog,
   task,
-  columnId,
+  columns,
 }: {
   dialogRef: RefObject<HTMLDialogElement>;
   toggleDialog: () => void;
   task?: TaskProps;
-  columnId?: string;
+  columns?: ColumnProps[];
 }) {
-  const { subTasks: initialSubTasks = [] } = task || {};
-
-  type FormValues = {
-    subTask: {
-      title: string;
-      placeholder: string;
-    }[];
-  };
+  const { subTasks, id: taskId } = task || {};
 
   const {
     register,
     handleSubmit,
-    watch,
     control,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
@@ -45,7 +43,8 @@ function NewEditTask({
       description: task?.description ?? "",
       subTasks: task?.subTasks.map((subTask) => {
         return {
-          title: subTask?.title || "",
+          id: subTask?.id ?? "",
+          title: subTask?.title ?? "",
           placeholder: subTask?.placeholder ?? getRandomPlaceholder(),
         };
       }),
@@ -58,23 +57,27 @@ function NewEditTask({
     control,
   });
 
-  const formHandler = !task ? createTask : updateTask;
-  // const [data, formAction] = useFormState(formHandler, null);
-
-  const processForm = async (data) => {
-    // console.log(data, errors);
-    // const result = await update(data);
-    // if (!result) {
-    //   console.log("Something went wrong");
-    //   return;
-    // }
-    // if (result.error) {
-    //   // set local error state
-    //   console.log(result.error);
-    //   return;
-    // }
-    // reset();
-    // setData(result.data);
+  const processForm = async (data: {
+    description: string;
+    status: string;
+    subTasks: UpdateSubtaskProps[];
+    title: string;
+  }) => {
+    const { subTasks: updatedSubtasks, status, description } = data;
+    const deleteSubtasks = subTasks?.filter(
+      (original) =>
+        !updatedSubtasks.some((updated) => updated.id === original.id),
+    );
+    const columnId = getColumnId(columns, data.status);
+    await updateTask({
+      updatedSubtasks,
+      deleteSubtasks,
+      status,
+      taskId,
+      columnId,
+      description,
+    });
+    toggleDialog();
   };
 
   return (
@@ -83,29 +86,27 @@ function NewEditTask({
         <Form submitHandler={handleSubmit(processForm)}>
           <FormRow label="Title" error={errors?.title?.message}>
             <Input
-              {...register("title", {
+              register={register}
+              validationSchema={{
                 required: "This field is required",
-              })}
+              }}
               placeholder="e.g Web Design"
-              id="boardName"
               type="text"
-              defaultValue={task?.title}
               name="title"
             />
           </FormRow>
 
           <FormRow label="Description" error={errors?.description?.message}>
             <Input
-              {...register("description", {
+              register={register}
+              validationSchema={{
                 required: "This field is required",
-              })}
+              }}
               element="textarea"
               placeholder="e.g It's always good to take a break. This 15 minute break will recharge the batteries a little"
-              id="description"
               type="text"
               cols={5}
               rows={5}
-              defaultValue={task?.description}
               name="description"
             />
           </FormRow>
@@ -122,6 +123,7 @@ function NewEditTask({
                 append({
                   title: "",
                   placeholder: getRandomPlaceholder(),
+                  id: "",
                 });
               }}
             >
@@ -129,21 +131,25 @@ function NewEditTask({
             </Button>
           </FieldSet>
 
-          <Input type="hidden" name="columnId" value={columnId} />
-          <Input type="hidden" name="taskId" value={task?.id} />
-
           <FormRow label="Status" error={errors?.status?.message}>
             <Input
-              {...register("status", {
-                required: true,
-              })}
+              register={register}
+              validationSchema={{
+                required: "This field is required",
+              }}
+              name="status"
               element="select"
               type="select"
-              id="status"
-              defaultValue={task?.status}
             >
-              <option value="Todo">Todo</option>
-              <option value="Done">Done</option>
+              <option disabled value="">
+                -- select an option --
+              </option>
+
+              {columns?.map((column) => (
+                <option key={column.id} value={column.name}>
+                  {column.name}
+                </option>
+              ))}
             </Input>
           </FormRow>
 

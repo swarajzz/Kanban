@@ -69,6 +69,7 @@ function TaskItem({
           dialogRef={editDialogRef}
           toggleDialog={toggleEditDialog}
           task={task}
+          columns={columns}
         />
       ) : (
         ""
