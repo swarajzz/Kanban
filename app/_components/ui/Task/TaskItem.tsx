@@ -23,6 +23,7 @@ function TaskItem({
     useDialogRef();
 
   useBoardStore.setState({ board });
+  useBoardStore.setState({ columns });
 
   const { title, subTasks } = task;
 
@@ -39,20 +40,20 @@ function TaskItem({
   };
 
   return (
-    <>
-      <li
+    <li className="flex min-h-24 cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary-500">
+      <div
         onClick={handleClick}
-        className="flex min-h-24 cursor-pointer items-center gap-2 rounded-lg bg-primary-500 p-3"
+        className="flex size-full items-center gap-1 p-3"
       >
         <GripVertical />
-        <div className="flex flex-col gap-1">
+        <div className="w-full">
           <div className="font-bold text-white">{title}</div>
-          <div className="text-xs text-primary-300">
+          <div className="mt-1 text-xs text-primary-300">
             {`${completedSubtasks} of
             ${task?.subTasks.length} subtasks`}
           </div>
         </div>
-      </li>
+      </div>
 
       <TaskDialog
         dialogRef={viewDialogRef}
@@ -74,7 +75,7 @@ function TaskItem({
       ) : (
         ""
       )}
-    </>
+    </li>
   );
 }
 

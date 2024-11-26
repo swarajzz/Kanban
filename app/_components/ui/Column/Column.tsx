@@ -10,15 +10,13 @@ function Column({
   board: BoardProps;
 }) {
   return (
-    <div className="min-w-72">
-      <li className="mb-4 flex flex-col items-center gap-3">
-        <div className="flex items-center gap-5 self-start">
-          <div className="border-radius h-3 w-3 rounded-full bg-accent-500"></div>
-          <h3 className="text-sm font-bold uppercase">{name}</h3>
-        </div>
-        <Tasks columnId={id} board={board}/>
-      </li>
-    </div>
+    <li className="mb-4 flex min-w-72 max-w-80 flex-col items-center gap-3">
+      <div className="flex items-center gap-5 self-start">
+        <div className="border-radius h-3 w-3 rounded-full bg-accent-500"></div>
+        <h3 className="text-sm font-bold uppercase">{name}</h3>
+      </div>
+      <Tasks columnId={id} board={board} />
+    </li>
   );
 }
 
