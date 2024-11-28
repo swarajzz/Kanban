@@ -8,7 +8,7 @@ import NewEditTask from "../dialog/NewEditTask";
 import HeaderDropdown from "../ui/Header/HeaderDropdown";
 import { useParams } from "next/navigation";
 
-export default function Header() {
+export default function Header({ columns }) {
   const params = useParams<{ board: string }>();
 
   const { dialogRef, toggleDialog } = useDialogRef();
@@ -19,7 +19,7 @@ export default function Header() {
   }
 
   return (
-    <div className="relative flex items-center justify-between border-b border-primary-400 bg-primary-500 p-5">
+    <header className="relative flex items-center justify-between border-b border-primary-400 bg-primary-500 p-5">
       <h1 className="text-xl font-bold text-white">
         {!Object.keys(params).length
           ? "Turn Chaos into Clarity"
@@ -34,7 +34,11 @@ export default function Header() {
           ""
         )}
 
-        <NewEditTask dialogRef={dialogRef} toggleDialog={toggleDialog} />
+        <NewEditTask
+          dialogRef={dialogRef}
+          toggleDialog={toggleDialog}
+          columns={columns}
+        />
 
         <div
           className="cursor-pointer"
@@ -52,6 +56,6 @@ export default function Header() {
           ""
         )}
       </div>
-    </div>
+    </header>
   );
 }

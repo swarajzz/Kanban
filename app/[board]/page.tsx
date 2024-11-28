@@ -17,7 +17,7 @@ export default async function Board({
     <>
       {columns.length > 0 ? (
         <>
-          <Header />
+          <Header columns={columns} />
           <ColumnList columns={columns} board={board} />
         </>
       ) : (

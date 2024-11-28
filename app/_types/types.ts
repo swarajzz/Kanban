@@ -28,6 +28,7 @@ export type UpdateTaskProps = {
   updatedSubtasks: UpdateSubtaskProps[];
   deleteSubtasks?: SubTaskProps[];
   status: string;
+  title?: string;
   taskId: string;
   columnId: string;
   description?: string;

@@ -10,7 +10,7 @@ import {
 } from "@/app/_types/types";
 import Dialog from "./Dialog";
 import { getColumnId, getRandomPlaceholder } from "@/app/_lib/utils/helpers";
-import { updateTask } from "@/app/_lib/actions";
+import { createTask, updateTask } from "@/app/_lib/actions";
 import { useFieldArray, useForm } from "react-hook-form";
 import SubtaskList from "../ui/Subtask/SubtaskList";
 import Form from "../ui/Form/Form";
@@ -63,20 +63,31 @@ function NewEditTask({
     subTasks: UpdateSubtaskProps[];
     title: string;
   }) => {
-    const { subTasks: updatedSubtasks, status, description } = data;
+    const { subTasks: updatedSubtasks, status, title, description } = data;
     const deleteSubtasks = subTasks?.filter(
       (original) =>
         !updatedSubtasks.some((updated) => updated.id === original.id),
     );
     const columnId = getColumnId(columns, data.status);
-    await updateTask({
-      updatedSubtasks,
-      deleteSubtasks,
-      status,
-      taskId,
-      columnId,
-      description,
-    });
+
+    task
+      ? await updateTask({
+          title,
+          updatedSubtasks,
+          deleteSubtasks,
+          status,
+          taskId,
+          columnId,
+          description,
+        })
+      : await createTask({
+          title,
+          description,
+          updatedSubtasks,
+          status,
+          columnId,
+        });
+
     toggleDialog();
   };
 

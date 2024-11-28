@@ -16,8 +16,6 @@ export async function createBoard(
   },
   userId: string,
 ) {
-  setTimeout(() => {}, 2000);
-
   const boardName = data.boardName;
   const columns = data.columns;
   try {
@@ -49,16 +47,38 @@ export async function createBoard(
   }
 }
 
+export async function createTask({
+  title,
+  description,
+  updatedSubtasks,
+  status,
+  columnId,
+}) {
+  await prisma.task.create({
+    data: {
+      subTasks: {
+        create: updatedSubtasks.map((subTask: SubTaskProps) => ({
+          title: subTask.title,
+          isCompleted: false,
+        })),
+      },
+      title: title,
+      description: description,
+      status: status,
+      columnId: columnId,
+    },
+  });
+}
+
 export async function updateTask({
   updatedSubtasks,
   deleteSubtasks = [],
   status,
+  title,
   taskId,
   columnId,
   description,
 }: UpdateTaskProps) {
-  console.log(taskId, columnId);
-
   await prisma.task.update({
     where: {
       id: taskId,
@@ -78,6 +98,7 @@ export async function updateTask({
           },
         },
       },
+      title: title,
       description: description,
       status: status,
       columnId: columnId,
