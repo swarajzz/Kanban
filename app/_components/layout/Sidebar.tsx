@@ -12,7 +12,7 @@ async function Sidebar() {
   const allBoards = await getBoards(session?.user?.id || "");
 
   return (
-    <section className="bg-background-dark flex min-h-screen min-w-64 flex-col items-center justify-between justify-items-center border-r border-primary-400 bg-primary-500">
+    <section className="bg-background-dark flex min-w-64 flex-col items-center justify-between justify-items-center border-r border-primary-400 bg-primary-500">
       <div className="self-start px-5">
         <Link href={"/"}>
           <Image src={LogoLight} alt="logo" className="mt-8" />

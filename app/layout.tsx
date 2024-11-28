@@ -3,6 +3,7 @@ import "@/app/_styles/globals.css";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import Sidebar from "@/app/_components/layout/Sidebar";
 import Header from "@/app/_components/layout/Header";
+import { ColumnProvider } from "./_components/ColumnContext";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -20,17 +21,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-screen">
       <body
-        className={`${jakarta.className} text-sm font-medium text-primary-300`}
+        className={`${jakarta.className} h-screen text-sm font-medium text-primary-300`}
       >
-        <main className="flex overflow-hidden">
+        <main className="flex size-full">
           <Sidebar />
-          <section className="flex w-full flex-col overflow-hidden">
-            <Header />
-            <div className="size-full overflow-auto bg-primary-600">
-              {children}
-            </div>
+          <section className="flex w-full flex-col overflow-x-hidden">
+            {children}
           </section>
         </main>
       </body>

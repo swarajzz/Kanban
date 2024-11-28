@@ -1,3 +1,4 @@
+import Header from "../_components/layout/Header";
 import ColumnList from "../_components/ui/Column/ColumnList";
 import EmptyPage from "../_components/ui/EmptyPage";
 import { auth } from "../_lib/auth";
@@ -15,7 +16,10 @@ export default async function Board({
   return (
     <>
       {columns.length > 0 ? (
-        <ColumnList columns={columns} board={board} />
+        <>
+          <Header />
+          <ColumnList columns={columns} board={board} />
+        </>
       ) : (
         <EmptyPage
           userId={session?.user?.id || ""}

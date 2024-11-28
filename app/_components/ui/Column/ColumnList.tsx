@@ -9,7 +9,7 @@ function ColumnList({
   board: BoardProps;
 }) {
   return (
-    <div className="flex gap-10 px-4 py-4">
+    <div className="flex size-full gap-10 overflow-auto bg-primary-600 px-4 py-4">
       <ul className="flex gap-5">
         {columns.map((column) => (
           <Column key={column.id} column={column} board={board} />
