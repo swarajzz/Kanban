@@ -96,8 +96,8 @@ model Task {
 model SubTask {
   id          String   @id @default(uuid())
   title       String
-  isCompleted Boolean
-  tasks       Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  isCompleted Boolean  @default(false)
+  task       Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
   taskId      String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

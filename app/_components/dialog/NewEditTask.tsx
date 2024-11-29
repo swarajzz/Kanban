@@ -29,7 +29,7 @@ function NewEditTask({
   task?: TaskProps;
   columns?: ColumnProps[];
 }) {
-  const { subTasks, id: taskId } = task || {};
+  const { subTasks: originalSubtasks, id: taskId } = task || {};
 
   const {
     register,
@@ -45,6 +45,7 @@ function NewEditTask({
         return {
           id: subTask?.id ?? "",
           title: subTask?.title ?? "",
+          isCompleted: subTask?.isCompleted ?? false,
           placeholder: subTask?.placeholder ?? getRandomPlaceholder(),
         };
       }),
@@ -63,37 +64,22 @@ function NewEditTask({
     subTasks: UpdateSubtaskProps[];
     title: string;
   }) => {
-    const { subTasks: updatedSubtasks, status, title, description } = data;
-    const deleteSubtasks = subTasks?.filter(
-      (original) =>
-        !updatedSubtasks.some((updated) => updated.id === original.id),
-    );
     const columnId = getColumnId(columns, data.status);
+    console.log(data, originalSubtasks, taskId, columnId);
 
     task
-      ? await updateTask({
-          title,
-          updatedSubtasks,
-          deleteSubtasks,
-          status,
-          taskId,
-          columnId,
-          description,
-        })
-      : await createTask({
-          title,
-          description,
-          updatedSubtasks,
-          status,
-          columnId,
-        });
+      ? await updateTask({ data, originalSubtasks, taskId, columnId })
+      : await createTask(data, columnId);
 
     toggleDialog();
   };
 
   return (
     <Dialog ref={dialogRef} toggleDialog={toggleDialog}>
-      <DialogPanel title="Add New Task" toggleDialog={toggleDialog}>
+      <DialogPanel
+        title={task ? "Edit Task" : "Add New Task"}
+        toggleDialog={toggleDialog}
+      >
         <Form submitHandler={handleSubmit(processForm)}>
           <FormRow label="Title" error={errors?.title?.message}>
             <Input
@@ -132,9 +118,10 @@ function NewEditTask({
               className=""
               onClick={() => {
                 append({
+                  id: "",
                   title: "",
                   placeholder: getRandomPlaceholder(),
-                  id: "",
+                  isCompleted: false,
                 });
               }}
             >

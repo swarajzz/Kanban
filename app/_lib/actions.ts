@@ -47,13 +47,8 @@ export async function createBoard(
   }
 }
 
-export async function createTask({
-  title,
-  description,
-  updatedSubtasks,
-  status,
-  columnId,
-}) {
+export async function createTask(data, columnId) {
+  const { title, description, updatedSubtasks, status } = data;
   await prisma.task.create({
     data: {
       subTasks: {
@@ -65,43 +60,58 @@ export async function createTask({
       title: title,
       description: description,
       status: status,
-      columnId: columnId,
+      column: {
+        connect: {
+          id: columnId,
+        },
+      },
     },
   });
 }
 
 export async function updateTask({
-  updatedSubtasks,
-  deleteSubtasks = [],
-  status,
-  title,
+  data,
+  originalSubtasks,
   taskId,
   columnId,
-  description,
 }: UpdateTaskProps) {
+  const { subTasks, title, description, status } = data;
+
+  const deleteSubtasks = originalSubtasks?.filter(
+    (original) => !subTasks.some((subTask) => subTask.id === original.id),
+  );
+
   await prisma.task.update({
     where: {
       id: taskId,
     },
     data: {
+      title: title,
+      description: description,
+      status: status,
       subTasks: {
-        update: updatedSubtasks.map((subTask: SubTaskProps) => ({
-          where: { id: subTask.id },
-          data: {
+        deleteMany: {
+          id: {
+            in: deleteSubtasks?.map((subTask: SubTaskProps) => subTask.id),
+          },
+        },
+        upsert: subTasks.map((subTask) => ({
+          where: { id: subTask.id || "" },
+          create: {
+            title: subTask.title,
+            isCompleted: subTask.isCompleted ?? false,
+          },
+          update: {
             title: subTask.title,
             isCompleted: subTask.isCompleted,
           },
         })),
-        deleteMany: {
-          id: {
-            in: deleteSubtasks.map((subTask: SubTaskProps) => subTask.id),
-          },
+      },
+      column: {
+        connect: {
+          id: columnId,
         },
       },
-      title: title,
-      description: description,
-      status: status,
-      columnId: columnId,
     },
   });
 }

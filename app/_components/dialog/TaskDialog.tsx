@@ -61,10 +61,16 @@ function TaskDialog({
     checked_status: string;
     checkSubtasks: SubTaskProps[];
   }) => {
-    const { checkSubtasks: updatedSubtasks, checked_status: status } = data;
-
     const columnId = getColumnId(columns, data.checked_status);
-    await updateTask({ updatedSubtasks, status, taskId, columnId });
+
+    const transformedData = {
+      title: "",
+      description: "",
+      status: data.checked_status,
+      subTasks: data.checkSubtasks,
+    };
+    
+    await updateTask({ data: transformedData, taskId, columnId });
     toggleDialog();
   };
 
@@ -117,7 +123,7 @@ function TaskDialog({
                 size={"md"}
                 intent={"primary"}
               >
-                Create New Board
+                Save Changes
               </Button>
             ) : (
               <HashLoader className="self-center" color="#635FC7" size={30} />
