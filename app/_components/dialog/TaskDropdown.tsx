@@ -1,13 +1,15 @@
-"use client";
+import { deleteTask } from "@/app/_lib/actions";
 
 function TaskDropdown({
   toggleShowDropdown,
   toggleDialog,
   toggleEditDialog,
+  taskId,
 }: {
   toggleShowDropdown: () => void;
   toggleDialog: () => void;
   toggleEditDialog: () => void;
+  taskId: string;
 }) {
   function handleClick() {
     toggleShowDropdown();
@@ -24,7 +26,10 @@ function TaskDropdown({
         >
           Edit Task
         </li>
-        <li className="cursor-pointer text-accent-400 transition hover:text-accent-300">
+        <li
+          className="cursor-pointer text-accent-400 transition hover:text-accent-300"
+          onClick={() => deleteTask(taskId)}
+        >
           Delete Task
         </li>
       </ul>

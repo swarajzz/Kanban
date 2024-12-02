@@ -3,8 +3,9 @@
 import { Prisma } from "@prisma/client";
 import prisma from "./prisma";
 import { redirect } from "next/navigation";
-import { getBoard, getSubtask } from "./data-service";
-import { DataProps, SubTaskProps, UpdateTaskProps } from "../_types/types";
+import { getBoard } from "./data-service";
+import { DataProps, UpdateTaskProps } from "../_types/types";
+import { revalidatePath } from "next/cache";
 
 export async function createBoard(
   data: {
@@ -74,13 +75,11 @@ export async function createTask({
       },
     },
   });
+
+  revalidatePath("/board");
 }
 
-export async function updateTask({
-  data,
-  taskId,
-  columnId,
-}: UpdateTaskProps) {
+export async function updateTask({ data, taskId, columnId }: UpdateTaskProps) {
   const { subTasks, title, description, status } = data;
 
   await prisma.task.update({
@@ -114,6 +113,7 @@ export async function updateTask({
       },
     },
   });
+  revalidatePath("/board");
 }
 
 export async function deleteBoard(boardName: string) {
@@ -125,4 +125,13 @@ export async function deleteBoard(boardName: string) {
     },
   });
   redirect("/");
+}
+
+export async function deleteTask(taskId: string) {
+  await prisma.task.delete({
+    where: {
+      id: taskId,
+    },
+  });
+  revalidatePath("/board");
 }

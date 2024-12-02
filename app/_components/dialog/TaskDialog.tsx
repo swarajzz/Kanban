@@ -140,6 +140,7 @@ function TaskDialog({
             toggleShowDropdown={toggleShowDropdown}
             toggleDialog={toggleDialog}
             toggleEditDialog={toggleEditDialog}
+            taskId={taskId}
           />
         ) : (
           ""
