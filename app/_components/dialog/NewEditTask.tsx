@@ -103,7 +103,12 @@ function NewEditTask({
           </FormRow>
 
           <FieldSet legend="Subtasks">
-            <SubtaskList fields={fields} register={register} remove={remove} />
+            <SubtaskList
+              fields={fields}
+              register={register}
+              remove={remove}
+              errors={errors}
+            />
 
             <Button
               type="button"
