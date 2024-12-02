@@ -7,10 +7,10 @@ import useDialogRef from "@/app/_hooks/useDialogRef";
 import NewEditTask from "../dialog/NewEditTask";
 import HeaderDropdown from "../ui/Header/HeaderDropdown";
 import { useParams } from "next/navigation";
+import { ColumnProps } from "@/app/_types/types";
 
-export default function Header({ columns }) {
+export default function Header({ columns }: { columns: ColumnProps[] }) {
   const params = useParams<{ board: string }>();
-
   const { dialogRef, toggleDialog } = useDialogRef();
   const [isShowDropdown, setShowDropdown] = useState(false);
 

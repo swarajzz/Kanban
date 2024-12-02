@@ -24,14 +24,18 @@ export type UpdateSubtaskProps = {
   placeholder?: string;
 };
 
-export type UpdateTaskProps = {
-  updatedSubtasks: UpdateSubtaskProps[];
-  deleteSubtasks?: SubTaskProps[];
+export type DataProps = {
+  title: string;
+  description: string;
   status: string;
-  title?: string;
-  taskId: string;
-  columnId: string;
-  description?: string;
+  subTasks: UpdateSubtaskProps[];
+};
+
+export type UpdateTaskProps = {
+  data: DataProps;
+  originalSubtasks?: UpdateSubtaskProps[];
+  taskId?: string;
+  columnId?: string;
 };
 
 export type TaskProps = {

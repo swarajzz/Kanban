@@ -27,7 +27,7 @@ function NewEditTask({
   dialogRef: RefObject<HTMLDialogElement>;
   toggleDialog: () => void;
   task?: TaskProps;
-  columns?: ColumnProps[];
+  columns: ColumnProps[];
 }) {
   const { subTasks: originalSubtasks, id: taskId } = task || {};
 
@@ -35,20 +35,20 @@ function NewEditTask({
     register,
     handleSubmit,
     control,
-    getValues,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       title: task?.title ?? "",
       description: task?.description ?? "",
-      subTasks: task?.subTasks.map((subTask) => {
-        return {
-          id: subTask?.id ?? "",
-          title: subTask?.title ?? "",
-          isCompleted: subTask?.isCompleted ?? false,
-          placeholder: subTask?.placeholder ?? getRandomPlaceholder(),
-        };
-      }),
+      subTasks:
+        task?.subTasks.map((subTask) => {
+          return {
+            id: subTask?.id ?? "",
+            title: subTask?.title ?? "",
+            isCompleted: subTask?.isCompleted ?? false,
+            placeholder: subTask?.placeholder ?? getRandomPlaceholder(),
+          };
+        }) ?? [],
       status: task?.status ?? "",
     },
   });
