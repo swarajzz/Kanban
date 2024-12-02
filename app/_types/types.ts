@@ -33,7 +33,6 @@ export type DataProps = {
 
 export type UpdateTaskProps = {
   data: DataProps;
-  originalSubtasks?: UpdateSubtaskProps[];
   taskId?: string;
   columnId?: string;
 };

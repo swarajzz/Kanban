@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import prisma from "./prisma";
 import { redirect } from "next/navigation";
 import { getBoard, getSubtask } from "./data-service";
-import { SubTaskProps, UpdateTaskProps } from "../_types/types";
+import { DataProps, SubTaskProps, UpdateTaskProps } from "../_types/types";
 
 export async function createBoard(
   data: {
@@ -47,12 +47,19 @@ export async function createBoard(
   }
 }
 
-export async function createTask(data, columnId) {
-  const { title, description, updatedSubtasks, status } = data;
+export async function createTask({
+  data,
+  columnId,
+}: {
+  data: DataProps;
+  columnId?: string;
+}) {
+  const { subTasks, title, description, status } = data;
+
   await prisma.task.create({
     data: {
       subTasks: {
-        create: updatedSubtasks.map((subTask: SubTaskProps) => ({
+        create: subTasks.map((subTask) => ({
           title: subTask.title,
           isCompleted: false,
         })),
@@ -71,15 +78,10 @@ export async function createTask(data, columnId) {
 
 export async function updateTask({
   data,
-  originalSubtasks,
   taskId,
   columnId,
 }: UpdateTaskProps) {
   const { subTasks, title, description, status } = data;
-
-  const deleteSubtasks = originalSubtasks?.filter(
-    (original) => !subTasks.some((subTask) => subTask.id === original.id),
-  );
 
   await prisma.task.update({
     where: {
@@ -91,15 +93,13 @@ export async function updateTask({
       status: status,
       subTasks: {
         deleteMany: {
-          id: {
-            in: deleteSubtasks?.map((subTask: SubTaskProps) => subTask.id),
-          },
+          NOT: subTasks.map(({ id }) => ({ id })),
         },
         upsert: subTasks.map((subTask) => ({
-          where: { id: subTask.id || "" },
+          where: { id: subTask.id },
           create: {
             title: subTask.title,
-            isCompleted: subTask.isCompleted ?? false,
+            isCompleted: subTask.isCompleted,
           },
           update: {
             title: subTask.title,

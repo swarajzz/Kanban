@@ -1,13 +1,8 @@
 "use client";
-import React, { RefObject, useState } from "react";
+import React, { RefObject } from "react";
 import { Button } from "../ui/Button";
 import DialogPanel from "./DialogPanel";
-import {
-  ColumnProps,
-  SubTaskProps,
-  TaskProps,
-  UpdateSubtaskProps,
-} from "@/app/_types/types";
+import { ColumnProps, TaskProps, UpdateSubtaskProps } from "@/app/_types/types";
 import Dialog from "./Dialog";
 import { getColumnId, getRandomPlaceholder } from "@/app/_lib/utils/helpers";
 import { createTask, updateTask } from "@/app/_lib/actions";
@@ -65,11 +60,10 @@ function NewEditTask({
     title: string;
   }) => {
     const columnId = getColumnId(columns, data.status);
-    console.log(data, originalSubtasks, taskId, columnId);
 
     task
-      ? await updateTask({ data, originalSubtasks, taskId, columnId })
-      : await createTask(data, columnId);
+      ? await updateTask({ data, taskId, columnId })
+      : await createTask({ data, columnId });
 
     toggleDialog();
   };

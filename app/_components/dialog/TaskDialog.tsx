@@ -45,6 +45,8 @@ function TaskDialog({
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
+      title: task?.title ?? "",
+      description: task?.description ?? "",
       checked_status: task.status ?? "",
       checkSubtasks: task.subTasks.map((subTask) => ({
         ...subTask,
@@ -58,18 +60,20 @@ function TaskDialog({
   });
 
   const processForm = async (data: {
+    title: string;
+    description: string;
     checked_status: string;
     checkSubtasks: SubTaskProps[];
   }) => {
     const columnId = getColumnId(columns, data.checked_status);
 
     const transformedData = {
-      title: "",
-      description: "",
+      title: data.title,
+      description: data.description,
       status: data.checked_status,
       subTasks: data.checkSubtasks,
     };
-    
+
     await updateTask({ data: transformedData, taskId, columnId });
     toggleDialog();
   };
