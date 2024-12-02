@@ -17,7 +17,7 @@ function DialogPanel({
   children,
 }: DialogPanelProps) {
   return (
-    <div className="relative min-w-[480px] my-8 w-full max-w-md transform overflow-hidden rounded-lg bg-primary-500 text-left shadow-xl transition-all">
+    <div className="relative my-8 w-full min-w-[480px] max-w-md transform rounded-lg bg-primary-500 text-left shadow-xl transition-all">
       <DialogHeading
         title={title}
         toggleDialog={toggleDialog}
