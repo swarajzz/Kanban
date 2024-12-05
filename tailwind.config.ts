@@ -8,32 +8,6 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // background: {
-        //   light: "#FFFFFF",
-        //   "light-2": "#F4F7FD",
-        //   dark: "#2B2C37",
-        //   "dark-2": "#20212C",
-        // },
-        // button: {
-        //   primary: "#635FC7",
-        //   "primary-hover": "#A8A4FF",
-        //   secodary: "#EA5555",
-        //   "secondary-hover": "#FF9898",
-        //   destructive: "#EA5555",
-        //   "destructive-hover": "#FF9898",
-        // },
-        // text: {
-        //   "light": "#FFFFFF",
-        //   "metallic-grey": "#828FA3",
-        //   "dark": "#000112",
-        // },
-        // fontSize: {
-        //   "heading-xl": "24px",  //2xl
-        //   "heading-l": "18px",  //xl
-        //   "heading-m": "15px", //sm
-        //   "body-l": "13px",    //
-        //   "body-m": "12px",
-        // },
         primary: {
           100: "#F4F7FD",
           200: "#E4EBFA",
@@ -50,6 +24,36 @@ module.exports = {
           500: "#49C4E5",
           600: "#8471F2",
           700: "#67E2AE",
+        },
+      },
+      animation: {
+        fadeIn: "appear .5s",
+        fadeOut: "vanish .5s",
+      },
+
+      keyframes: {
+        appear: {
+          "0%": {
+            opacity: "0",
+            transform: "translateX(-5rem)",
+          },
+          "80%": {
+            transform: "translateX(1rem)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateX(0)",
+          },
+        },
+        vanish: {
+          "100%": {
+            display: "flex",
+            opacity: "1",
+          },
+          "0%": {
+            display: "none",
+            opacity: "0",
+          },
         },
       },
     },

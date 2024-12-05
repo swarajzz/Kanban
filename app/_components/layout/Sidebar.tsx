@@ -12,14 +12,14 @@ async function Sidebar() {
   const allBoards = await getBoards(session?.user?.id || "");
 
   return (
-    <section className="bg-background-dark flex min-w-64 flex-col items-center justify-between justify-items-center border-r border-primary-400 bg-primary-500">
+    <section className="bg-background-dark md:animate-fadeIn animate-fadeOut hidden min-w-64 flex-col items-center justify-between justify-items-center border-r border-primary-400 bg-primary-500 md:flex">
       <div className="self-start px-5">
         <Link href={"/"}>
           <Image src={LogoLight} alt="logo" className="mt-8" />
         </Link>
 
         {session?.user?.image ? (
-          <div className="flex items-center mt-4 gap-2">
+          <div className="mt-4 flex items-center gap-2">
             <img
               className="h-8 rounded-full"
               alt="user profile"
