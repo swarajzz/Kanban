@@ -28,6 +28,7 @@ export default function RootLayout({
         <main className="flex size-full">
           <Sidebar />
           <section className="flex w-full flex-col overflow-x-hidden">
+            <Header />
             {children}
           </section>
         </main>
