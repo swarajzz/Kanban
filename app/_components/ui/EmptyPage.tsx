@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import { Button } from "./Button";
-import NewBoard from "../dialog/NewBoard";
 import useDialogRef from "@/app/_hooks/useDialogRef";
+import NewEditBoard from "../dialog/NewEditBoard";
 
 function EmptyPage({
   userId,
@@ -25,8 +25,7 @@ function EmptyPage({
         <Button size="md" intent={"primary"} onClick={toggleDialog}>
           + {btnText}
         </Button>
-        <NewBoard
-          userId={userId}
+        <NewEditBoard
           dialogRef={dialogRef}
           toggleDialog={toggleDialog}
         />

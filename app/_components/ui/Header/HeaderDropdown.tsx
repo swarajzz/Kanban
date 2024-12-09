@@ -5,12 +5,15 @@ import { deleteBoard } from "@/app/_lib/actions";
 function TaskDropdown({
   toggleShowDropdown,
   boardName,
+  toggleDialog,
 }: {
   toggleShowDropdown: () => void;
   boardName: string;
+  toggleDialog: () => void;
 }) {
   function handleClick() {
     toggleShowDropdown();
+    toggleDialog();
   }
 
   return (

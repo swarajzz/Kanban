@@ -8,13 +8,16 @@ import HeaderDropdown from "../ui/Header/HeaderDropdown";
 import { useParams } from "next/navigation";
 import { useBoardStore } from "@/app/_store/store";
 import NewTask from "../dialog/NewTask";
+import { slugToName } from "@/app/_lib/utils/helpers";
+import NewEditBoard from "../dialog/NewEditBoard";
 
 export default function Header() {
   const params = useParams<{ board: string }>();
-  const { dialogRef, toggleDialog } = useDialogRef();
+  const { dialogRef: taskDialogRef, toggleDialog: toggleTaskDialog } =
+    useDialogRef();
+  const { dialogRef: boardDialogRef, toggleDialog: toggleBoardDialog } =
+    useDialogRef();
   const [isShowDropdown, setShowDropdown] = useState(false);
-
-  const { board, columns } = useBoardStore();
 
   function toggleShowDropdown() {
     setShowDropdown((prev) => !prev);
@@ -23,22 +26,20 @@ export default function Header() {
   return (
     <header className="relative flex items-center justify-between border-b border-primary-400 bg-primary-500 p-5">
       <h1 className="text-xl font-bold text-white">
-        {!Object.keys(params).length ? "Turn Chaos into Clarity" : board?.name}
+        {!Object.keys(params).length
+          ? "Turn Chaos into Clarity"
+          : slugToName(params.board)}
       </h1>
       <div className="flex items-center gap-5">
         {Object.keys(params).length ? (
-          <Button onClick={toggleDialog} size="md" intent={"primary"}>
+          <Button onClick={toggleTaskDialog} size="md" intent={"primary"}>
             + Add new task
           </Button>
         ) : (
           ""
         )}
 
-        <NewTask
-          dialogRef={dialogRef}
-          toggleDialog={toggleDialog}
-          columns={columns}
-        />
+        <NewTask dialogRef={taskDialogRef} toggleDialog={toggleTaskDialog} />
 
         <div
           className="cursor-pointer"
@@ -48,13 +49,21 @@ export default function Header() {
         </div>
 
         {isShowDropdown ? (
-          <HeaderDropdown
-            toggleShowDropdown={toggleShowDropdown}
-            boardName={params.board}
-          />
+          <>
+            <HeaderDropdown
+              toggleShowDropdown={toggleShowDropdown}
+              boardName={params.board}
+              toggleDialog={toggleBoardDialog}
+            />
+          </>
         ) : (
           ""
         )}
+
+        <NewEditBoard
+          dialogRef={boardDialogRef}
+          toggleDialog={toggleBoardDialog}
+        />
       </div>
     </header>
   );

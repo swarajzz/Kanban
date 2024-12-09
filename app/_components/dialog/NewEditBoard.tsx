@@ -1,5 +1,5 @@
 "use client";
-import React, { RefObject, useState } from "react";
+import React, { RefObject, useEffect, useState } from "react";
 import { Button } from "../ui/Button";
 import CloseIcon from "../ui/CloseIcon";
 import Dialog from "./Dialog";
@@ -13,41 +13,50 @@ import Form from "../ui/Form/Form";
 import Input from "../ui/Form/Input";
 import FormRow from "../ui/Form/FormRow";
 import FieldSet from "../ui/Form/FieldSet";
-import { NewboardFormFields } from "@/app/_types/types";
+import {
+  BoardProps,
+  ColumnProps,
+  NewboardFormFields,
+} from "@/app/_types/types";
+import { useBoardStore } from "@/app/_store/store";
 
-function NewBoard({
-  userId,
+function NewEditBoard({
   dialogRef,
   toggleDialog,
 }: {
-  userId: string;
   dialogRef: RefObject<HTMLDialogElement>;
   toggleDialog: () => void;
 }) {
+  const { board, columns } = useBoardStore();
+
   const {
     register,
     handleSubmit,
     control,
+
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<NewboardFormFields>({
     defaultValues: {
-      boardName: "",
-      columns: [
-        {
-          name: "",
-          placeholder: "Todo",
-        },
-        {
-          name: "",
-          placeholder: "Doing",
-        },
-        {
-          name: "",
-          placeholder: "Done",
-        },
-      ],
+      boardName: board?.name ?? "",
+      columns:
+        columns?.map((column) => ({
+          name: column.name ?? "",
+          // placeholder: column.placeholder ?? "",
+        })) ?? [],
     },
   });
+
+  useEffect(() => {
+    reset({
+      boardName: board?.name ?? "",
+      columns:
+        columns?.map((column) => ({
+          name: column.name ?? "",
+          // placeholder: column.placeholder ?? "",
+        })) ?? [],
+    });
+  }, [board]);
 
   const { fields, append, prepend, remove } = useFieldArray({
     name: "columns",
@@ -55,7 +64,7 @@ function NewBoard({
   });
 
   const processForm = async (data: NewboardFormFields) => {
-    await createBoard(data, userId);
+    await createBoard(data, board?.userId || "");
     toggleDialog();
   };
 
@@ -133,4 +142,4 @@ function NewBoard({
   );
 }
 
-export default NewBoard;
+export default NewEditBoard;

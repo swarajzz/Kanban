@@ -12,16 +12,17 @@ import Form from "../ui/Form/Form";
 import FormRow from "../ui/Form/FormRow";
 import Input from "../ui/Form/Input";
 import FieldSet from "../ui/Form/FieldSet";
+import { useBoardStore } from "@/app/_store/store";
 
 function NewTask({
   dialogRef,
   toggleDialog,
-  columns,
 }: {
   dialogRef: RefObject<HTMLDialogElement>;
   toggleDialog: () => void;
-  columns: ColumnProps[];
 }) {
+  const { columns } = useBoardStore();
+
   const {
     register,
     handleSubmit,
