@@ -22,7 +22,7 @@ function EditTask({
   dialogRef: RefObject<HTMLDialogElement>;
   toggleDialog: () => void;
   task?: TaskProps;
-  columns?: ColumnProps[];
+  columns: ColumnProps[];
 }) {
   const { subTasks: originalSubtasks, id: taskId } = task || {};
 

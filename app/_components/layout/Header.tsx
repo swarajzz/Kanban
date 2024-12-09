@@ -4,15 +4,17 @@ import { EditMenuIcon } from "@/public/svgs";
 import Image from "next/image";
 import { Button } from "../ui/Button";
 import useDialogRef from "@/app/_hooks/useDialogRef";
-import NewEditTask from "../dialog/NewEditTask";
 import HeaderDropdown from "../ui/Header/HeaderDropdown";
 import { useParams } from "next/navigation";
-import { ColumnProps } from "@/app/_types/types";
+import { useBoardStore } from "@/app/_store/store";
+import NewTask from "../dialog/NewTask";
 
-export default function Header({ columns }: { columns: ColumnProps[] }) {
+export default function Header() {
   const params = useParams<{ board: string }>();
   const { dialogRef, toggleDialog } = useDialogRef();
   const [isShowDropdown, setShowDropdown] = useState(false);
+
+  const { board, columns } = useBoardStore();
 
   function toggleShowDropdown() {
     setShowDropdown((prev) => !prev);
@@ -21,9 +23,7 @@ export default function Header({ columns }: { columns: ColumnProps[] }) {
   return (
     <header className="relative flex items-center justify-between border-b border-primary-400 bg-primary-500 p-5">
       <h1 className="text-xl font-bold text-white">
-        {!Object.keys(params).length
-          ? "Turn Chaos into Clarity"
-          : params?.board.replace(/-/g, " ")}
+        {!Object.keys(params).length ? "Turn Chaos into Clarity" : board?.name}
       </h1>
       <div className="flex items-center gap-5">
         {Object.keys(params).length ? (
@@ -34,7 +34,7 @@ export default function Header({ columns }: { columns: ColumnProps[] }) {
           ""
         )}
 
-        <NewEditTask
+        <NewTask
           dialogRef={dialogRef}
           toggleDialog={toggleDialog}
           columns={columns}

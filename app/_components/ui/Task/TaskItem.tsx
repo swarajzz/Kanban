@@ -3,10 +3,10 @@ import useDialogRef from "@/app/_hooks/useDialogRef";
 import { BoardProps, ColumnProps, TaskProps } from "@/app/_types/types";
 import { GripVertical } from "lucide-react";
 import TaskDialog from "../../dialog/TaskDialog";
-import { useState } from "react";
-import NewEditTask from "../../dialog/NewEditTask";
+import { useEffect, useState } from "react";
 import { getCompletedSubtasksLength } from "@/app/_lib/utils/helpers";
 import { useBoardStore } from "@/app/_store/store";
+import EditTask from "../../dialog/EditTask";
 
 function TaskItem({
   task,
@@ -22,8 +22,10 @@ function TaskItem({
   const { dialogRef: editDialogRef, toggleDialog: toggleEditDialog } =
     useDialogRef();
 
-  useBoardStore.setState({ board });
-  useBoardStore.setState({ columns });
+  useEffect(() => {
+    useBoardStore.setState({ board });
+    useBoardStore.setState({ columns });
+  }, [board, columns]);
 
   const { title, subTasks } = task;
 
@@ -66,7 +68,7 @@ function TaskItem({
       />
 
       {viewDialogRef.current ? (
-        <NewEditTask
+        <EditTask
           dialogRef={editDialogRef}
           toggleDialog={toggleEditDialog}
           task={task}
