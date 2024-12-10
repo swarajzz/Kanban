@@ -4,9 +4,9 @@ import { Button } from "../ui/Button";
 import CloseIcon from "../ui/CloseIcon";
 import Dialog from "./Dialog";
 import DialogPanel from "./DialogPanel";
-import { createBoard } from "@/app/_lib/actions";
+import { createBoard, updateBoard } from "@/app/_lib/actions";
 import { defaultColumns } from "@/app/_lib/utils/constants";
-import { getRandomPlaceholder } from "@/app/_lib/utils/helpers";
+import { getRandomPlaceholderColumn } from "@/app/_lib/utils/helpers";
 import { HashLoader } from "react-spinners";
 import { useFieldArray, useForm } from "react-hook-form";
 import Form from "../ui/Form/Form";
@@ -14,11 +14,11 @@ import Input from "../ui/Form/Input";
 import FormRow from "../ui/Form/FormRow";
 import FieldSet from "../ui/Form/FieldSet";
 import {
-  BoardProps,
   ColumnProps,
   NewboardFormFields,
 } from "@/app/_types/types";
 import { useBoardStore } from "@/app/_store/store";
+import { useSession } from "next-auth/react";
 
 function NewEditBoard({
   dialogRef,
@@ -27,50 +27,100 @@ function NewEditBoard({
   dialogRef: RefObject<HTMLDialogElement>;
   toggleDialog: () => void;
 }) {
+  const { data: sessionData } = useSession();
   const { board, columns } = useBoardStore();
 
   const {
     register,
     handleSubmit,
     control,
-
     reset,
     formState: { errors, isSubmitting },
   } = useForm<NewboardFormFields>({
     defaultValues: {
       boardName: board?.name ?? "",
-      columns:
-        columns?.map((column) => ({
-          name: column.name ?? "",
-          // placeholder: column.placeholder ?? "",
-        })) ?? [],
+      columns: columns?.map((column) => ({
+        id: column.id,
+        name: column.name ?? "",
+        placeholder: column?.placeholder ?? "",
+      })) || [
+        {
+          id: "",
+          name: "",
+          placeholder: "Todo",
+        },
+        {
+          id: "",
+          name: "",
+          placeholder: "Doing",
+        },
+        {
+          id: "",
+          name: "",
+          placeholder: "Done",
+        },
+      ],
     },
   });
 
   useEffect(() => {
     reset({
       boardName: board?.name ?? "",
-      columns:
-        columns?.map((column) => ({
-          name: column.name ?? "",
-          // placeholder: column.placeholder ?? "",
-        })) ?? [],
+      columns: columns?.map((column) => ({
+        id: column.id,
+        name: column.name ?? "",
+        placeholder: column.placeholder ?? "",
+      })) || [
+        {
+          id: "",
+          name: "",
+          placeholder: "Todo",
+        },
+        {
+          id: "",
+          name: "",
+          placeholder: "Doing",
+        },
+        {
+          id: "",
+          name: "",
+          placeholder: "Done",
+        },
+      ],
     });
   }, [board]);
 
-  const { fields, append, prepend, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     name: "columns",
     control,
   });
 
-  const processForm = async (data: NewboardFormFields) => {
-    await createBoard(data, board?.userId || "");
+  const processForm = async (data: {
+    boardName: string;
+    columns: ColumnProps[];
+  }) => {
+    const transformedData = {
+      name: data.boardName,
+      columns: data.columns,
+    };
+
+    !board
+      ? await createBoard(data, sessionData?.user?.id || "")
+      : await updateBoard({
+          data: transformedData,
+          boardId: board?.id,
+          userId: sessionData?.user?.id || "",
+        });
+
     toggleDialog();
   };
 
   return (
     <Dialog ref={dialogRef} toggleDialog={toggleDialog}>
-      <DialogPanel title="Add New Board" toggleDialog={toggleDialog}>
+      <DialogPanel
+        title={!board ? "Add New Board" : "Edit Board"}
+        toggleDialog={toggleDialog}
+      >
         <Form submitHandler={handleSubmit(processForm)}>
           <FormRow label="Board Name" error={errors?.boardName?.message}>
             <Input
@@ -116,8 +166,9 @@ function NewEditBoard({
               intent={"secondary"}
               onClick={() =>
                 append({
+                  id: "",
                   name: "",
-                  placeholder: getRandomPlaceholder(),
+                  placeholder: getRandomPlaceholderColumn(),
                 })
               }
             >
@@ -130,7 +181,7 @@ function NewEditBoard({
                 size={"md"}
                 intent={"primary"}
               >
-                Create New Board
+                {!board ? "Create New Board" : "Save Changes"}
               </Button>
             ) : (
               <HashLoader className="self-center" color="#635FC7" size={30} />

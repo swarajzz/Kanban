@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import prisma from "./prisma";
 import { redirect } from "next/navigation";
 import { getBoard } from "./data-service";
-import { DataProps, UpdateTaskProps } from "../_types/types";
+import { DataProps, UpdateBoardProps, UpdateTaskProps } from "../_types/types";
 import { revalidatePath } from "next/cache";
 
 export async function createBoard(
@@ -12,7 +12,7 @@ export async function createBoard(
     boardName: string;
     columns: {
       name: string;
-      placeholder: string;
+      placeholder?: string;
     }[];
   },
   userId: string,
@@ -46,6 +46,39 @@ export async function createBoard(
     }
     throw e;
   }
+}
+
+export async function updateBoard({ data, boardId, userId }: UpdateBoardProps) {
+  const { name, columns } = data;
+
+  await prisma.board.update({
+    where: {
+      id: boardId,
+    },
+    data: {
+      name: name,
+      columns: {
+        deleteMany: {
+          NOT: columns.map(({ id }) => ({ id })),
+        },
+        upsert: columns.map((column) => ({
+          where: { id: column.id },
+          create: {
+            name: column.name,
+          },
+          update: {
+            name: column.name,
+          },
+        })),
+      },
+      user: {
+        connect: {
+          id: userId,
+        },
+      },
+    },
+  });
+  revalidatePath("/board");
 }
 
 export async function createTask({

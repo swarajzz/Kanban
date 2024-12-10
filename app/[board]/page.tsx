@@ -1,4 +1,4 @@
-import Header from "../_components/layout/Header";
+
 import ColumnList from "../_components/ui/Column/ColumnList";
 import EmptyPage from "../_components/ui/EmptyPage";
 import { auth } from "../_lib/auth";
