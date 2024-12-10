@@ -1,8 +1,7 @@
-
 import ColumnList from "../_components/ui/Column/ColumnList";
 import EmptyPage from "../_components/ui/EmptyPage";
 import { auth } from "../_lib/auth";
-import { getBoard, getColumns } from "../_lib/data-service";
+import { getBoard } from "../_lib/data-service";
 
 export default async function Board({
   params: { board: boardName },
@@ -11,7 +10,8 @@ export default async function Board({
 }) {
   const session = await auth();
   const board = await getBoard(boardName);
-  const columns = await getColumns(board.id);
+
+  const { columns } = board;
 
   return (
     <>

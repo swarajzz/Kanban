@@ -12,19 +12,20 @@ import Form from "../ui/Form/Form";
 import FormRow from "../ui/Form/FormRow";
 import Input from "../ui/Form/Input";
 import FieldSet from "../ui/Form/FieldSet";
+import { useBoardStore } from "@/app/_store/store";
 
 function EditTask({
   dialogRef,
   toggleDialog,
   task,
-  columns,
 }: {
   dialogRef: RefObject<HTMLDialogElement>;
   toggleDialog: () => void;
   task?: TaskProps;
-  columns: ColumnProps[];
 }) {
   const { subTasks: originalSubtasks, id: taskId } = task || {};
+
+  const { columns } = useBoardStore();
 
   const {
     register,
@@ -59,7 +60,7 @@ function EditTask({
     subTasks: UpdateSubtaskProps[];
     title: string;
   }) => {
-    const columnId = getColumnId(columns, data.status);
+    const columnId = getColumnId(columns ?? [], data.status);
 
     task
       ? await updateTask({ data, taskId, columnId })

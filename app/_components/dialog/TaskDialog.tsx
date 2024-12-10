@@ -3,7 +3,7 @@ import React, { RefObject } from "react";
 import { Button } from "../ui/Button";
 import DialogPanel from "./DialogPanel";
 import Dialog from "./Dialog";
-import { ColumnProps, SubTaskProps, TaskProps } from "@/app/_types/types";
+import { SubTaskProps, TaskProps } from "@/app/_types/types";
 import TaskDropdown from "./TaskDropdown";
 import Form from "../ui/Form/Form";
 import FieldSet from "../ui/Form/FieldSet";
@@ -17,6 +17,7 @@ import {
 } from "@/app/_lib/utils/helpers";
 import { updateTask } from "@/app/_lib/actions";
 import { HashLoader } from "react-spinners";
+import { useBoardStore } from "@/app/_store/store";
 
 function TaskDialog({
   dialogRef,
@@ -25,7 +26,6 @@ function TaskDialog({
   toggleDialog,
   toggleShowDropdown,
   toggleEditDialog,
-  columns,
 }: {
   dialogRef: RefObject<HTMLDialogElement>;
   task: TaskProps;
@@ -33,10 +33,11 @@ function TaskDialog({
   toggleDialog: () => void;
   toggleShowDropdown: () => void;
   toggleEditDialog: () => void;
-  columns: ColumnProps[];
 }) {
   const { id: taskId, title, description, subTasks, status: taskStatus } = task;
   const completedSubtasks = getCompletedSubtasksLength(subTasks);
+
+  const { columns } = useBoardStore();
 
   const {
     register,
@@ -65,7 +66,7 @@ function TaskDialog({
     checked_status: string;
     checkSubtasks: SubTaskProps[];
   }) => {
-    const columnId = getColumnId(columns, data.checked_status);
+    const columnId = getColumnId(columns ?? [], data.checked_status);
 
     const transformedData = {
       title: data.title,
@@ -111,7 +112,7 @@ function TaskDialog({
                 -- select an option --
               </option>
 
-              {columns.map((column) => (
+              {columns?.map((column) => (
                 <option key={column.id} value={column.name}>
                   {column.name}
                 </option>

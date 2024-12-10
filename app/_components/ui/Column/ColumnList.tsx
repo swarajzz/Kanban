@@ -1,5 +1,8 @@
+"use client";
 import { BoardProps, ColumnProps } from "@/app/_types/types";
 import Column from "./Column";
+import { useEffect } from "react";
+import { useBoardStore } from "@/app/_store/store";
 
 function ColumnList({
   columns,
@@ -8,11 +11,16 @@ function ColumnList({
   columns: ColumnProps[];
   board: BoardProps;
 }) {
+  useEffect(() => {
+    useBoardStore.setState({ board });
+    useBoardStore.setState({ columns });
+  }, [board, columns]);
+
   return (
     <div className="flex size-full gap-10 overflow-auto bg-primary-600 px-4 py-4">
       <ul className="flex gap-5">
         {columns.map((column) => (
-          <Column key={column.id} column={column} board={board} />
+          <Column key={column.id} column={column} />
         ))}
       </ul>
     </div>
