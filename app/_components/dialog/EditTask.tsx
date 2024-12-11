@@ -79,7 +79,7 @@ function EditTask({
               validationSchema={{
                 required: "This field is required",
               }}
-              placeholder="e.g Web Design"
+              placeholder="e.g Take coffee break"
               type="text"
               name="title"
             />

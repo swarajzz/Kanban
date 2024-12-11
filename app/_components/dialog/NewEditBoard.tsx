@@ -5,7 +5,6 @@ import CloseIcon from "../ui/CloseIcon";
 import Dialog from "./Dialog";
 import DialogPanel from "./DialogPanel";
 import { createBoard, updateBoard } from "@/app/_lib/actions";
-import { defaultColumns } from "@/app/_lib/utils/constants";
 import { getRandomPlaceholderColumn } from "@/app/_lib/utils/helpers";
 import { HashLoader } from "react-spinners";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -13,10 +12,7 @@ import Form from "../ui/Form/Form";
 import Input from "../ui/Form/Input";
 import FormRow from "../ui/Form/FormRow";
 import FieldSet from "../ui/Form/FieldSet";
-import {
-  ColumnProps,
-  NewboardFormFields,
-} from "@/app/_types/types";
+import { ColumnProps, NewboardFormFields } from "@/app/_types/types";
 import { useBoardStore } from "@/app/_store/store";
 import { useSession } from "next-auth/react";
 

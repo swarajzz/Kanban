@@ -22,7 +22,6 @@ function NewTask({
   toggleDialog: () => void;
 }) {
   const { columns } = useBoardStore();
-
   const {
     register,
     handleSubmit,
@@ -36,13 +35,13 @@ function NewTask({
         {
           id: "",
           title: "",
-          placeholder: "Random Placeholder",
+          placeholder: "Make Coffee",
           isCompleted: false,
         },
         {
           id: "",
           title: "",
-          placeholder: "Random Placeholder",
+          placeholder: "Drink Coffee & smile",
           isCompleted: false,
         },
       ],
@@ -61,8 +60,7 @@ function NewTask({
     newSubtasks: UpdateSubtaskProps[];
     title: string;
   }) => {
-    console.log(data);
-    const columnId = getColumnId(columns, data.status);
+    const columnId = getColumnId(columns ?? [], data.status);
 
     const transformedData = {
       title: data.title,
@@ -86,7 +84,7 @@ function NewTask({
               validationSchema={{
                 required: "This field is required",
               }}
-              placeholder="e.g Web Design"
+              placeholder="e.g Take coffee break"
               type="text"
               name="title"
             />

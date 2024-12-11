@@ -62,6 +62,7 @@ export type ColumnProps = {
   name: string;
   boardId?: string;
   placeholder?: string;
+  tasks?: TaskProps[];
 };
 
 export type NewboardFormFields = {

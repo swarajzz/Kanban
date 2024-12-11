@@ -3,7 +3,7 @@ import { BoardProps, ColumnProps } from "../_types/types";
 
 interface BoardStore {
   board: BoardProps | null;
-  columns: ColumnProps[];
+  columns: ColumnProps[] | null;
   setBoard: (board: BoardProps) => void;
   setColumns: (columns: ColumnProps[]) => void;
   resetBoard: () => void;
@@ -11,7 +11,7 @@ interface BoardStore {
 
 export const useBoardStore = create<BoardStore>((set) => ({
   board: null,
-  columns: [],
+  columns: null,
   setBoard: (board: BoardProps) => set({ board }),
   setColumns: (columns: ColumnProps[]) => set({ columns }),
   resetBoard: () => set({ board: null }),

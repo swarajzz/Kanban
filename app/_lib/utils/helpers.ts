@@ -6,17 +6,9 @@ export function getRandomPlaceholder() {
   return placeholders[randomIndex];
 }
 
-export function getRandomPlaceholderColumn(usedColumnPlaceholders: string[]) {
-  const availablePlaceholders = columnPlaceholders.filter(
-    (placeholder) => !usedColumnPlaceholders.includes(placeholder),
-  );
-
-  const newPlaceholder =
-    availablePlaceholders[
-      Math.floor(Math.random() * availablePlaceholders.length)
-    ];
-
-  return newPlaceholder;
+export function getRandomPlaceholderColumn() {
+  const randomIndex = Math.floor(Math.random() * columnPlaceholders.length);
+  return columnPlaceholders[randomIndex];
 }
 
 export function getCompletedSubtasksLength(subTasks: SubTaskProps[]) {
@@ -25,4 +17,8 @@ export function getCompletedSubtasksLength(subTasks: SubTaskProps[]) {
 
 export function getColumnId(columns: ColumnProps[], taskStatus: string) {
   return columns.find((column) => column.name === taskStatus)?.id;
+}
+
+export function slugToName(slug) {
+  return slug.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 }
