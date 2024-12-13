@@ -1,6 +1,6 @@
 "use client";
-import { BoardProps, ColumnProps, TaskProps } from "@/app/_types/types";
-import React, { useState } from "react";
+import { ColumnProps, TaskProps } from "@/app/_types/types";
+import React from "react";
 import Tasks from "../Task/Tasks";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -12,7 +12,6 @@ function Column({
   column: ColumnProps;
   tasks: TaskProps[];
 }) {
-  console.log(column);
   const {
     setNodeRef,
     attributes,
@@ -30,23 +29,23 @@ function Column({
 
   const style = {
     transition,
-    transform: CSS.Transform.toString(transform),
+    transform: CSS.Translate.toString(transform),
   };
 
   if (isDragging) {
     return (
-      <li
+      <section
         ref={setNodeRef}
-        className="mb-4 flex min-w-72 max-w-80 flex-col items-center gap-3 border-2 border-rose-500 opacity-60"
+        className="mb-4 flex min-w-80 flex-col items-center gap-3 border-2 border-rose-500"
         style={style}
-      ></li>
+      ></section>
     );
   }
 
   return (
-    <li
+    <section
+      className="mb-4 flex min-w-80 flex-col gap-3"
       ref={setNodeRef}
-      className="mb-4 flex min-w-72 max-w-80 flex-col items-center gap-3"
       style={style}
     >
       <div
@@ -58,7 +57,7 @@ function Column({
         <h3 className="text-sm font-bold uppercase">{column.name}</h3>
       </div>
       <Tasks tasks={tasks} />
-    </li>
+    </section>
   );
 }
 

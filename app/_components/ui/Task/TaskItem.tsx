@@ -52,7 +52,7 @@ function TaskItem({ task }: { task: TaskProps }) {
   if (isDragging) {
     return (
       <li
-        className="flex size-full min-h-24 cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-rose-400 opacity-30"
+        className="flex min-h-24 cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-rose-400 opacity-30"
         ref={setNodeRef}
         style={style}
         {...attributes}
@@ -69,7 +69,10 @@ function TaskItem({ task }: { task: TaskProps }) {
       {...attributes}
       {...listeners}
     >
-      <div onClick={handleClick} className="flex items-center gap-1 p-3">
+      <div
+        onClick={handleClick}
+        className="flex size-full items-center gap-1 p-3"
+      >
         <GripVertical />
         <div className="w-full">
           <div className="font-bold text-white">{title}</div>

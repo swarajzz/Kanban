@@ -4,12 +4,14 @@ import { SortableContext } from "@dnd-kit/sortable";
 import { useMemo } from "react";
 
 function Tasks({ tasks }: { tasks: TaskProps[] }) {
-  const tasksIds = useMemo(() => tasks?.map((task) => task.id), [tasks]);
+  const tasksIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
 
   return (
-    <ul className="flex w-full flex-col gap-5">
+    <ul className="flex max-w-80 flex-col gap-5 pb-5">
       <SortableContext items={tasksIds}>
-        {tasks?.map((task) => <TaskItem key={task.id} task={task} />)}
+        {tasks.map((task) => (
+          <TaskItem key={task.id} task={task} />
+        ))}
       </SortableContext>
     </ul>
   );

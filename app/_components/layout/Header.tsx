@@ -24,7 +24,7 @@ export default function Header() {
   }
 
   return (
-    <header className="relative flex items-center justify-between border-b border-primary-400 bg-primary-500 p-5">
+    <header className="relative flex w-full items-center justify-between border-b border-primary-400 bg-primary-500 p-5">
       <h1 className="text-xl font-bold text-white">
         {!Object.keys(params).length
           ? "Turn Chaos into Clarity"

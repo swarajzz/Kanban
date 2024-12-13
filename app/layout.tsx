@@ -21,14 +21,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-screen">
+    <html lang="en" className="h-full">
       <body
-        className={`${jakarta.className} h-screen text-sm font-medium text-primary-300`}
+        className={`${jakarta.className} h-full text-sm font-medium text-primary-300`}
       >
         <SessionProvider>
-          <main className="flex size-full">
+          <main className="flex h-full">
             <Sidebar />
-            <section className="flex w-full flex-col overflow-x-hidden">
+            <section className="flex size-full flex-col overflow-x-hidden">
               <Header />
               {children}
             </section>

@@ -74,6 +74,8 @@ function ColumnList({
 
     if (activeId === overId) return;
 
+    if (event.active.data.current?.type === "Task") return;
+
     setColumns((columnsState) => {
       const activeColumnIndex = columnsState.findIndex(
         (col) => col.id === activeId,
@@ -142,19 +144,15 @@ function ColumnList({
       id="unique-dnd-context-id"
     >
       <div className="flex size-full gap-10 overflow-auto bg-primary-600 px-4 py-4">
-        <ul className="flex gap-5">
-          <SortableContext items={columnsId}>
-            {columnsState.map((column) => (
-              <Column
-                key={column.id}
-                tasks={tasksState?.filter(
-                  (task) => task.columnId === column.id,
-                )}
-                column={column}
-              />
-            ))}
-          </SortableContext>
-        </ul>
+        <SortableContext items={columnsId}>
+          {columnsState.map((column) => (
+            <Column
+              key={column.id}
+              tasks={tasksState?.filter((task) => task.columnId === column.id)}
+              column={column}
+            />
+          ))}
+        </SortableContext>
       </div>
 
       {typeof window !== "undefined" &&
