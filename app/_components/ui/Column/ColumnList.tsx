@@ -40,7 +40,7 @@ function ColumnList({
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 300,
+        distance: 3,
       },
     }),
   );
@@ -137,7 +137,7 @@ function ColumnList({
 
   return (
     <DndContext
-      // sensors={sensors}
+      sensors={sensors}
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}
