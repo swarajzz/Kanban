@@ -1,14 +1,12 @@
 "use client";
-import { BoardProps, ColumnProps, TaskProps } from "@/app/_types/types";
 import Column from "./Column";
 import { useEffect, useMemo, useState } from "react";
-import { useBoardStore } from "@/app/_store/store";
 import {
+  Active,
   DndContext,
   DragEndEvent,
   DragOverEvent,
   DragOverlay,
-  DragStartEvent,
   PointerSensor,
   useSensor,
   useSensors,
@@ -16,6 +14,8 @@ import {
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
 import TaskItem from "../Task/TaskItem";
+import { BoardProps, ColumnProps, TaskProps } from "@/_types/types";
+import { useBoardStore } from "@/_store/store";
 
 function ColumnList({
   columns,
@@ -34,8 +34,8 @@ function ColumnList({
     [columnsState],
   );
 
-  const [activeColumn, setActiveColumn] = useState<ColumnProps | null>(null);
-  const [activeTask, setActiveTask] = useState<TaskProps | null>(null);
+  const [activeColumnId, setActiveColumnId] = useState<string | null>(null);
+  const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -45,36 +45,83 @@ function ColumnList({
     }),
   );
 
+  const findColumn = (id: string): ColumnProps | undefined => {
+    const column = columnsState.find((col) =>
+      col.tasks?.find((task) => task.id === id),
+    );
+    if (!column) {
+      return;
+    }
+
+    return column;
+  };
+
+  const findColumnIndex = (column: ColumnProps): number => {
+    return columnsState.findIndex((col) => col.id === column?.id);
+  };
+
+  function findColumnName(id: string): string {
+    const column = columnsState.find((col) => col.id === id);
+
+    if (!column) throw new Error("Task Not found");
+
+    return column.name;
+  }
+
+  function findColumnTasks(id: string): TaskProps[] {
+    const column = columnsState.find((col) => col.id === id);
+
+    if (!column) throw new Error("Task Not found");
+
+    return column.tasks;
+  }
+
+  const findTaskTitle = (id: string) => {
+    const task = tasksState.find((col) => col.id === id);
+    if (!task) throw new Error("Task Not found");
+    return task?.title;
+  };
+
+  const findTask = (id: string) => {
+    const task = tasksState.find((col) => col.id === id);
+    if (!task) throw new Error("Task not found");
+    return task;
+  };
+
   useEffect(() => {
     useBoardStore.setState({ board });
     useBoardStore.setState({ columns: columnsState });
   }, [board, columnsState]);
 
-  function onDragStart(event: DragStartEvent) {
-    if (event.active.data.current?.type === "Column") {
-      setActiveColumn(event.active.data.current.column);
+  function onDragStart({ active }: { active: Active }): void {
+    if (active.data.current?.type === "Column") {
+      setActiveColumnId(active.id as string);
       return;
     }
-
-    if (event.active.data.current?.type === "Task") {
-      setActiveTask(event.active.data.current.task);
+    if (active.data.current?.type === "Task") {
+      setActiveTaskId(active.id as string);
       return;
     }
   }
 
-  function onDragEnd(event: DragEndEvent) {
-    setActiveColumn(null);
-    setActiveTask(null);
+  function onDragEnd(e: DragEndEvent): void {
+    setActiveColumnId(null);
+    setActiveTaskId(null);
 
-    const { active, over } = event;
+    const { active, over } = e;
+
     if (!over) return;
+
+    if (
+      active.data.current?.type === "Task" ||
+      over.data.current?.type === "Task"
+    )
+      return;
 
     const activeId = active.id;
     const overId = over.id;
 
     if (activeId === overId) return;
-
-    if (event.active.data.current?.type === "Task") return;
 
     setColumns((columnsState) => {
       const activeColumnIndex = columnsState.findIndex(
@@ -89,12 +136,15 @@ function ColumnList({
     });
   }
 
-  function onDragOver(event: DragOverEvent) {
-    const { active, over } = event;
+  function onDragOver(e: DragOverEvent): void {
+    const { active, over } = e;
     if (!over) return;
 
+    const isActiveColumn = active.data.current?.type === "Column";
+    if (isActiveColumn) return;
+
     const activeId = active.id;
-    const overId = over.id;
+    const overId = over.id; // Can be task or column
 
     if (activeId === overId) return;
 
@@ -104,34 +154,84 @@ function ColumnList({
     if (!isActiveTask) return;
 
     // Dropping a Task over another Task
+    // Drop a task on the same column
+    // Drop a task on different column
+    const activeColumn = findColumn(activeId as string);
+
+    if (activeColumn === undefined) {
+      return;
+    }
+
+    const activeColumnIndex = findColumnIndex(activeColumn);
+
+    const activeIndex = activeColumn.tasks.findIndex(
+      (task) => task.id === activeId,
+    );
+
+    const activeTask = activeColumn.tasks.find((task) => task.id === activeId)!;
+
+    if (activeTask === undefined) {
+      return;
+    }
+
     if (isActiveTask && isOverTask) {
-      setTasks((tasksState) => {
-        const activeIndex = tasksState.findIndex(
-          (task) => task.id === activeId,
+      const overColumn = findColumn(overId as string);
+
+      if (!activeColumn || !overColumn) {
+        return;
+      }
+
+      const overColumnIndex = findColumnIndex(overColumn);
+
+      const overTask = overColumn.tasks.find((task) => task.id === overId)!;
+
+      const overIndex = overColumn.tasks.findIndex(
+        (task) => task.id === overId,
+      );
+
+      if (activeColumn.id === overColumn.id) {
+        let newItems = [...columnsState];
+
+        newItems[activeColumnIndex].tasks = arrayMove(
+          newItems[activeColumnIndex].tasks,
+          activeIndex,
+          overIndex,
         );
-
-        const overIndex = tasksState.findIndex((task) => task.id === overId);
-
-        tasksState[activeIndex].columnId = tasks[overIndex].columnId;
-
-        return arrayMove(tasksState, activeIndex, overIndex);
-        // console.log(arrayMove(tasksState, activeIndex, overIndex));
-      });
+        setColumns(newItems);
+      } else {
+        activeTask.columnId = overTask.columnId;
+        let newItems = [...columnsState];
+        const [removeditem] = newItems[activeColumnIndex].tasks.splice(
+          activeIndex,
+          1,
+        );
+        newItems[overColumnIndex].tasks.splice(overIndex, 0, removeditem);
+        setColumns(newItems);
+      }
     }
 
     // Dropping a Task over another column
     const isOverColumn = over.data.current?.type === "Column";
 
     if (isActiveTask && isOverColumn) {
-      setTasks((tasksState) => {
-        const activeIndex = tasksState.findIndex(
-          (task) => task.id === activeId,
-        );
+      const overColumn = columnsState?.find((col) => col.id === overId);
+      if (overColumn === undefined) {
+        return;
+      }
 
-        tasksState[activeIndex].columnId = String(overId);
+      if (activeColumn.id === overColumn.id) return;
 
-        return arrayMove(tasksState, activeIndex, activeIndex);
-      });
+      const overColumnIndex = columnsState.findIndex(
+        (col) => col.id === overId,
+      );
+
+      let newItems = [...columnsState];
+      const [removedItem] = newItems[activeColumnIndex].tasks.splice(
+        activeIndex,
+        1,
+      );
+      newItems[overColumnIndex].tasks.push(removedItem);
+      setColumns(newItems);
     }
   }
 
@@ -139,34 +239,56 @@ function ColumnList({
     <DndContext
       sensors={sensors}
       onDragStart={onDragStart}
-      onDragOver={onDragOver}
       onDragEnd={onDragEnd}
+      onDragOver={onDragOver}
       id="unique-dnd-context-id"
     >
-      <div className="flex size-full gap-10 overflow-auto bg-primary-600 px-4 py-4">
-        <SortableContext items={columnsId}>
-          {columnsState.map((column) => (
-            <Column
-              key={column.id}
-              tasks={tasksState?.filter((task) => task.columnId === column.id)}
-              column={column}
-            />
+      <SortableContext items={columnsId}>
+        <div className="flex size-full gap-10 overflow-auto bg-primary-600 px-4 py-4">
+          {columnsState?.map((column) => (
+            <Column id={column.id} key={column.id} name={column.name}>
+              <SortableContext items={column.tasks.map((i) => i.id)}>
+                <ul className="flex max-w-80 flex-col gap-5 pb-5">
+                  {column.tasks.map((task) => (
+                    <TaskItem
+                      title={task.title}
+                      id={task.id}
+                      key={task.id}
+                      task={task}
+                    />
+                  ))}
+                </ul>
+              </SortableContext>
+            </Column>
           ))}
-        </SortableContext>
-      </div>
-
+        </div>
+      </SortableContext>
       {typeof window !== "undefined" &&
         createPortal(
           <DragOverlay>
-            {activeColumn && (
+            {activeColumnId && (
               <Column
-                column={activeColumn}
-                tasks={tasksState?.filter(
-                  (task) => task.columnId === activeColumn.id,
-                )}
+                id={activeColumnId}
+                name={findColumnName(activeColumnId) as string}
+              >
+                {findColumnTasks(activeColumnId).map((task) => (
+                  <TaskItem
+                    title={task.title}
+                    id={task.id}
+                    key={task.id}
+                    task={task}
+                  />
+                ))}
+              </Column>
+            )}
+            {activeTaskId && (
+              <TaskItem
+                title={findTaskTitle(activeTaskId)}
+                id={activeTaskId}
+                key={activeTaskId}
+                task={findTask(activeTaskId)}
               />
             )}
-            {activeTask && <TaskItem task={activeTask} />}
           </DragOverlay>,
           document.body,
         )}

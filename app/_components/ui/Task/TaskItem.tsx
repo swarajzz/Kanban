@@ -1,16 +1,22 @@
 "use client";
-import useDialogRef from "@/app/_hooks/useDialogRef";
-import { TaskProps } from "@/app/_types/types";
-import { GripVertical } from "lucide-react";
-import TaskDialog from "../../dialog/TaskDialog";
-import { useState } from "react";
-import { getCompletedSubtasksLength } from "@/app/_lib/utils/helpers";
-import EditTask from "../../dialog/EditTask";
+import { useCallback, useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import useDialogRef from "@/_hooks/useDialogRef";
+import { getCompletedSubtasksLength } from "@/_lib/utils/helpers";
+import { TaskProps } from "@/_types/types";
+import Tasks from "./Tasks";
 
-function TaskItem({ task }: { task: TaskProps }) {
-  const { title, subTasks } = task;
+function TaskItem({
+  title,
+  id,
+  task,
+}: {
+  title: string;
+  id: string;
+  task: TaskProps;
+}) {
+  const { subTasks } = task || [];
 
   const [isShowDropdown, setShowDropdown] = useState(true);
   const completedSubtasks = getCompletedSubtasksLength(subTasks);
@@ -28,10 +34,9 @@ function TaskItem({ task }: { task: TaskProps }) {
     transition,
     isDragging,
   } = useSortable({
-    id: task.id,
+    id: id,
     data: {
       type: "Task",
-      task,
     },
   });
 
@@ -40,14 +45,14 @@ function TaskItem({ task }: { task: TaskProps }) {
     transform: CSS.Transform.toString(transform),
   };
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     toggleViewDialog();
     setShowDropdown(false);
-  };
+  }, []);
 
-  const toggleShowDropdown = () => {
+  const toggleShowDropdown = useCallback(() => {
     setShowDropdown((prev) => !prev);
-  };
+  }, []);
 
   if (isDragging) {
     return (
@@ -68,39 +73,19 @@ function TaskItem({ task }: { task: TaskProps }) {
       style={style}
       {...attributes}
       {...listeners}
+      title={title}
     >
-      <div
-        onClick={handleClick}
-        className="flex size-full items-center gap-1 p-3"
-      >
-        <GripVertical />
-        <div className="w-full">
-          <div className="font-bold text-white">{title}</div>
-          <div className="mt-1 text-xs text-primary-300">
-            {`${completedSubtasks} of
-            ${task?.subTasks.length} subtasks`}
-          </div>
-        </div>
-      </div>
-
-      <TaskDialog
-        dialogRef={viewDialogRef}
-        toggleDialog={toggleViewDialog}
+      <Tasks
+        handleClick={handleClick}
         task={task}
+        completedSubtasks={completedSubtasks}
+        viewDialogRef={viewDialogRef}
+        toggleViewDialog={toggleViewDialog}
         isShowDropdown={isShowDropdown}
         toggleShowDropdown={toggleShowDropdown}
+        editDialogRef={editDialogRef}
         toggleEditDialog={toggleEditDialog}
       />
-
-      {viewDialogRef.current ? (
-        <EditTask
-          dialogRef={editDialogRef}
-          toggleDialog={toggleEditDialog}
-          task={task}
-        />
-      ) : (
-        ""
-      )}
     </li>
   );
 }

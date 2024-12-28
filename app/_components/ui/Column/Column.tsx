@@ -1,16 +1,17 @@
 "use client";
-import { ColumnProps, TaskProps } from "@/app/_types/types";
 import React from "react";
-import Tasks from "../Task/Tasks";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import Cols from "./Cols";
 
 function Column({
-  column,
-  tasks,
+  id,
+  name,
+  children,
 }: {
-  column: ColumnProps;
-  tasks: TaskProps[];
+  id: string;
+  name: string;
+  children: React.ReactNode;
 }) {
   const {
     setNodeRef,
@@ -20,10 +21,9 @@ function Column({
     transition,
     isDragging,
   } = useSortable({
-    id: column.id!,
+    id: id,
     data: {
       type: "Column",
-      column,
     },
   });
 
@@ -48,15 +48,13 @@ function Column({
       ref={setNodeRef}
       style={style}
     >
-      <div
-        {...attributes}
-        {...listeners}
-        className="flex items-center gap-5 self-start"
+      <Cols
+        dndAttributes={attributes}
+        dndListeners={listeners}
+        columnName={name}
       >
-        <div className="border-radius h-3 w-3 rounded-full bg-accent-500"></div>
-        <h3 className="text-sm font-bold uppercase">{column.name}</h3>
-      </div>
-      <Tasks tasks={tasks} />
+        {children}
+      </Cols>
     </section>
   );
 }

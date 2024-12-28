@@ -1,20 +1,71 @@
-import { TaskProps } from "@/app/_types/types";
-import TaskItem from "./TaskItem";
-import { SortableContext } from "@dnd-kit/sortable";
-import { useMemo } from "react";
+import EditTask from "@/_components/dialog/EditTask";
+import TaskDialog from "@/_components/dialog/TaskDialog";
+import { TaskProps } from "@/_types/types";
+import { GripVertical } from "lucide-react";
+import { memo, RefObject } from "react";
 
-function Tasks({ tasks }: { tasks: TaskProps[] }) {
-  const tasksIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
+interface TasksProps {
+  handleClick: () => void;
+  task: TaskProps;
+  completedSubtasks: number;
+  viewDialogRef: RefObject<HTMLDialogElement>;
+  toggleViewDialog: () => void;
+  isShowDropdown: boolean;
+  toggleShowDropdown: () => void;
+  editDialogRef: RefObject<HTMLDialogElement>;
+  toggleEditDialog: () => void;
+}
+
+function Tasks({
+  handleClick,
+  task,
+  completedSubtasks,
+  viewDialogRef,
+  toggleViewDialog,
+  isShowDropdown,
+  toggleShowDropdown,
+  editDialogRef,
+  toggleEditDialog,
+}: TasksProps) {
+  console.log("Tasks is rendered");
 
   return (
-    <ul className="flex max-w-80 flex-col gap-5 pb-5">
-      <SortableContext items={tasksIds}>
-        {tasks.map((task) => (
-          <TaskItem key={task.id} task={task} />
-        ))}
-      </SortableContext>
-    </ul>
+    <>
+      <div
+        onClick={handleClick}
+        className="flex size-full items-center gap-1 p-3"
+      >
+        <GripVertical />
+
+        <div className="w-full">
+          <div className="font-bold text-white">{task.title}</div>
+          <div className="mt-1 text-xs text-primary-300">
+            {`${completedSubtasks} of
+            ${task?.subTasks.length} subtasks`}
+          </div>
+        </div>
+      </div>
+
+      <TaskDialog
+        dialogRef={viewDialogRef}
+        toggleDialog={toggleViewDialog}
+        task={task}
+        isShowDropdown={isShowDropdown}
+        toggleShowDropdown={toggleShowDropdown}
+        toggleEditDialog={toggleEditDialog}
+      />
+
+      {viewDialogRef.current ? (
+        <EditTask
+          dialogRef={editDialogRef}
+          toggleDialog={toggleEditDialog}
+          task={task}
+        />
+      ) : (
+        ""
+      )}
+    </>
   );
 }
 
-export default Tasks;
+export default memo(Tasks);
