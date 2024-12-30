@@ -16,15 +16,18 @@ import { createPortal } from "react-dom";
 import TaskItem from "../Task/TaskItem";
 import { BoardProps, ColumnProps, TaskProps } from "@/_types/types";
 import { useBoardStore } from "@/_store/store";
+import { updateBoard } from "@/_lib/actions";
 
 function ColumnList({
   columns,
   board,
   tasks,
+  userId,
 }: {
   columns: ColumnProps[];
   board: BoardProps;
   tasks: TaskProps[];
+  userId: string;
 }) {
   const [columnsState, setColumns] = useState<ColumnProps[]>(columns);
   const [tasksState, setTasks] = useState<TaskProps[]>(tasks);
@@ -88,10 +91,31 @@ function ColumnList({
     return task;
   };
 
-  useEffect(() => {
-    useBoardStore.setState({ board });
-    useBoardStore.setState({ columns: columnsState });
-  }, [board, columnsState]);
+  // useEffect(() => {
+  //   useBoardStore.setState({ board });
+  //   useBoardStore.setState({ columns: columnsState });
+  // }, [board, columnsState]);
+
+  // useEffect(() => {
+  //   const updateBoardOnServer = async () => {
+  //     // await updateBoard({
+  //     //   data: { name: board.name, columns: columnsState },
+  //     //   boardId: board.id,
+  //     //   userId,
+  //     // });
+
+  //     const transformedData = {
+  //       name: board.name,
+  //       columns: columnsState,
+  //     };
+
+  //     await updateBoard({ data: transformedData, boardId: board.id, userId });
+  //   };
+
+  //   updateBoardOnServer();
+
+  //   // useBoardStore.setState({ board, columns: columnsState });
+  // }, [columnsState]);
 
   function onDragStart({ active }: { active: Active }): void {
     if (active.data.current?.type === "Column") {
@@ -104,7 +128,7 @@ function ColumnList({
     }
   }
 
-  function onDragEnd(e: DragEndEvent): void {
+  async function onDragEnd(e: DragEndEvent) {
     setActiveColumnId(null);
     setActiveTaskId(null);
 
@@ -132,7 +156,33 @@ function ColumnList({
         (col) => col.id === overId,
       );
 
-      return arrayMove(columnsState, activeColumnIndex, overColumnIndex);
+      const updatedColumns = [...columnsState];
+
+      if (overColumnIndex === 0) {
+        updatedColumns[activeColumnIndex].order =
+          updatedColumns[overColumnIndex].order - 1;
+      } else if (overColumnIndex === updatedColumns.length - 1) {
+        updatedColumns[activeColumnIndex].order =
+          updatedColumns[overColumnIndex].order + 1;
+      } else if (activeColumnIndex > overColumnIndex) {
+        updatedColumns[activeColumnIndex].order =
+          (updatedColumns[overColumnIndex - 1].order +
+            updatedColumns[overColumnIndex].order) /
+          2;
+      } else {
+        updatedColumns[activeColumnIndex].order =
+          (updatedColumns[overColumnIndex + 1].order +
+            updatedColumns[overColumnIndex].order) /
+          2;
+      }
+
+      const newColumns = arrayMove(
+        updatedColumns,
+        activeColumnIndex,
+        overColumnIndex,
+      );
+
+      return newColumns;
     });
   }
 
@@ -240,7 +290,7 @@ function ColumnList({
       sensors={sensors}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
-      onDragOver={onDragOver}
+      // onDragOver={onDragOver}
       id="unique-dnd-context-id"
     >
       <SortableContext items={columnsId}>
