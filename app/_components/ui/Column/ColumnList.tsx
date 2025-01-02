@@ -31,6 +31,7 @@ function ColumnList({
 }) {
   const [columnsState, setColumns] = useState<ColumnProps[]>(columns);
   const [tasksState, setTasks] = useState<TaskProps[]>(tasks);
+  const [isApiCall, setApicall] = useState(false);
 
   const columnsId = useMemo(
     () => columnsState.map((col) => col.id!),
@@ -91,10 +92,37 @@ function ColumnList({
     return task;
   };
 
-  // useEffect(() => {
-  //   useBoardStore.setState({ board });
-  //   useBoardStore.setState({ columns: columnsState });
-  // }, [board, columnsState]);
+  useEffect(() => {
+    useBoardStore.setState({ board });
+    useBoardStore.setState({ columns: columnsState });
+  }, [board, columnsState]);
+
+  useEffect(() => {
+    const transformedData = {
+      name: board.name,
+      columns: columnsState,
+    };
+
+    const makeApiCall = async () => {
+      if (isApiCall) {
+        try {
+          await updateBoard({
+            data: transformedData,
+            boardId: board.id,
+            userId,
+          });
+        } catch (error) {
+          console.error("Error updating the board:", error);
+        } finally {
+          setApicall(false); // Reset the state after the API call
+        }
+      }
+    };
+
+    makeApiCall();
+  }, [isApiCall]);
+
+  console.log(columnsState);
 
   // useEffect(() => {
   //   const updateBoardOnServer = async () => {
@@ -115,7 +143,7 @@ function ColumnList({
   //   updateBoardOnServer();
 
   //   // useBoardStore.setState({ board, columns: columnsState });
-  // }, [columnsState]);
+  // }, [isApiCall]);
 
   function onDragStart({ active }: { active: Active }): void {
     if (active.data.current?.type === "Column") {
@@ -136,54 +164,90 @@ function ColumnList({
 
     if (!over) return;
 
-    if (
-      active.data.current?.type === "Task" ||
-      over.data.current?.type === "Task"
-    )
-      return;
 
     const activeId = active.id;
     const overId = over.id;
 
     if (activeId === overId) return;
 
-    setColumns((columnsState) => {
-      const activeColumnIndex = columnsState.findIndex(
-        (col) => col.id === activeId,
-      );
+    if (
+      active.data.current?.type !== "Task" &&
+      over.data.current?.type !== "Task"
+    ) {
+      setColumns((columnsState) => {
+        const activeColumnIndex = columnsState.findIndex(
+          (col) => col.id === activeId,
+        );
 
-      const overColumnIndex = columnsState.findIndex(
-        (col) => col.id === overId,
-      );
+        const overColumnIndex = columnsState.findIndex(
+          (col) => col.id === overId,
+        );
 
-      const updatedColumns = [...columnsState];
+        const updatedColumns = [...columnsState];
 
-      if (overColumnIndex === 0) {
-        updatedColumns[activeColumnIndex].order =
-          updatedColumns[overColumnIndex].order - 1;
-      } else if (overColumnIndex === updatedColumns.length - 1) {
-        updatedColumns[activeColumnIndex].order =
-          updatedColumns[overColumnIndex].order + 1;
-      } else if (activeColumnIndex > overColumnIndex) {
-        updatedColumns[activeColumnIndex].order =
-          (updatedColumns[overColumnIndex - 1].order +
-            updatedColumns[overColumnIndex].order) /
-          2;
-      } else {
-        updatedColumns[activeColumnIndex].order =
-          (updatedColumns[overColumnIndex + 1].order +
-            updatedColumns[overColumnIndex].order) /
-          2;
-      }
+        console.log(overColumnIndex, activeColumnIndex);
 
-      const newColumns = arrayMove(
-        updatedColumns,
-        activeColumnIndex,
-        overColumnIndex,
-      );
+        if (overColumnIndex === 0) {
+          updatedColumns[activeColumnIndex].order =
+            updatedColumns[overColumnIndex].order - 1;
+        } else if (overColumnIndex === updatedColumns.length - 1) {
+          updatedColumns[activeColumnIndex].order =
+            updatedColumns[overColumnIndex].order + 1;
+        } else if (activeColumnIndex > overColumnIndex) {
+          updatedColumns[activeColumnIndex].order =
+            (updatedColumns[overColumnIndex - 1].order +
+              updatedColumns[overColumnIndex].order) /
+            2;
+        } else {
+          updatedColumns[activeColumnIndex].order =
+            (updatedColumns[overColumnIndex + 1].order +
+              updatedColumns[overColumnIndex].order) /
+            2;
+        }
 
-      return newColumns;
-    });
+        const newColumns = arrayMove(
+          updatedColumns,
+          activeColumnIndex,
+          overColumnIndex,
+        );
+
+        return newColumns;
+      });
+    }
+
+    setApicall(true);
+  }
+
+  function reorderItems(
+    activeColumnIndex: number,
+    overColumnIndex: number,
+    activeTaskIndex: number,
+    overTaskIndex: number,
+    newItems,
+    over: boolean = false,
+  ) {
+    const activeTasks = newItems[activeColumnIndex].tasks;
+    const overTasks = newItems[overColumnIndex].tasks;
+
+    if (overTaskIndex === 0) {
+      activeTasks[activeTaskIndex].order = overTasks[overTaskIndex].order - 1;
+    } else if (
+      overTaskIndex === Number(over)
+        ? overTasks.length - 1
+        : activeTasks.length - 1
+    ) {
+      activeTasks[activeTaskIndex].order = overTasks[overTaskIndex].order + 1.0;
+    } else if (activeTaskIndex > overTaskIndex) {
+      activeTasks[activeTaskIndex].order =
+        (activeTasks[overTaskIndex - 1].order +
+          activeTasks[overTaskIndex].order) /
+        2;
+    } else {
+      activeTasks[activeTaskIndex].order =
+        (activeTasks[overTaskIndex + 1].order +
+          activeTasks[overTaskIndex].order) /
+        2;
+    }
   }
 
   function onDragOver(e: DragOverEvent): void {
@@ -206,56 +270,79 @@ function ColumnList({
     // Dropping a Task over another Task
     // Drop a task on the same column
     // Drop a task on different column
-    const activeColumn = findColumn(activeId as string);
+    const activeTaskColumn = findColumn(activeId as string);
 
-    if (activeColumn === undefined) {
+    if (activeTaskColumn === undefined) {
       return;
     }
 
-    const activeColumnIndex = findColumnIndex(activeColumn);
+    const activeColumnIndex = findColumnIndex(activeTaskColumn);
 
-    const activeIndex = activeColumn.tasks.findIndex(
+    const activeTaskIndex = activeTaskColumn.tasks.findIndex(
       (task) => task.id === activeId,
     );
 
-    const activeTask = activeColumn.tasks.find((task) => task.id === activeId)!;
+    const activeTask = activeTaskColumn.tasks.find(
+      (task) => task.id === activeId,
+    );
 
     if (activeTask === undefined) {
       return;
     }
 
+    // Task over Task
     if (isActiveTask && isOverTask) {
-      const overColumn = findColumn(overId as string);
+      const overTaskColumn = findColumn(overId as string);
 
-      if (!activeColumn || !overColumn) {
+      if (!activeTaskColumn || !overTaskColumn) {
         return;
       }
 
-      const overColumnIndex = findColumnIndex(overColumn);
+      const overColumnIndex = findColumnIndex(overTaskColumn);
 
-      const overTask = overColumn.tasks.find((task) => task.id === overId)!;
+      const overTask = overTaskColumn.tasks.find((task) => task.id === overId)!;
 
-      const overIndex = overColumn.tasks.findIndex(
+      const overTaskIndex = overTaskColumn.tasks.findIndex(
         (task) => task.id === overId,
       );
 
-      if (activeColumn.id === overColumn.id) {
+      // Task over Same Column Task
+      if (activeTaskColumn.id === overTaskColumn.id) {
         let newItems = [...columnsState];
+
+        reorderItems(
+          activeColumnIndex,
+          overColumnIndex,
+          activeTaskIndex,
+          overTaskIndex,
+          newItems,
+        );
 
         newItems[activeColumnIndex].tasks = arrayMove(
           newItems[activeColumnIndex].tasks,
-          activeIndex,
-          overIndex,
+          activeTaskIndex,
+          overTaskIndex,
         );
         setColumns(newItems);
       } else {
+        // Task over Different Column Task
         activeTask.columnId = overTask.columnId;
         let newItems = [...columnsState];
+
+        reorderItems(
+          activeColumnIndex,
+          overColumnIndex,
+          activeTaskIndex,
+          overTaskIndex,
+          newItems,
+          true,
+        );
+
         const [removeditem] = newItems[activeColumnIndex].tasks.splice(
-          activeIndex,
+          activeTaskIndex,
           1,
         );
-        newItems[overColumnIndex].tasks.splice(overIndex, 0, removeditem);
+        newItems[overColumnIndex].tasks.splice(overTaskIndex, 0, removeditem);
         setColumns(newItems);
       }
     }
@@ -269,15 +356,26 @@ function ColumnList({
         return;
       }
 
-      if (activeColumn.id === overColumn.id) return;
+      if (activeTaskColumn.id === overColumn.id) return;
+      console.log("Over column");
 
       const overColumnIndex = columnsState.findIndex(
         (col) => col.id === overId,
       );
 
       let newItems = [...columnsState];
+
+      activeTask.columnId = overColumn.id;
+
+      activeTask.order =
+        overColumn.tasks.length > 0
+          ? overColumn.tasks[overColumn.tasks.length - 1].order + 1.0
+          : 1.0;
+
+      console.log(newItems);
+
       const [removedItem] = newItems[activeColumnIndex].tasks.splice(
-        activeIndex,
+        activeTaskIndex,
         1,
       );
       newItems[overColumnIndex].tasks.push(removedItem);
@@ -290,7 +388,7 @@ function ColumnList({
       sensors={sensors}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
-      // onDragOver={onDragOver}
+      onDragOver={onDragOver}
       id="unique-dnd-context-id"
     >
       <SortableContext items={columnsId}>
