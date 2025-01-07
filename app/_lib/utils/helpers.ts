@@ -1,5 +1,5 @@
-import { ColumnProps, SubTaskProps } from "@/app/_types/types";
 import { columnPlaceholders, placeholders } from "./constants";
+import { ColumnProps, SubTaskProps } from "@/_types/types";
 
 export function getRandomPlaceholder() {
   const randomIndex = Math.floor(Math.random() * placeholders.length);
@@ -21,4 +21,57 @@ export function getColumnId(columns: ColumnProps[], taskStatus: string) {
 
 export function slugToName(slug) {
   return slug.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+export function reorderTasks(
+  activeColumnIndex: number,
+  overColumnIndex: number,
+  activeTaskIndex: number,
+  overTaskIndex: number,
+  newItems: ColumnProps[],
+  over: boolean = false,
+) {
+  const activeTasks = newItems[activeColumnIndex].tasks;
+  const overTasks = newItems[overColumnIndex].tasks;
+
+  if (overTaskIndex === 0) {
+    activeTasks[activeTaskIndex].order = overTasks[overTaskIndex].order - 1;
+  } else if (
+    overTaskIndex === Number(over)
+      ? overTasks.length - 1
+      : activeTasks.length - 1
+  ) {
+    activeTasks[activeTaskIndex].order = overTasks[overTaskIndex].order + 1.0;
+  } else if (activeTaskIndex > overTaskIndex) {
+    activeTasks[activeTaskIndex].order =
+      (activeTasks[overTaskIndex - 1].order +
+        activeTasks[overTaskIndex].order) /
+      2;
+  } else {
+    activeTasks[activeTaskIndex].order =
+      (activeTasks[overTaskIndex + 1].order +
+        activeTasks[overTaskIndex].order) /
+      2;
+  }
+}
+
+export function reorderColumns(
+  activeColumnIndex: number,
+  overColumnIndex: number,
+  updatedColumns: ColumnProps[],
+) {
+  const activeColumn = updatedColumns[activeColumnIndex];
+  const overColumn = updatedColumns[overColumnIndex];
+
+  if (overColumnIndex === 0) {
+    activeColumn.order = overColumn.order - 1;
+  } else if (overColumnIndex === updatedColumns.length - 1) {
+    activeColumn.order = overColumn.order + 1;
+  } else if (activeColumnIndex > overColumnIndex) {
+    activeColumn.order =
+      (updatedColumns[overColumnIndex - 1].order + overColumn.order) / 2;
+  } else {
+    activeColumn.order =
+      (updatedColumns[overColumnIndex + 1].order + overColumn.order) / 2;
+  }
 }

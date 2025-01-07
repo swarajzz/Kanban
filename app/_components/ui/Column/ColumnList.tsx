@@ -17,6 +17,7 @@ import TaskItem from "../Task/TaskItem";
 import { BoardProps, ColumnProps, TaskProps } from "@/_types/types";
 import { useBoardStore } from "@/_store/store";
 import { updateBoard } from "@/_lib/actions";
+import { reorderColumns, reorderTasks } from "@/_lib/utils/helpers";
 
 function ColumnList({
   columns,
@@ -122,28 +123,6 @@ function ColumnList({
     makeApiCall();
   }, [isApiCall]);
 
-  console.log(columnsState);
-
-  // useEffect(() => {
-  //   const updateBoardOnServer = async () => {
-  //     // await updateBoard({
-  //     //   data: { name: board.name, columns: columnsState },
-  //     //   boardId: board.id,
-  //     //   userId,
-  //     // });
-
-  //     const transformedData = {
-  //       name: board.name,
-  //       columns: columnsState,
-  //     };
-
-  //     await updateBoard({ data: transformedData, boardId: board.id, userId });
-  //   };
-
-  //   updateBoardOnServer();
-
-  //   // useBoardStore.setState({ board, columns: columnsState });
-  // }, [isApiCall]);
 
   function onDragStart({ active }: { active: Active }): void {
     if (active.data.current?.type === "Column") {
@@ -163,7 +142,6 @@ function ColumnList({
     const { active, over } = e;
 
     if (!over) return;
-
 
     const activeId = active.id;
     const overId = over.id;
@@ -185,25 +163,7 @@ function ColumnList({
 
         const updatedColumns = [...columnsState];
 
-        console.log(overColumnIndex, activeColumnIndex);
-
-        if (overColumnIndex === 0) {
-          updatedColumns[activeColumnIndex].order =
-            updatedColumns[overColumnIndex].order - 1;
-        } else if (overColumnIndex === updatedColumns.length - 1) {
-          updatedColumns[activeColumnIndex].order =
-            updatedColumns[overColumnIndex].order + 1;
-        } else if (activeColumnIndex > overColumnIndex) {
-          updatedColumns[activeColumnIndex].order =
-            (updatedColumns[overColumnIndex - 1].order +
-              updatedColumns[overColumnIndex].order) /
-            2;
-        } else {
-          updatedColumns[activeColumnIndex].order =
-            (updatedColumns[overColumnIndex + 1].order +
-              updatedColumns[overColumnIndex].order) /
-            2;
-        }
+        reorderColumns(activeColumnIndex, overColumnIndex, updatedColumns);
 
         const newColumns = arrayMove(
           updatedColumns,
@@ -216,38 +176,6 @@ function ColumnList({
     }
 
     setApicall(true);
-  }
-
-  function reorderItems(
-    activeColumnIndex: number,
-    overColumnIndex: number,
-    activeTaskIndex: number,
-    overTaskIndex: number,
-    newItems,
-    over: boolean = false,
-  ) {
-    const activeTasks = newItems[activeColumnIndex].tasks;
-    const overTasks = newItems[overColumnIndex].tasks;
-
-    if (overTaskIndex === 0) {
-      activeTasks[activeTaskIndex].order = overTasks[overTaskIndex].order - 1;
-    } else if (
-      overTaskIndex === Number(over)
-        ? overTasks.length - 1
-        : activeTasks.length - 1
-    ) {
-      activeTasks[activeTaskIndex].order = overTasks[overTaskIndex].order + 1.0;
-    } else if (activeTaskIndex > overTaskIndex) {
-      activeTasks[activeTaskIndex].order =
-        (activeTasks[overTaskIndex - 1].order +
-          activeTasks[overTaskIndex].order) /
-        2;
-    } else {
-      activeTasks[activeTaskIndex].order =
-        (activeTasks[overTaskIndex + 1].order +
-          activeTasks[overTaskIndex].order) /
-        2;
-    }
   }
 
   function onDragOver(e: DragOverEvent): void {
@@ -310,7 +238,7 @@ function ColumnList({
       if (activeTaskColumn.id === overTaskColumn.id) {
         let newItems = [...columnsState];
 
-        reorderItems(
+        reorderTasks(
           activeColumnIndex,
           overColumnIndex,
           activeTaskIndex,
@@ -329,7 +257,7 @@ function ColumnList({
         activeTask.columnId = overTask.columnId;
         let newItems = [...columnsState];
 
-        reorderItems(
+        reorderTasks(
           activeColumnIndex,
           overColumnIndex,
           activeTaskIndex,
@@ -357,7 +285,6 @@ function ColumnList({
       }
 
       if (activeTaskColumn.id === overColumn.id) return;
-      console.log("Over column");
 
       const overColumnIndex = columnsState.findIndex(
         (col) => col.id === overId,
@@ -371,8 +298,6 @@ function ColumnList({
         overColumn.tasks.length > 0
           ? overColumn.tasks[overColumn.tasks.length - 1].order + 1.0
           : 1.0;
-
-      console.log(newItems);
 
       const [removedItem] = newItems[activeColumnIndex].tasks.splice(
         activeTaskIndex,
