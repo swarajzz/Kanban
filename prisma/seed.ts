@@ -8,10 +8,12 @@ const initialBoardsData = [
     columns: [
       {
         name: "Todo",
+        order: 1,
         tasks: [
           {
             title: "Build UI for onboarding flow",
             description: "",
+            order: 1,
             status: "Todo",
             subTasks: [
               {
@@ -31,6 +33,7 @@ const initialBoardsData = [
           {
             title: "Build UI for search",
             description: "",
+            order: 2,
             status: "Todo",
             subTasks: [
               {
@@ -42,6 +45,7 @@ const initialBoardsData = [
           {
             title: "Build settings UI",
             description: "",
+            order: 3,
             status: "Todo",
             subTasks: [
               {
@@ -58,6 +62,7 @@ const initialBoardsData = [
             title: "QA and test all major user journeys",
             description:
               "Once we feel version one is ready, we need to rigorously test it both internally and externally to identify any major gaps.",
+            order: 4,
             status: "Todo",
             subTasks: [
               {
@@ -74,10 +79,12 @@ const initialBoardsData = [
       },
       {
         name: "Doing",
+        order: 2,
         tasks: [
           {
             title: "Design settings and search pages",
             description: "",
+            order: 1,
             status: "Doing",
             subTasks: [
               {
@@ -97,6 +104,7 @@ const initialBoardsData = [
           {
             title: "Add account management endpoints",
             description: "",
+            order: 2,
             status: "Doing",
             subTasks: [
               {
@@ -116,6 +124,7 @@ const initialBoardsData = [
           {
             title: "Design onboarding flow",
             description: "",
+            order: 3,
             status: "Doing",
             subTasks: [
               {
@@ -135,6 +144,7 @@ const initialBoardsData = [
           {
             title: "Add search enpoints",
             description: "",
+            order: 4,
             status: "Doing",
             subTasks: [
               {
@@ -150,6 +160,7 @@ const initialBoardsData = [
           {
             title: "Add authentication endpoints",
             description: "",
+            order: 5,
             status: "Doing",
             subTasks: [
               {
@@ -167,6 +178,7 @@ const initialBoardsData = [
               "Research pricing points of various competitors and trial different business models",
             description:
               "We know what we're planning to build for version one. Now we need to finalise the first pricing model we'll use. Keep iterating the subTasks until we have a coherent proposition.",
+            order: 6,
             status: "Doing",
             subTasks: [
               {
@@ -188,11 +200,13 @@ const initialBoardsData = [
       },
       {
         name: "Done",
+        order: 3,
         tasks: [
           {
             title: "Conduct 5 wireframe tests",
             description:
               "Ensure the layout continues to make sense and we have strong buy-in from potential users.",
+            order: 1,
             status: "Done",
             subTasks: [
               {
@@ -205,6 +219,7 @@ const initialBoardsData = [
             title: "Create wireframe prototype",
             description:
               "Create a greyscale clickable wireframe prototype to test our asssumptions so far.",
+            order: 2,
             status: "Done",
             subTasks: [
               {
@@ -217,6 +232,7 @@ const initialBoardsData = [
             title: "Review results of usability tests and iterate",
             description:
               "Keep iterating through the subTasks until we're clear on the core concepts for the app.",
+            order: 3,
             status: "Done",
             subTasks: [
               {
@@ -238,6 +254,7 @@ const initialBoardsData = [
             title:
               "Create paper prototypes and conduct 10 usability tests with potential customers",
             description: "",
+            order: 4,
             status: "Done",
             subTasks: [
               {
@@ -254,6 +271,7 @@ const initialBoardsData = [
             title: "Market discovery",
             description:
               "We need to define and refine our core product. Interviews will help us learn common pain points and help us define the strongest MVP.",
+            order: 5,
             status: "Done",
             subTasks: [
               {
@@ -265,6 +283,7 @@ const initialBoardsData = [
           {
             title: "Competitor analysis",
             description: "",
+            order: 6,
             status: "Done",
             subTasks: [
               {
@@ -281,6 +300,7 @@ const initialBoardsData = [
             title: "Research the market",
             description:
               "We need to get a solid overview of the market to ensure we have up-to-date estimates of market size and demand.",
+            order: 7,
             status: "Done",
             subTasks: [
               {
@@ -302,10 +322,12 @@ const initialBoardsData = [
     columns: [
       {
         name: "Todo",
+        order: 1,
         tasks: [
           {
             title: "Plan Product Hunt launch",
             description: "",
+            order: 1,
             status: "Todo",
             subTasks: [
               {
@@ -337,6 +359,7 @@ const initialBoardsData = [
           {
             title: "Share on Show HN",
             description: "",
+            order: 2,
             status: "",
             subTasks: [
               {
@@ -355,6 +378,7 @@ const initialBoardsData = [
           },
           {
             title: "Write launch article to publish on multiple channels",
+            order: 3,
             description: "",
             status: "",
             subTasks: [
@@ -380,10 +404,12 @@ const initialBoardsData = [
       },
       {
         name: "Doing",
+        order: 2,
         tasks: [],
       },
       {
         name: "Done",
+        order: 3,
         tasks: [],
       },
     ],
@@ -393,10 +419,12 @@ const initialBoardsData = [
     columns: [
       {
         name: "Now",
+        order: 1,
         tasks: [
           {
             title: "Launch version one",
             description: "",
+            order: 1,
             status: "",
             subTasks: [
               {
@@ -413,6 +441,7 @@ const initialBoardsData = [
             title: "Review early feedback and plan next steps for roadmap",
             description:
               "Beyond the initial launch, we're keeping the initial roadmap completely empty. This meeting will help us plan out our next steps based on actual customer feedback.",
+            order: 2,
             status: "",
             subTasks: [
               {
@@ -433,10 +462,12 @@ const initialBoardsData = [
       },
       {
         name: "Next",
+        order: 2,
         tasks: [],
       },
       {
         name: "Later",
+        order: 3,
         tasks: [],
       },
     ],
@@ -467,10 +498,12 @@ async function main() {
         columns: {
           create: board.columns.map((column) => ({
             name: column.name,
+            order: column.order,
             tasks: {
               create: column.tasks.map((task) => ({
                 title: task.title,
                 description: task.description,
+                order: task.order,
                 status: task.status,
                 subTasks: {
                   create: task.subTasks.map((subtask) => ({
