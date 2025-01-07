@@ -20,6 +20,19 @@ export async function getBoard(boardName: string) {
         mode: "insensitive",
       },
     },
+    include: {
+      columns: {
+        orderBy: { order: "asc" },
+        include: {
+          tasks: {
+            orderBy: { order: "asc" },
+            include: {
+              subTasks: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   if (!board) {
@@ -42,18 +55,32 @@ export async function getColumns(boardId: string) {
     where: {
       boardId: boardId,
     },
+    orderBy: { order: "asc" },
   });
 
   return columns;
 }
 
-export async function getTasks(columnId: string) {
+export async function getTasks(boardId: string) {
   const tasks = await prisma.task.findMany({
     where: {
-      columnId: columnId,
+      column: {
+        boardId: boardId,
+      },
     },
+    orderBy: { order: "asc" },
     include: {
       subTasks: true,
+    },
+  });
+
+  return tasks;
+}
+
+export async function getSubtask(taskId: string) {
+  const tasks = await prisma.subTask.findMany({
+    where: {
+      taskId: taskId,
     },
   });
 

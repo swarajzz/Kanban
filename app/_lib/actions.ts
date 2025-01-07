@@ -5,6 +5,7 @@ import prisma from "./prisma";
 import { redirect } from "next/navigation";
 import { getBoard } from "./data-service";
 import { DataProps, UpdateBoardProps, UpdateTaskProps } from "../_types/types";
+
 import { revalidatePath } from "next/cache";
 
 export async function createBoard(
@@ -29,8 +30,9 @@ export async function createBoard(
           },
         },
         columns: {
-          create: columns.map(({ name: columnName }) => ({
+          create: columns.map(({ name: columnName, index }) => ({
             name: columnName,
+            order: index + 1,
           })),
         },
       },
@@ -51,6 +53,11 @@ export async function createBoard(
 export async function updateBoard({ data, boardId, userId }: UpdateBoardProps) {
   const { name, columns } = data;
 
+  if (!boardId) return;
+
+  const lastColumn = await getLastColumn(boardId);
+  const newTaskOrder = lastColumn ? lastColumn.order + 1 : 1.0;
+
   await prisma.board.update({
     where: {
       id: boardId,
@@ -65,9 +72,11 @@ export async function updateBoard({ data, boardId, userId }: UpdateBoardProps) {
           where: { id: column.id },
           create: {
             name: column.name,
+            order: newTaskOrder,
           },
           update: {
             name: column.name,
+            order: column.order,
           },
         })),
       },
@@ -90,6 +99,11 @@ export async function createTask({
 }) {
   const { subTasks, title, description, status } = data;
 
+  if(!columnId) return
+
+  const lastTask = await getLastTask(columnId);
+  const newTaskOrder = lastTask ? lastTask.order + 1 : 1.0;
+
   await prisma.task.create({
     data: {
       subTasks: {
@@ -101,6 +115,7 @@ export async function createTask({
       title: title,
       description: description,
       status: status,
+      order: newTaskOrder,
       column: {
         connect: {
           id: columnId,
@@ -167,4 +182,20 @@ export async function deleteTask(taskId: string) {
     },
   });
   revalidatePath("/board");
+}
+
+export async function getLastTask(columnId: string) {
+  const lastTask = await prisma.task.findFirst({
+    where: { columnId },
+    orderBy: { order: "desc" },
+  });
+  return lastTask;
+}
+
+export async function getLastColumn(boardId: string) {
+  const lastColumn = await prisma.column.findFirst({
+    where: { boardId },
+    orderBy: { order: "desc" },
+  });
+  return lastColumn;
 }
