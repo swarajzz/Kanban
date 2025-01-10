@@ -4,21 +4,17 @@ import { Prisma } from "@prisma/client";
 import prisma from "./prisma";
 import { redirect } from "next/navigation";
 import { getBoard } from "./data-service";
-import { DataProps, UpdateBoardProps, UpdateTaskProps } from "../_types/types";
+import {
+  DataProps,
+  EditFormFields,
+  NewFormFields,
+  UpdateTaskProps,
+} from "../_types/types";
 
 import { revalidatePath } from "next/cache";
 
-export async function createBoard(
-  data: {
-    boardName: string;
-    columns: {
-      name: string;
-      placeholder?: string;
-    }[];
-  },
-  userId: string,
-) {
-  const boardName = data.boardName;
+export async function createBoard(data: NewFormFields, userId: string) {
+  const boardName = data.name;
   const columns = data.columns;
   try {
     await prisma.board.create({
@@ -30,7 +26,7 @@ export async function createBoard(
           },
         },
         columns: {
-          create: columns.map(({ name: columnName, index }) => ({
+          create: columns.map(({ name: columnName }, index) => ({
             name: columnName,
             order: index + 1,
           })),
@@ -50,8 +46,13 @@ export async function createBoard(
   }
 }
 
-export async function updateBoard({ data, boardId, userId }: UpdateBoardProps) {
-  const { name, columns } = data;
+export async function updateBoard(
+  data: EditFormFields,
+  boardId: string,
+  userId: string,
+) {
+  const name = data.name;
+  const columns = data.editColumns;
 
   if (!boardId) return;
 
@@ -99,7 +100,7 @@ export async function createTask({
 }) {
   const { subTasks, title, description, status } = data;
 
-  if(!columnId) return
+  if (!columnId) return;
 
   const lastTask = await getLastTask(columnId);
   const newTaskOrder = lastTask ? lastTask.order + 1 : 1.0;

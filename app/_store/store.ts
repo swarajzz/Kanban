@@ -14,5 +14,5 @@ export const useBoardStore = create<BoardStore>((set) => ({
   columns: null,
   setBoard: (board: BoardProps) => set({ board }),
   setColumns: (columns: ColumnProps[]) => set({ columns }),
-  resetBoard: () => set({ board: null }),
+  resetBoard: () => set({ board: null, columns: null }),
 }));

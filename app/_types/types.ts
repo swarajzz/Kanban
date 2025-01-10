@@ -39,7 +39,7 @@ export type UpdateTaskProps = {
 
 export type UpdateBoardProps = {
   data: {
-    name: string;
+    name?: string;
     columns: ColumnProps[];
   };
   boardId?: string;
@@ -51,6 +51,7 @@ export type TaskProps = {
   title: string;
   description: string;
   status: string;
+  order: number;
   createdAt: Date;
   updatedAt: Date;
   columnId: string;
@@ -58,14 +59,29 @@ export type TaskProps = {
 };
 
 export type ColumnProps = {
-  id?: string;
+  id: string;
   name: string;
+  order?: number;
+  boardId?: string;
+  placeholder: string;
+  tasks?: TaskProps[];
+};
+
+export type NewEditColumnProps = {
+  id: string;
+  name: string;
+  order?: number;
   boardId?: string;
   placeholder?: string;
   tasks?: TaskProps[];
 };
 
-export type NewboardFormFields = {
-  boardName: string;
-  columns: { id?: string; name: string; placeholder?: string }[];
+export type NewFormFields = {
+  name: string;
+  columns: NewEditColumnProps[];
+};
+
+export type EditFormFields = {
+  name: string;
+  editColumns: NewEditColumnProps[];
 };

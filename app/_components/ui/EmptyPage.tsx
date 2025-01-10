@@ -1,8 +1,10 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "./Button";
 import useDialogRef from "@/app/_hooks/useDialogRef";
 import NewEditBoard from "../dialog/NewEditBoard";
+import { useBoardStore } from "@/_store/store";
+import NewBoard from "../dialog/NewBoard";
 
 function EmptyPage({
   userId,
@@ -17,6 +19,13 @@ function EmptyPage({
 }) {
   const { dialogRef, toggleDialog } = useDialogRef();
 
+  console.log("emptyPage");
+  const resetStore = useBoardStore((state) => state.resetBoard);
+
+  useEffect(() => {
+    resetStore();
+  }, [resetStore]);
+
   return (
     <div className="flex size-full items-center bg-primary-600 text-center">
       <div className="mx-auto flex flex-col items-center gap-4">
@@ -25,10 +34,8 @@ function EmptyPage({
         <Button size="md" intent={"primary"} onClick={toggleDialog}>
           + {btnText}
         </Button>
-        <NewEditBoard
-          dialogRef={dialogRef}
-          toggleDialog={toggleDialog}
-        />
+
+        <NewBoard dialogRef={dialogRef} toggleDialog={toggleDialog} />
       </div>
     </div>
   );

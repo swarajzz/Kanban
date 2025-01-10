@@ -1,15 +1,15 @@
 "use client";
 import React, { useState } from "react";
-import { EditMenuIcon } from "@/public/svgs";
 import Image from "next/image";
 import { Button } from "../ui/Button";
-import useDialogRef from "@/app/_hooks/useDialogRef";
 import HeaderDropdown from "../ui/Header/HeaderDropdown";
 import { useParams } from "next/navigation";
-import { useBoardStore } from "@/app/_store/store";
 import NewTask from "../dialog/NewTask";
-import { slugToName } from "@/app/_lib/utils/helpers";
 import NewEditBoard from "../dialog/NewEditBoard";
+import { EditMenuIcon } from "@/public/svgs";
+import { slugToName } from "@/_lib/utils/helpers";
+import useDialogRef from "@/_hooks/useDialogRef";
+import EditBoard from "../dialog/EditBoard";
 
 export default function Header() {
   const params = useParams<{ board: string }>();
@@ -60,7 +60,7 @@ export default function Header() {
           ""
         )}
 
-        <NewEditBoard
+        <EditBoard
           dialogRef={boardDialogRef}
           toggleDialog={toggleBoardDialog}
         />
