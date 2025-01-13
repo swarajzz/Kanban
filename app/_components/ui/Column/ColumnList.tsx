@@ -16,7 +16,7 @@ import { createPortal } from "react-dom";
 import TaskItem from "../Task/TaskItem";
 import { BoardProps, ColumnProps, TaskProps } from "@/_types/types";
 import { useBoardStore } from "@/_store/store";
-import { updateBoard } from "@/_lib/actions";
+import { updateBoard, updateTask } from "@/_lib/actions";
 import { reorderColumns, reorderTasks } from "@/_lib/utils/helpers";
 
 function ColumnList({
@@ -32,10 +32,11 @@ function ColumnList({
 }) {
   const [columnsState, setColumns] = useState<ColumnProps[]>(columns);
   const [tasksState, setTasks] = useState<TaskProps[]>(tasks);
-  const [isApiCall, setApicall] = useState(false);
+  const [enableApiCall, setApiCall] = useState(false);
+  const [apiCallFlag, setApiCallFlag] = useState(false);
 
   const columnsId = useMemo(
-    () => columnsState.map((col) => col.id!),
+    () => columnsState?.map((col) => col.id!),
     [columnsState],
   );
 
@@ -76,7 +77,7 @@ function ColumnList({
   function findColumnTasks(id: string): TaskProps[] {
     const column = columnsState.find((col) => col.id === id);
 
-    if (!column) throw new Error("Task Not found");
+    if (!column?.tasks) throw new Error("Task Not found");
 
     return column.tasks;
   }
@@ -99,30 +100,26 @@ function ColumnList({
   }, [board, columnsState]);
 
   useEffect(() => {
-    const transformedData = {
+    const data = {
       name: board.name,
-      columns: columnsState,
+      editColumns: columnsState,
     };
 
     const makeApiCall = async () => {
-      if (isApiCall) {
+      if (enableApiCall) {
         try {
-          await updateBoard({
-            data: transformedData,
-            boardId: board.id,
-            userId,
-          });
+          await updateBoard(data, board.id, userId, true);
         } catch (error) {
           console.error("Error updating the board:", error);
         } finally {
-          setApicall(false); // Reset the state after the API call
+          setApiCall(false);
+          setApiCallFlag(false);
         }
       }
     };
 
     makeApiCall();
-  }, [isApiCall]);
-
+  }, [enableApiCall]);
 
   function onDragStart({ active }: { active: Active }): void {
     if (active.data.current?.type === "Column") {
@@ -146,36 +143,33 @@ function ColumnList({
     const activeId = active.id;
     const overId = over.id;
 
-    if (activeId === overId) return;
-
     if (
       active.data.current?.type !== "Task" &&
       over.data.current?.type !== "Task"
     ) {
+      if (activeId === overId) return;
+
       setColumns((columnsState) => {
         const activeColumnIndex = columnsState.findIndex(
           (col) => col.id === activeId,
         );
-
         const overColumnIndex = columnsState.findIndex(
           (col) => col.id === overId,
         );
-
         const updatedColumns = [...columnsState];
-
         reorderColumns(activeColumnIndex, overColumnIndex, updatedColumns);
-
         const newColumns = arrayMove(
           updatedColumns,
           activeColumnIndex,
           overColumnIndex,
         );
-
         return newColumns;
       });
+      setApiCall(true);
+      console.log("HEy");
+    } else {
+      apiCallFlag && setApiCall(true);
     }
-
-    setApicall(true);
   }
 
   function onDragOver(e: DragOverEvent): void {
@@ -252,6 +246,8 @@ function ColumnList({
           overTaskIndex,
         );
         setColumns(newItems);
+        setApiCallFlag(true);
+        // setColumns(false);
       } else {
         // Task over Different Column Task
         activeTask.columnId = overTask.columnId;
@@ -272,6 +268,7 @@ function ColumnList({
         );
         newItems[overColumnIndex].tasks.splice(overTaskIndex, 0, removeditem);
         setColumns(newItems);
+        setApiCallFlag(true);
       }
     }
 
@@ -305,6 +302,7 @@ function ColumnList({
       );
       newItems[overColumnIndex].tasks.push(removedItem);
       setColumns(newItems);
+      setApiCallFlag(true);
     }
   }
 
@@ -316,13 +314,13 @@ function ColumnList({
       onDragOver={onDragOver}
       id="unique-dnd-context-id"
     >
-      <SortableContext items={columnsId}>
+      <SortableContext items={columnsState?.map((i) => i.id)}>
         <div className="flex size-full gap-10 overflow-auto bg-primary-600 px-4 py-4">
           {columnsState?.map((column) => (
             <Column id={column.id} key={column.id} name={column.name}>
-              <SortableContext items={column.tasks.map((i) => i.id)}>
+              <SortableContext items={column?.tasks.map((i) => i.id)}>
                 <ul className="flex max-w-80 flex-col gap-5 pb-5">
-                  {column.tasks.map((task) => (
+                  {column?.tasks.map((task) => (
                     <TaskItem
                       title={task.title}
                       id={task.id}

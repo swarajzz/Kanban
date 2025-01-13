@@ -15,9 +15,14 @@ export default async function Board({
 
   return (
     <>
-      {columns.length > 0 ? (
+      {columns.length > 0  && session?.user?.id ? (
         <>
-          <ColumnList columns={columns} tasks={tasks} board={board} />
+          <ColumnList
+            columns={columns}
+            tasks={tasks}
+            board={board}
+            userId={session?.user?.id}
+          />
         </>
       ) : (
         <EmptyPage
