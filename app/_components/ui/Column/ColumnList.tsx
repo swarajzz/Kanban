@@ -51,6 +51,28 @@ function ColumnList({
     }),
   );
 
+  useEffect(() => {
+    const data = {
+      name: board.name,
+      editColumns: columnsState,
+    };
+
+    const makeApiCall = async () => {
+      if (enableApiCall) {
+        try {
+          await updateBoard(data, board.id, userId, true);
+        } catch (error) {
+          console.error("Error updating the board:", error);
+        } finally {
+          setApiCall(false);
+          setApiCallFlag(false);
+        }
+      }
+    };
+
+    makeApiCall();
+  }, [enableApiCall]);
+
   const findColumn = (id: string): ColumnProps | undefined => {
     const column = columnsState.find((col) =>
       col.tasks?.find((task) => task.id === id),
@@ -98,28 +120,6 @@ function ColumnList({
     useBoardStore.setState({ board });
     useBoardStore.setState({ columns: columnsState });
   }, [board, columnsState]);
-
-  useEffect(() => {
-    const data = {
-      name: board.name,
-      editColumns: columnsState,
-    };
-
-    const makeApiCall = async () => {
-      if (enableApiCall) {
-        try {
-          await updateBoard(data, board.id, userId, true);
-        } catch (error) {
-          console.error("Error updating the board:", error);
-        } finally {
-          setApiCall(false);
-          setApiCallFlag(false);
-        }
-      }
-    };
-
-    makeApiCall();
-  }, [enableApiCall]);
 
   function onDragStart({ active }: { active: Active }): void {
     if (active.data.current?.type === "Column") {
@@ -267,6 +267,7 @@ function ColumnList({
           1,
         );
         newItems[overColumnIndex].tasks.splice(overTaskIndex, 0, removeditem);
+        // console.log(newItems);
         setColumns(newItems);
         setApiCallFlag(true);
       }
@@ -314,7 +315,7 @@ function ColumnList({
       onDragOver={onDragOver}
       id="unique-dnd-context-id"
     >
-      <SortableContext items={columnsState?.map((i) => i.id)}>
+      <SortableContext items={columnsId}>
         <div className="flex size-full gap-10 overflow-auto bg-primary-600 px-4 py-4">
           {columnsState?.map((column) => (
             <Column id={column.id} key={column.id} name={column.name}>

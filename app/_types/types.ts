@@ -61,10 +61,10 @@ export type TaskProps = {
 export type ColumnProps = {
   id: string;
   name: string;
-  order?: number;
+  order: number;
   boardId?: string;
-  placeholder: string;
-  tasks?: TaskProps[];
+  placeholder?: string;
+  tasks: TaskProps[];
 };
 
 export type NewEditColumnProps = {

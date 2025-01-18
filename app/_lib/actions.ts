@@ -26,7 +26,7 @@ export async function createBoard(data: NewFormFields, userId: string) {
           },
         },
         columns: {
-          create: columns.map(({ name: columnName }, index) => ({
+          create: columns?.map(({ name: columnName }, index) => ({
             name: columnName,
             order: index + 1,
           })),
@@ -112,6 +112,9 @@ export async function updateBoard(
 
   if (!boardId) return;
 
+  const lastColumn = await getLastColumn(boardId);
+  const newTaskOrder = lastColumn ? lastColumn.order + 1 : 1.0;
+
   try {
     await prisma.$transaction(async (prisma) => {
       await prisma.board.update({
@@ -119,7 +122,7 @@ export async function updateBoard(
         data: { name },
       });
 
-      const columnIds = editColumns.map((col) => col.id);
+      const columnIds = editColumns?.map((col) => col.id);
       await prisma.column.deleteMany({
         where: {
           boardId,
@@ -127,13 +130,13 @@ export async function updateBoard(
         },
       });
 
-      const columnPromises = editColumns.map((column) =>
+      const columnPromises = editColumns?.map((column) =>
         prisma.column.upsert({
           where: { id: column.id },
           create: {
             id: column.id,
             name: column.name,
-            order: column.order,
+            order: newTaskOrder,
             boardId,
           },
           update: {
@@ -146,13 +149,14 @@ export async function updateBoard(
       await Promise.all(columnPromises);
 
       if (shouldUpdateTasks) {
-        const taskUpdatePromises = editColumns.flatMap((column) =>
-          column.tasks.map((task) =>
+        const taskUpdatePromises = editColumns?.flatMap((column) =>
+          column.tasks?.map((task) =>
             prisma.task.update({
               where: { id: task.id },
               data: {
                 order: task.order,
                 columnId: column.id,
+                status: column.name,
               },
             }),
           ),

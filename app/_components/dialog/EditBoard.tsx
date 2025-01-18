@@ -86,7 +86,7 @@ function EditBoard({
       return;
     }
 
-    await updateBoard(data, board?.id, sessionData?.user?.id || "");
+    await updateBoard(data, board?.id, sessionData?.user?.id || "", false);
 
     toggleDialog();
   };
