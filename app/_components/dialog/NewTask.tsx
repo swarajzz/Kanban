@@ -2,17 +2,18 @@
 import React, { RefObject } from "react";
 import { Button } from "../ui/Button";
 import DialogPanel from "./DialogPanel";
-import { ColumnProps, UpdateSubtaskProps } from "@/app/_types/types";
 import Dialog from "./Dialog";
-import { getColumnId, getRandomPlaceholder } from "@/app/_lib/utils/helpers";
-import { createTask } from "@/app/_lib/actions";
 import { useFieldArray, useForm } from "react-hook-form";
 import SubtaskList from "../ui/Subtask/SubtaskList";
 import Form from "../ui/Form/Form";
 import FormRow from "../ui/Form/FormRow";
 import Input from "../ui/Form/Input";
 import FieldSet from "../ui/Form/FieldSet";
-import { useBoardStore } from "@/app/_store/store";
+import { createTask } from "@/_lib/actions";
+import { UpdateSubtaskProps } from "@/_types/types";
+import { getColumnId, getRandomPlaceholder } from "@/_lib/utils/helpers";
+import { useBoardStore } from "@/_store/store";
+import { HashLoader } from "react-spinners";
 
 function NewTask({
   dialogRef,
@@ -26,6 +27,7 @@ function NewTask({
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
@@ -70,7 +72,7 @@ function NewTask({
     };
 
     await createTask({ data: transformedData, columnId });
-
+    reset();
     toggleDialog();
   };
 
@@ -155,9 +157,13 @@ function NewTask({
           </FormRow>
 
           <div className="mb-6 flex flex-col gap-5">
-            <Button type="submit" size="md" intent={"primary"}>
-              Create Task
-            </Button>
+            {!isSubmitting ? (
+              <Button type="submit" size="md" intent={"primary"}>
+                Create Task
+              </Button>
+            ) : (
+              <HashLoader className="self-center" color="#635FC7" size={30} />
+            )}
           </div>
         </Form>
       </DialogPanel>
