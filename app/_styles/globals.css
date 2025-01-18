@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"); */
 
 @tailwind base;
 @tailwind components;
@@ -17,6 +17,26 @@
     --background-end-rgb: 0, 0, 0;
   }
 } */
+
+@layer base {
+  :root {
+    --color-main_bkg: 235deg 16% 15%;
+    --color-content_bkg: 235deg 12% 19%;
+    --white: 0deg 0% 100%;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --color-main_bkg: 220deg, 69%, 97%;
+      --color-content_bkg: 0deg 0 100%;
+      --white: 0deg 0% 0;
+    }
+  }
+  :root[data-theme="light"] {
+    --color-main_bkg: 220deg 69% 97%;
+    --color-content_bkg: 0deg 0 100%;
+    --white: 0deg 0% 0;
+  }
+}
 
 body {
 }
@@ -46,6 +66,18 @@ body {
     border: 2px solid theme("colors.primary.200");
     border-right-color: transparent;
     animation: rotate 1s infinite linear;
+  }
+
+  .visually-hidden {
+    border-width: 0 !important;
+    clip: rect(1px, 1px, 1px, 1px) !important;
+    height: 1px !important;
+    background-color: red;
+    overflow: hidden !important;
+    padding: 0 !important;
+    position: absolute !important;
+    white-space: nowrap !important;
+    width: 1px !important;
   }
 
   @keyframes rotate {

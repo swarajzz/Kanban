@@ -13,9 +13,10 @@ module.exports = {
           200: "#E4EBFA",
           300: "#828FA3",
           400: "#3E3F4E",
-          500: "#2B2C37",
-          600: "#20212C",
         },
+        main_bkg: "hsl(var(--color-main_bkg) / <alpha-value>)",
+        content_bkg: "hsl(var(--color-content_bkg) / <alpha-value>)",
+        theme_white: "hsl(var(--white) / <alpha-value>)",
         accent: {
           100: "#A8A4FF",
           300: "#FF9898",
