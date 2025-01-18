@@ -17,10 +17,24 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/_components/*": ["app/_components/*"],
+      "@/public/*": ["public/*"],
+      "@/_hooks/*": ["app/_hooks/*"],
+      "@/_lib/*": ["app/_lib/*"],
+      "@/_store/*": ["app/_store/*"],
+      "@/_types/*": ["app/_types/*"],
+      "@/app/*": ["app/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "app/_lib/auth.ts",
+    "app/_components/ColumnContext.jsx"
+  ],
   "exclude": ["node_modules"]
 }
