@@ -1,5 +1,5 @@
 "use client";
-import React, { RefObject } from "react";
+import React, { RefObject, useEffect } from "react";
 import { Button } from "../ui/Button";
 import DialogPanel from "./DialogPanel";
 import { ColumnProps, TaskProps, UpdateSubtaskProps } from "@/app/_types/types";
@@ -31,6 +31,7 @@ function EditTask({
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
@@ -42,7 +43,7 @@ function EditTask({
             id: subTask?.id ?? "",
             title: subTask?.title ?? "",
             isCompleted: subTask?.isCompleted ?? false,
-            placeholder: subTask?.placeholder ?? getRandomPlaceholder(),
+            placeholder: subTask?.placeholder ?? "",
           };
         }) ?? [],
       status: task?.status ?? "",
@@ -62,9 +63,7 @@ function EditTask({
   }) => {
     const columnId = getColumnId(columns ?? [], data.status);
 
-    task
-      ? await updateTask({ data, taskId, columnId })
-      : await createTask({ data, columnId });
+    await updateTask({ data, taskId, columnId });
 
     toggleDialog();
   };
@@ -129,13 +128,14 @@ function EditTask({
 
           <FormRow label="Status" error={errors?.status?.message}>
             <Input
+              element="select"
               register={register}
+              control={control}
               validationSchema={{
                 required: "This field is required",
               }}
               name="status"
-              element="select"
-              type="select"
+              defaultValue={task?.status}
             >
               <option disabled value="">
                 -- select an option --

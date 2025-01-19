@@ -136,7 +136,7 @@ function NewTask({
 
           <FormRow label="Status" error={errors?.status?.message}>
             <Input
-              register={register}
+              control={control}
               validationSchema={{
                 required: "This field is required",
               }}

@@ -44,6 +44,7 @@ function TaskDialog({
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
+    setValue,
   } = useForm({
     defaultValues: {
       title: task?.title ?? "",
@@ -79,6 +80,13 @@ function TaskDialog({
     toggleDialog();
   };
 
+  const handleInputChanges = (
+    event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>,
+  ) => {
+    const value = event.target.value;
+    setValue("checked_status", value);
+  };
+
   return (
     <Dialog ref={dialogRef} toggleDialog={toggleDialog}>
       <DialogPanel
@@ -88,7 +96,7 @@ function TaskDialog({
         toggleShowDropdown={toggleShowDropdown}
       >
         <Form submitHandler={handleSubmit(processForm)}>
-          <div className="border-grey-300 rounded bg-primary-500 text-primary-300">
+          <div className="border-grey-300 bg-content_bkg rounded text-primary-300">
             {description}
           </div>
 
@@ -102,11 +110,14 @@ function TaskDialog({
           <FormRow label="Status" error={errors?.checked_status?.message}>
             <Input
               element="select"
+              control={control}
               register={register}
+              onChange={handleInputChanges}
               validationSchema={{
                 required: "This field is required",
               }}
               name="checked_status"
+              value={task.status}
             >
               <option disabled value="">
                 -- select an option --
@@ -151,4 +162,4 @@ function TaskDialog({
   );
 }
 
-export default TaskDialog;
+export default React.memo(TaskDialog);
