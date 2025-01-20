@@ -28,6 +28,7 @@ export function reorderTasks(
   overColumnIndex: number,
   activeTaskIndex: number,
   overTaskIndex: number,
+  overTaskColumn: ColumnProps,
   newItems: ColumnProps[],
   over: boolean = false,
 ) {
@@ -53,6 +54,8 @@ export function reorderTasks(
         activeTasks[overTaskIndex].order) /
       2;
   }
+
+  activeTasks[activeTaskIndex].status = overTaskColumn.name;
 }
 
 export function reorderColumns(

@@ -52,12 +52,20 @@ function ColumnList({
   );
 
   useEffect(() => {
+    console.log("first api call");
+
+    useBoardStore.setState({ board });
+    useBoardStore.setState({ columns: columnsState });
+  }, [board, columnsState]);
+
+  useEffect(() => {
     const data = {
       name: board.name,
       editColumns: columnsState,
     };
 
     const makeApiCall = async () => {
+      console.log(columnsState);
       if (enableApiCall) {
         try {
           await updateBoard(data, board.id, userId, true);
@@ -116,11 +124,6 @@ function ColumnList({
     return task;
   };
 
-  useEffect(() => {
-    useBoardStore.setState({ board });
-    useBoardStore.setState({ columns: columnsState });
-  }, [board, columnsState]);
-
   function onDragStart({ active }: { active: Active }): void {
     if (active.data.current?.type === "Column") {
       setActiveColumnId(active.id as string);
@@ -166,7 +169,6 @@ function ColumnList({
         return newColumns;
       });
       setApiCall(true);
-      console.log("HEy");
     } else {
       apiCallFlag && setApiCall(true);
     }
@@ -237,6 +239,7 @@ function ColumnList({
           overColumnIndex,
           activeTaskIndex,
           overTaskIndex,
+          overTaskColumn,
           newItems,
         );
 
@@ -258,6 +261,7 @@ function ColumnList({
           overColumnIndex,
           activeTaskIndex,
           overTaskIndex,
+          overTaskColumn,
           newItems,
           true,
         );
@@ -267,7 +271,6 @@ function ColumnList({
           1,
         );
         newItems[overColumnIndex].tasks.splice(overTaskIndex, 0, removeditem);
-        // console.log(newItems);
         setColumns(newItems);
         setApiCallFlag(true);
       }
@@ -297,11 +300,15 @@ function ColumnList({
           ? overColumn.tasks[overColumn.tasks.length - 1].order + 1.0
           : 1.0;
 
+      activeTask.status = overColumn.name;
+      activeTask.columnId = overColumn.id;
+
       const [removedItem] = newItems[activeColumnIndex].tasks.splice(
         activeTaskIndex,
         1,
       );
       newItems[overColumnIndex].tasks.push(removedItem);
+      console.log(newItems);
       setColumns(newItems);
       setApiCallFlag(true);
     }
@@ -316,7 +323,7 @@ function ColumnList({
       id="unique-dnd-context-id"
     >
       <SortableContext items={columnsId}>
-        <div className="flex size-full gap-10 overflow-auto bg-primary-600 px-4 py-4">
+        <div className="flex size-full gap-10 overflow-auto bg-main_bkg px-4 py-4">
           {columnsState?.map((column) => (
             <Column id={column.id} key={column.id} name={column.name}>
               <SortableContext items={column?.tasks.map((i) => i.id)}>
