@@ -1,38 +1,23 @@
 import EditTask from "@/_components/dialog/EditTask";
 import TaskDialog from "@/_components/dialog/TaskDialog";
+import useDialogRef from "@/_hooks/useDialogRef";
+import { getCompletedSubtasksLength } from "@/_lib/utils/helpers";
 import { TaskProps } from "@/_types/types";
 import { GripVertical } from "lucide-react";
-import { memo, RefObject } from "react";
+import { memo, RefObject, useCallback, useState } from "react";
 
 interface TasksProps {
-  handleClick: () => void;
   task: TaskProps;
-  completedSubtasks: number;
-  viewDialogRef: RefObject<HTMLDialogElement>;
-  toggleViewDialog: () => void;
-  isShowDropdown: boolean;
-  toggleShowDropdown: () => void;
-  editDialogRef: RefObject<HTMLDialogElement>;
-  toggleEditDialog: () => void;
+  handleTaskClick: (task: TaskProps) => void;
 }
 
-function Tasks({
-  handleClick,
-  task,
-  completedSubtasks,
-  viewDialogRef,
-  toggleViewDialog,
-  isShowDropdown,
-  toggleShowDropdown,
-  editDialogRef,
-  toggleEditDialog,
-}: TasksProps) {
-  console.log("Tasks is rendered");
+function Tasks({ task, handleTaskClick }: TasksProps) {
+  const completedSubtasks = getCompletedSubtasksLength(task.subTasks);
 
   return (
     <>
       <div
-        onClick={handleClick}
+        onClick={() => handleTaskClick(task)}
         className="flex size-full items-center gap-1 p-3"
       >
         <GripVertical />
@@ -45,25 +30,6 @@ function Tasks({
           </div>
         </div>
       </div>
-
-      <TaskDialog
-        dialogRef={viewDialogRef}
-        toggleDialog={toggleViewDialog}
-        task={task}
-        isShowDropdown={isShowDropdown}
-        toggleShowDropdown={toggleShowDropdown}
-        toggleEditDialog={toggleEditDialog}
-      />
-
-      {viewDialogRef.current ? (
-        <EditTask
-          dialogRef={editDialogRef}
-          toggleDialog={toggleEditDialog}
-          task={task}
-        />
-      ) : (
-        ""
-      )}
     </>
   );
 }

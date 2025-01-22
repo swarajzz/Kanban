@@ -18,6 +18,9 @@ import { BoardProps, ColumnProps, TaskProps } from "@/_types/types";
 import { useBoardStore } from "@/_store/store";
 import { updateBoard, updateTask } from "@/_lib/actions";
 import { reorderColumns, reorderTasks } from "@/_lib/utils/helpers";
+import useDialogRef from "@/_hooks/useDialogRef";
+import TaskDialog from "@/_components/dialog/TaskDialog";
+import EditTask from "@/_components/dialog/EditTask";
 
 function ColumnList({
   columns,
@@ -40,6 +43,25 @@ function ColumnList({
     [columnsState],
   );
 
+  const [isShowDropdown, setShowDropdown] = useState(true);
+
+  const [selectedTask, setSelectedTask] = useState<TaskProps | null>(null);
+
+  const { dialogRef: viewDialogRef, toggleDialog: toggleViewDialog } =
+    useDialogRef();
+  const { dialogRef: editDialogRef, toggleDialog: toggleEditDialog } =
+    useDialogRef();
+
+  const handleTaskClick = (task: TaskProps): void => {
+    setSelectedTask(task);
+    toggleViewDialog();
+    setShowDropdown(false);
+  };
+
+  const toggleShowDropdown = () => {
+    setShowDropdown((prev) => !prev);
+  };
+
   const [activeColumnId, setActiveColumnId] = useState<string | null>(null);
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
 
@@ -52,8 +74,6 @@ function ColumnList({
   );
 
   useEffect(() => {
-    console.log("first api call");
-
     useBoardStore.setState({ board });
     useBoardStore.setState({ columns: columnsState });
   }, [board, columnsState]);
@@ -65,7 +85,6 @@ function ColumnList({
     };
 
     const makeApiCall = async () => {
-      console.log(columnsState);
       if (enableApiCall) {
         try {
           await updateBoard(data, board.id, userId, true);
@@ -308,70 +327,92 @@ function ColumnList({
         1,
       );
       newItems[overColumnIndex].tasks.push(removedItem);
-      console.log(newItems);
       setColumns(newItems);
       setApiCallFlag(true);
     }
   }
 
   return (
-    <DndContext
-      sensors={sensors}
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
-      onDragOver={onDragOver}
-      id="unique-dnd-context-id"
-    >
-      <SortableContext items={columnsId}>
-        <div className="flex size-full gap-10 overflow-auto bg-main_bkg px-4 py-4">
-          {columnsState?.map((column) => (
-            <Column id={column.id} key={column.id} name={column.name}>
-              <SortableContext items={column?.tasks.map((i) => i.id)}>
-                <ul className="flex max-w-80 flex-col gap-5 pb-5">
-                  {column?.tasks.map((task) => (
+    <>
+      {selectedTask && (
+        <TaskDialog
+          dialogRef={viewDialogRef}
+          toggleDialog={toggleViewDialog}
+          task={selectedTask}
+          isShowDropdown={isShowDropdown}
+          toggleShowDropdown={toggleShowDropdown}
+          toggleEditDialog={toggleEditDialog}
+        />
+      )}
+
+      {viewDialogRef.current && selectedTask ? (
+        <EditTask
+          dialogRef={editDialogRef}
+          toggleDialog={toggleEditDialog}
+          task={selectedTask}
+        />
+      ) : (
+        ""
+      )}
+
+      <DndContext
+        sensors={sensors}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+        onDragOver={onDragOver}
+        id="unique-dnd-context-id"
+      >
+        <SortableContext items={columnsId}>
+          <div className="flex size-full gap-10 overflow-auto bg-main_bkg px-4 py-4">
+            {columnsState?.map((column) => (
+              <Column id={column.id} key={column.id} name={column.name}>
+                <SortableContext items={column?.tasks.map((i) => i.id)}>
+                  <ul className="flex max-w-80 flex-col gap-5 pb-5">
+                    {column?.tasks.map((task) => (
+                      <TaskItem
+                        id={task.id}
+                        key={task.id}
+                        task={task}
+                        handleTaskClick={handleTaskClick}
+                      />
+                    ))}
+                  </ul>
+                </SortableContext>
+              </Column>
+            ))}
+          </div>
+        </SortableContext>
+        {typeof window !== "undefined" &&
+          createPortal(
+            <DragOverlay>
+              {activeColumnId && (
+                <Column
+                  id={activeColumnId}
+                  name={findColumnName(activeColumnId) as string}
+                >
+                  {findColumnTasks(activeColumnId).map((task) => (
                     <TaskItem
-                      title={task.title}
                       id={task.id}
                       key={task.id}
                       task={task}
+                      handleTaskClick={handleTaskClick}
                     />
                   ))}
-                </ul>
-              </SortableContext>
-            </Column>
-          ))}
-        </div>
-      </SortableContext>
-      {typeof window !== "undefined" &&
-        createPortal(
-          <DragOverlay>
-            {activeColumnId && (
-              <Column
-                id={activeColumnId}
-                name={findColumnName(activeColumnId) as string}
-              >
-                {findColumnTasks(activeColumnId).map((task) => (
-                  <TaskItem
-                    title={task.title}
-                    id={task.id}
-                    key={task.id}
-                    task={task}
-                  />
-                ))}
-              </Column>
-            )}
-            {activeTaskId && (
-              <TaskItem
-                title={findTaskTitle(activeTaskId)}
-                id={activeTaskId}
-                key={activeTaskId}
-                task={findTask(activeTaskId)}
-              />
-            )}
-          </DragOverlay>,
-          document.body,
-        )}
-    </DndContext>
+                </Column>
+              )}
+              {activeTaskId && (
+                <TaskItem
+                  id={activeTaskId}
+                  key={activeTaskId}
+                  task={findTask(activeTaskId)}
+                  handleTaskClick={handleTaskClick}
+                />
+              )}
+            </DragOverlay>,
+            document.body,
+          )}
+      </DndContext>
+    </>
   );
 }
 

@@ -8,24 +8,14 @@ import { TaskProps } from "@/_types/types";
 import Tasks from "./Tasks";
 
 function TaskItem({
-  title,
   id,
   task,
+  handleTaskClick,
 }: {
-  title: string;
   id: string;
   task: TaskProps;
+  handleTaskClick: (Task: TaskProps) => void;
 }) {
-  const { subTasks } = task || [];
-
-  const [isShowDropdown, setShowDropdown] = useState(true);
-  const completedSubtasks = getCompletedSubtasksLength(subTasks);
-
-  const { dialogRef: viewDialogRef, toggleDialog: toggleViewDialog } =
-    useDialogRef();
-  const { dialogRef: editDialogRef, toggleDialog: toggleEditDialog } =
-    useDialogRef();
-
   const {
     setNodeRef,
     attributes,
@@ -45,15 +35,6 @@ function TaskItem({
     transform: CSS.Transform.toString(transform),
   };
 
-  const handleClick = useCallback(() => {
-    toggleViewDialog();
-    setShowDropdown(false);
-  }, []);
-
-  const toggleShowDropdown = useCallback(() => {
-    setShowDropdown((prev) => !prev);
-  }, []);
-
   if (isDragging) {
     return (
       <li
@@ -68,24 +49,13 @@ function TaskItem({
 
   return (
     <li
-      className="flex min-h-24 cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary-500"
+      className="flex min-h-24 cursor-pointer items-center justify-center gap-2 rounded-lg bg-content_bkg"
       ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
-      title={title}
     >
-      <Tasks
-        handleClick={handleClick}
-        task={task}
-        completedSubtasks={completedSubtasks}
-        viewDialogRef={viewDialogRef}
-        toggleViewDialog={toggleViewDialog}
-        isShowDropdown={isShowDropdown}
-        toggleShowDropdown={toggleShowDropdown}
-        editDialogRef={editDialogRef}
-        toggleEditDialog={toggleEditDialog}
-      />
+      <Tasks task={task} handleTaskClick={handleTaskClick} />
     </li>
   );
 }
