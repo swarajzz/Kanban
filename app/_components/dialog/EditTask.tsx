@@ -50,6 +50,23 @@ function EditTask({
     },
   });
 
+  useEffect(() => {
+    reset({
+      title: task?.title ?? "",
+      description: task?.description ?? "",
+      subTasks:
+        task?.subTasks.map((subTask) => {
+          return {
+            id: subTask?.id ?? "",
+            title: subTask?.title ?? "",
+            isCompleted: subTask?.isCompleted ?? false,
+            placeholder: subTask?.placeholder ?? "",
+          };
+        }) ?? [],
+      status: task?.status ?? "",
+    });
+  }, [reset, task]);
+
   const { fields, append, prepend, remove } = useFieldArray({
     name: "subTasks",
     control,

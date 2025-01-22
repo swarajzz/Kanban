@@ -1,5 +1,5 @@
 "use client";
-import React, { RefObject } from "react";
+import React, { RefObject, useEffect } from "react";
 import { Button } from "../ui/Button";
 import DialogPanel from "./DialogPanel";
 import Dialog from "./Dialog";
@@ -45,6 +45,8 @@ function TaskDialog({
     control,
     formState: { errors, isSubmitting },
     setValue,
+    getValues,
+    reset,
   } = useForm({
     defaultValues: {
       title: task?.title ?? "",
@@ -55,6 +57,17 @@ function TaskDialog({
       })),
     },
   });
+
+  useEffect(() => {
+    reset({
+      title: task?.title ?? "",
+      description: task?.description ?? "",
+      checked_status: task.status ?? "",
+      checkSubtasks: task.subTasks.map((subTask) => ({
+        ...subTask,
+      })),
+    });
+  }, [reset, task]);
 
   const { fields } = useFieldArray({
     name: "checkSubtasks",
@@ -96,7 +109,7 @@ function TaskDialog({
         toggleShowDropdown={toggleShowDropdown}
       >
         <Form submitHandler={handleSubmit(processForm)}>
-          <div className="border-grey-300 bg-content_bkg rounded text-primary-300">
+          <div className="border-grey-300 rounded bg-content_bkg text-primary-300">
             {description}
           </div>
 
@@ -162,4 +175,4 @@ function TaskDialog({
   );
 }
 
-export default React.memo(TaskDialog);
+export default TaskDialog;

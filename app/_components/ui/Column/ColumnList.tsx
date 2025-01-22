@@ -1,6 +1,6 @@
 "use client";
 import Column from "./Column";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Active,
   DndContext,
@@ -45,22 +45,27 @@ function ColumnList({
 
   const [isShowDropdown, setShowDropdown] = useState(true);
 
-  const [selectedTask, setSelectedTask] = useState<TaskProps | null>(null);
+  const [selectedTask, setSelectedTask] = useState<TaskProps | null>(
+    tasksState[0],
+  );
 
   const { dialogRef: viewDialogRef, toggleDialog: toggleViewDialog } =
     useDialogRef();
   const { dialogRef: editDialogRef, toggleDialog: toggleEditDialog } =
     useDialogRef();
 
-  const handleTaskClick = (task: TaskProps): void => {
-    setSelectedTask(task);
-    toggleViewDialog();
-    setShowDropdown(false);
-  };
+  const handleTaskClick = useCallback(
+    (task: TaskProps): void => {
+      setSelectedTask(task);
+      toggleViewDialog();
+      setShowDropdown(false);
+    },
+    [toggleViewDialog],
+  );
 
-  const toggleShowDropdown = () => {
+  const toggleShowDropdown = useCallback(() => {
     setShowDropdown((prev) => !prev);
-  };
+  }, []);
 
   const [activeColumnId, setActiveColumnId] = useState<string | null>(null);
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
