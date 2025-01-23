@@ -19,10 +19,6 @@ export function getColumnId(columns: ColumnProps[], taskStatus: string) {
   return columns.find((column) => column.name === taskStatus)?.id;
 }
 
-export function slugToName(slug) {
-  return slug.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
-}
-
 export function reorderTasks(
   activeColumnIndex: number,
   overColumnIndex: number,

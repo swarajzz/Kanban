@@ -8,7 +8,7 @@ function TaskDropdown({
   toggleDialog,
 }: {
   toggleShowDropdown: () => void;
-  boardName: string;
+  boardName: string | undefined;
   toggleDialog: () => void;
 }) {
   function handleClick() {

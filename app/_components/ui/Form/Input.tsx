@@ -40,7 +40,7 @@ function Input({
           className={
             type === "checkbox"
               ? "border-blue-gray-200 peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border transition-all checked:border-primary-300 checked:bg-accent-200"
-              : "border-grey-300 bg-content_bkg w-full max-w-xl rounded px-4 py-2 text-white"
+              : "border-grey-300 w-full max-w-xl rounded bg-content_bkg px-4 py-2 text-white"
           }
           type={type}
           {...register(name, validationSchema)}
@@ -57,7 +57,7 @@ function Input({
               <>
                 <select
                   {...field}
-                  className="border-grey-300 bg-content_bkg w-full max-w-xl cursor-pointer rounded px-4 py-2 text-white"
+                  className="border-grey-300 w-full max-w-xl cursor-pointer rounded bg-content_bkg px-4 py-2 text-white"
                   onChange={(e) => {
                     field.onChange(e);
                     onChange?.(e);
@@ -86,7 +86,7 @@ function Input({
       )}
       {element === "textarea" && (
         <textarea
-          className="border-grey-300 bg-content_bkg cursor-pointer rounded px-4 py-2 text-white"
+          className="border-grey-300 cursor-pointer rounded bg-content_bkg px-4 py-2 text-white"
           {...register(name, validationSchema)}
           {...rest}
         />

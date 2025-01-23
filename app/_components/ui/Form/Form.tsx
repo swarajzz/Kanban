@@ -1,6 +1,11 @@
 import React from "react";
 
-function Form({ submitHandler, children }) {
+interface FormProps {
+  submitHandler: React.FormEventHandler<HTMLFormElement>;
+  children: React.ReactNode;
+}
+
+function Form({ submitHandler, children }: FormProps) {
   return (
     <form
       onSubmit={submitHandler}

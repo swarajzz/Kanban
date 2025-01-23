@@ -1,15 +1,25 @@
 import React from "react";
-import { UseFormRegister } from "react-hook-form";
+import {
+  FieldArrayWithId,
+  UseFieldArrayRemove,
+  UseFormRegister,
+  UseFormRegisterReturn,
+} from "react-hook-form";
 import Input from "../Form/Input";
 import FormRow from "../Form/FormRow";
 
-function CheckedSubtaskList({ fields, register }) {
+interface CheckedSubtaskListProps {
+  fields: FieldArrayWithId<any, any, any>[];
+  register: UseFormRegister<any>;
+}
+
+function CheckedSubtaskList({ fields, register }: CheckedSubtaskListProps) {
   return (
     <ul className="flex w-full flex-col gap-3">
       {fields.map((field, index) => (
         <li
           key={field.id}
-          className="w-full cursor-pointer rounded border-gray-200 bg-primary-600 transition hover:bg-accent-200 hover:bg-opacity-25"
+          className="bg-primary-600 w-full cursor-pointer rounded border-gray-200 transition hover:bg-accent-200 hover:bg-opacity-25"
         >
           <label className="inline-flex w-full cursor-pointer items-center">
             <div

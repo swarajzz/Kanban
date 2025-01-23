@@ -5,11 +5,10 @@ import { Button } from "../ui/Button";
 import HeaderDropdown from "../ui/Header/HeaderDropdown";
 import { useParams } from "next/navigation";
 import NewTask from "../dialog/NewTask";
-import NewEditBoard from "../dialog/NewEditBoard";
 import { EditMenuIcon } from "@/public/svgs";
-import { slugToName } from "@/_lib/utils/helpers";
 import useDialogRef from "@/_hooks/useDialogRef";
 import EditBoard from "../dialog/EditBoard";
+import { useBoardStore } from "@/_store/store";
 
 export default function Header() {
   const params = useParams<{ board: string }>();
@@ -19,16 +18,18 @@ export default function Header() {
     useDialogRef();
   const [isShowDropdown, setShowDropdown] = useState(false);
 
+  const { board } = useBoardStore();
+
   function toggleShowDropdown() {
     setShowDropdown((prev) => !prev);
   }
 
+  console.log(params);
+
   return (
-    <header className="relative flex w-full items-center justify-between border-b border-primary-400 bg-primary-500 p-5">
-      <h1 className="text-xl font-bold text-white">
-        {!Object.keys(params).length
-          ? "Turn Chaos into Clarity"
-          : slugToName(params.board)}
+    <header className="relative flex w-full items-center justify-between border-b border-primary-400 bg-content_bkg p-5">
+      <h1 className="text-xl font-bold text-theme_white">
+        {!Object.keys(params).length ? "Turn Chaos into Clarity" : board?.name}
       </h1>
       <div className="flex items-center gap-5">
         {Object.keys(params).length ? (
@@ -52,7 +53,7 @@ export default function Header() {
           <>
             <HeaderDropdown
               toggleShowDropdown={toggleShowDropdown}
-              boardName={params.board}
+              boardName={board?.name}
               toggleDialog={toggleBoardDialog}
             />
           </>
