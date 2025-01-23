@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { DefaultSession } from "next-auth";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 
@@ -14,6 +14,7 @@ const adapter = new PrismaNeon(neon);
 const prisma = new PrismaClient({ adapter });
 
 const authConfig = {
+  trustHost: true,
   adapter: PrismaAdapter(prisma),
   providers: [
     Google({
@@ -28,13 +29,22 @@ const authConfig = {
     }),
   ],
   callbacks: {
-    authorized({ auth, request }) {
+    session({ session, user }: { session: any; user: any }) {
+      session.user.id = user.id;
+      return session;
+    },
+    authorized({ auth, request }: { auth: any; request: any }) {
       return !!auth?.user;
     },
+  },
+  pages: {
+    signIn: "/login",
   },
 };
 
 export const {
   auth,
+  signIn,
+  signOut,
   handlers: { GET, POST },
 } = NextAuth(authConfig);

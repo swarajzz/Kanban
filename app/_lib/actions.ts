@@ -14,7 +14,7 @@ import {
 import { revalidatePath } from "next/cache";
 
 export async function createBoard(data: NewFormFields, userId: string) {
-  const boardName = data.name;
+  const boardName = data.name.trim();
   const columns = data.columns;
   try {
     await prisma.board.create({
@@ -27,7 +27,7 @@ export async function createBoard(data: NewFormFields, userId: string) {
         },
         columns: {
           create: columns?.map(({ name: columnName }, index) => ({
-            name: columnName,
+            name: columnName.trim(),
             order: index + 1,
           })),
         },
@@ -191,11 +191,11 @@ export async function createTask({
     data: {
       subTasks: {
         create: subTasks.map((subTask) => ({
-          title: subTask.title,
+          title: subTask.title.trim(),
           isCompleted: false,
         })),
       },
-      title: title,
+      title: title.trim(),
       description: description,
       status: status,
       order: newTaskOrder,
@@ -218,7 +218,7 @@ export async function updateTask({ data, taskId, columnId }: UpdateTaskProps) {
       id: taskId,
     },
     data: {
-      title: title,
+      title: title.trim(),
       description: description,
       status: status,
       subTasks: {
@@ -228,7 +228,7 @@ export async function updateTask({ data, taskId, columnId }: UpdateTaskProps) {
         upsert: subTasks.map((subTask) => ({
           where: { id: subTask.id },
           create: {
-            title: subTask.title,
+            title: subTask.title.trim(),
             isCompleted: subTask.isCompleted,
           },
           update: {
