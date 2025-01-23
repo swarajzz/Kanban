@@ -1,16 +1,18 @@
-import { useRef } from "react";
+import { memo, useCallback, useRef } from "react";
 
-export default function useDialogRef() {
+function useDialogRef() {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  function toggleDialog() {
+  const toggleDialog = useCallback(() => {
     if (!dialogRef.current) {
       return;
     }
     dialogRef.current.hasAttribute("open")
       ? dialogRef.current.close()
       : dialogRef.current.showModal();
-  }
+  }, []);
 
   return { dialogRef, toggleDialog };
 }
+
+export default useDialogRef;
