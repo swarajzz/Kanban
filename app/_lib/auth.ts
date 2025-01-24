@@ -6,12 +6,7 @@ import { Pool } from "@neondatabase/serverless";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "@prisma/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-
-const neon = new Pool({
-  connectionString: process.env.POSTGRES_PRISMA_URL,
-});
-const adapter = new PrismaNeon(neon);
-const prisma = new PrismaClient({ adapter });
+import prisma from "./prisma";
 
 const authConfig = {
   trustHost: true,
@@ -36,9 +31,6 @@ const authConfig = {
     authorized({ auth, request }: { auth: any; request: any }) {
       return !!auth?.user;
     },
-  },
-  pages: {
-    signIn: "/login",
   },
 };
 
