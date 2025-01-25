@@ -1,9 +1,10 @@
+"use client";
 import { BoardProps } from "@/app/_types/types";
 import BoardListItem from "./BoardListItem";
 
 function BoardList({ allBoards }: { allBoards: BoardProps[] }) {
   return (
-    <ul className="ml-2 flex flex-col gap-6">
+    <ul className="flex flex-col">
       {allBoards.map((board: BoardProps) => (
         <BoardListItem key={board.id} board={board} />
       ))}
