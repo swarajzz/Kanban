@@ -8,7 +8,9 @@ interface FieldSetProps {
 function FieldSet({ legend, children }: FieldSetProps) {
   return (
     <fieldset className="flex flex-col gap-3">
-      <legend className="mb-3 text-white">{legend}</legend>
+      <legend className="text-theme_grey mb-3 text-xs font-bold">
+        {legend}
+      </legend>
       {children}
     </fieldset>
   );

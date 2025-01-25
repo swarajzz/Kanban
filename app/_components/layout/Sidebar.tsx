@@ -1,4 +1,4 @@
-import { LogoLight, VisibilityOff } from "@/public/svgs";
+import { LogoLight, LogoDark, VisibilityOff } from "@/public/svgs";
 import Image from "next/image";
 
 import BoardList from "../ui/Board/BoardList";
@@ -12,10 +12,15 @@ async function Sidebar() {
   const allBoards = await getBoards(session?.user?.id || "");
 
   return (
-    <section className="bg-background-dark hidden min-w-64 animate-fadeOut flex-col items-center justify-between justify-items-center border-r border-primary-400 bg-content_bkg md:flex md:animate-fadeIn">
+    <section className="bg-background-dark border-primary-500 hidden min-w-64 animate-fadeOut flex-col items-center justify-between justify-items-center border-r border-opacity-20 bg-content_bkg md:flex md:animate-fadeIn">
       <div className="self-start px-5">
         <Link href={"/"}>
-          <Image src={LogoLight} alt="logo" className="mt-8" />
+          <Image
+            src={LogoLight}
+            alt="logo"
+            className="mt-8 hidden dark:block"
+          />
+          <Image src={LogoDark} alt="logo" className="mt-8 block dark:hidden" />
         </Link>
 
         {session?.user?.image ? (

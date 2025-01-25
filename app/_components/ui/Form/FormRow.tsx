@@ -14,11 +14,11 @@ function FormRow({ label, hidden, error, children, type }: FormRowProps) {
   return (
     <fieldset className="flex w-full flex-col">
       <label
-        className={
+        className={`text-xs font-bold ${
           type === "checkbox"
             ? "inline-flex w-full cursor-pointer items-center"
-            : `mb-2 text-sm text-white ${hidden ? "visually-hidden" : ""}`
-        }
+            : `text-theme_grey mb-2`
+        } ${hidden ? "visually-hidden" : ""}`}
         htmlFor={children?.props?.id}
       >
         {label}

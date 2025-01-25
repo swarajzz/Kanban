@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "@/app/_styles/globals.css";
 import { Plus_Jakarta_Sans } from "next/font/google";
-import { getSession, SessionProvider } from "next-auth/react";
+import { SessionProvider } from "next-auth/react";
 import Header from "@/_components/layout/Header";
 import Sidebar from "@/_components/layout/Sidebar";
 import { auth } from "./_lib/auth";
@@ -17,18 +17,17 @@ export const metadata: Metadata = {
   description: "Frontend Mentor | Kanban task management web app",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
       <body
         className={`${jakarta.className} h-full text-sm font-medium text-primary-300`}
       >
-        <SessionProvider session={session} refetchOnWindowFocus={false}>
+        <SessionProvider refetchOnWindowFocus={false}>
           <Providers>
             <main className="flex h-full">
               <Sidebar />

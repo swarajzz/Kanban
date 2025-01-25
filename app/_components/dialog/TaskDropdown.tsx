@@ -19,7 +19,7 @@ function TaskDropdown({
 
   return (
     <>
-      <ul className="absolute -right-12 top-16 flex w-48 flex-col gap-4 rounded-lg border border-primary-400 bg-main_bkg px-4 py-6 text-primary-300 shadow-sm">
+      <ul className="absolute -right-12 top-16 flex w-48 flex-col gap-4 rounded-lg bg-main_bkg px-4 py-6 text-primary-300 shadow-sm">
         <li
           className="cursor-pointer transition hover:text-accent-200"
           onClick={handleClick}

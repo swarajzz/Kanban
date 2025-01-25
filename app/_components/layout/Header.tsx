@@ -27,7 +27,7 @@ export default function Header() {
   console.log(params);
 
   return (
-    <header className="relative flex w-full items-center justify-between border-b border-primary-400 bg-content_bkg p-5">
+    <header className="relative flex w-full items-center justify-between border-b border-primary-500 border-opacity-20 bg-content_bkg p-5">
       <h1 className="text-xl font-bold text-theme_white">
         {!Object.keys(params).length ? "Turn Chaos into Clarity" : board?.name}
       </h1>

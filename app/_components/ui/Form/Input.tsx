@@ -39,8 +39,8 @@ function Input({
         <input
           className={
             type === "checkbox"
-              ? "border-blue-gray-200 peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border transition-all checked:border-primary-300 checked:bg-accent-200"
-              : "border-grey-300 w-full max-w-xl rounded bg-content_bkg px-4 py-2 text-white"
+              ? "border-blue-gray-200 shadow-input peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-opacity-20 font-semibold transition-all checked:border-primary-300 checked:bg-accent-200"
+              : "shadow-input w-full max-w-xl rounded border-primary-300 border-opacity-20 bg-content_bkg px-4 py-2 font-semibold text-theme_white transition duration-300 ease-in-out hover:border-accent-200"
           }
           type={type}
           {...register(name, validationSchema)}
@@ -57,7 +57,7 @@ function Input({
               <>
                 <select
                   {...field}
-                  className="border-grey-300 w-full max-w-xl cursor-pointer rounded bg-content_bkg px-4 py-2 text-white"
+                  className="shadow-input text-theme_grey w-full max-w-xl cursor-pointer rounded border-primary-300 border-opacity-20 bg-content_bkg px-4 py-2 text-[13px] font-semibold transition duration-300 ease-in-out hover:border-accent-200"
                   onChange={(e) => {
                     field.onChange(e);
                     onChange?.(e);
@@ -86,7 +86,7 @@ function Input({
       )}
       {element === "textarea" && (
         <textarea
-          className="border-grey-300 cursor-pointer rounded bg-content_bkg px-4 py-2 text-white"
+          className="shadow-input cursor-pointer rounded border-primary-300 border-opacity-20 bg-content_bkg px-4 py-2 text-[13px] font-semibold leading-6 text-theme_white transition duration-300 ease-in-out hover:border-accent-200"
           {...register(name, validationSchema)}
           {...rest}
         />

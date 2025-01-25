@@ -5,6 +5,7 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: ["class", '[data-theme="dark"]'],
   theme: {
     extend: {
       colors: {
@@ -13,14 +14,18 @@ module.exports = {
           200: "#E4EBFA",
           300: "#828FA3",
           400: "#3E3F4E",
+          500: "#979797",
+          600: "#20212c",
         },
         main_bkg: "hsl(var(--color-main_bkg) / <alpha-value>)",
         content_bkg: "hsl(var(--color-content_bkg) / <alpha-value>)",
         theme_white: "hsl(var(--white) / <alpha-value>)",
+        theme_grey: "hsl(var(--theme_grey) / <alpha-value>)",
         accent: {
           100: "#A8A4FF",
           300: "#FF9898",
-          200: "#635FC7",
+          200: "hsl(242, 48%, 58%)",
+          201: "hsla(242, 48%, 58%, 0.1)",
           400: "#EA5555",
           500: "#49C4E5",
           600: "#8471F2",

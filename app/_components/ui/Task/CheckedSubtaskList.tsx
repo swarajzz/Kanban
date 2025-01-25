@@ -19,7 +19,7 @@ function CheckedSubtaskList({ fields, register }: CheckedSubtaskListProps) {
       {fields.map((field, index) => (
         <li
           key={field.id}
-          className="bg-primary-600 w-full cursor-pointer rounded border-gray-200 transition hover:bg-accent-200 hover:bg-opacity-25"
+          className="w-full cursor-pointer rounded border-gray-200 bg-main_bkg transition hover:bg-accent-200 hover:bg-opacity-25"
         >
           <label className="inline-flex w-full cursor-pointer items-center">
             <div
@@ -48,7 +48,7 @@ function CheckedSubtaskList({ fields, register }: CheckedSubtaskListProps) {
                 </svg>
               </div>
             </div>
-            <h3 className="w-full cursor-pointer text-sm font-medium text-gray-900 peer-has-[:checked]:line-through dark:text-gray-300">
+            <h3 className="w-full cursor-pointer text-xs font-bold text-gray-900 peer-has-[:checked]:line-through dark:text-gray-300">
               {field.title}
             </h3>
           </label>

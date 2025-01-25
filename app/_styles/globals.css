@@ -1,40 +1,19 @@
-/* @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"); */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-} */
 
 @layer base {
   :root {
     --color-main_bkg: 235deg 16% 15%;
     --color-content_bkg: 235deg 12% 19%;
     --white: 0deg 0% 100%;
-  }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --color-main_bkg: 220deg, 69%, 97%;
-      --color-content_bkg: 0deg 0 100%;
-      --white: 0deg 0% 0;
-    }
+    --theme_grey: 0deg 0% 100%;
   }
   :root[data-theme="light"] {
     --color-main_bkg: 220deg 69% 97%;
     --color-content_bkg: 0deg 0 100%;
     --white: 0deg 0% 0;
+    --theme_grey: 216deg 15% 57%;
   }
 }
 

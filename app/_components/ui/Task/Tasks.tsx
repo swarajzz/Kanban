@@ -23,8 +23,8 @@ function Tasks({ task, handleTaskClick }: TasksProps) {
         <GripVertical />
 
         <div className="w-full">
-          <div className="font-bold text-white">{task.title}</div>
-          <div className="mt-1 text-xs text-primary-300">
+          <div className="font-bold text-theme_white">{task.title}</div>
+          <div className="mt-1 text-xs font-bold text-primary-300">
             {`${completedSubtasks} of
             ${task?.subTasks.length} subtasks`}
           </div>

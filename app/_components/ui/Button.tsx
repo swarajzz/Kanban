@@ -28,8 +28,9 @@ const button = cva(
           "hover:bg-accent-100",
         ],
         secondary: [
-          "bg-white",
+          "dark:bg-white bg-accent-201",
           "text-accent-200",
+          "",
           // "border-gray-400",
           // "hover:bg-gray-100",
         ],

@@ -109,7 +109,7 @@ function TaskDialog({
         toggleShowDropdown={toggleShowDropdown}
       >
         <Form submitHandler={handleSubmit(processForm)}>
-          <div className="border-grey-300 rounded bg-content_bkg text-primary-300">
+          <div className="rounded border-primary-300 bg-content_bkg text-primary-300">
             {description}
           </div>
 
