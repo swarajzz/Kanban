@@ -48,18 +48,25 @@ function TaskDialog({
     control,
     formState: { errors, isSubmitting },
     setValue,
-    getValues,
     reset,
+    watch,
   } = useForm({
     defaultValues: {
       title: task?.title ?? "",
       description: task?.description ?? "",
       checked_status: task.status ?? "",
-      checkSubtasks: task.subTasks.map((subTask) => ({
-        ...subTask,
-      })),
+      checkSubtasks:
+        task.subTasks.map((subTask) => ({
+          ...subTask,
+        })) || [],
     },
   });
+
+  const checkedBoxes = watch("checkSubtasks");
+
+  const totalChecked = checkedBoxes
+    ? checkedBoxes.filter((subtask) => subtask.isCompleted).length
+    : 0;
 
   useEffect(() => {
     reset({
@@ -117,7 +124,7 @@ function TaskDialog({
           </div>
 
           <FieldSet
-            legend={`Subtasks ${completedSubtasks} of
+            legend={`Subtasks ${totalChecked} of
               ${subTasks.length}`}
           >
             <CheckedSubtaskList fields={fields} register={register} />
