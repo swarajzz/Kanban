@@ -29,14 +29,14 @@ function TaskDialog({
   toggleEditDialog,
 }: {
   dialogRef: RefObject<HTMLDialogElement>;
-  task: TaskProps;
+  task: TaskProps | null;
   isShowDropdown: boolean;
   toggleDialog: () => void;
   toggleShowDropdown: () => void;
   toggleEditDialog: () => void;
 }) {
-  const { id: taskId, title, description, subTasks, status: taskStatus } = task;
-  const completedSubtasks = getCompletedSubtasksLength(subTasks);
+  // const { id: taskId, title, description, subTasks, status: taskStatus } = task;
+  // const completedSubtasks = getCompletedSubtasksLength(subTasks);
 
   const { board: boardPath } = useParams<{ board: string }>();
 
@@ -54,9 +54,9 @@ function TaskDialog({
     defaultValues: {
       title: task?.title ?? "",
       description: task?.description ?? "",
-      checked_status: task.status ?? "",
+      checked_status: task?.status ?? "",
       checkSubtasks:
-        task.subTasks.map((subTask) => ({
+        task?.subTasks.map((subTask) => ({
           ...subTask,
         })) || [],
     },
@@ -72,8 +72,8 @@ function TaskDialog({
     reset({
       title: task?.title ?? "",
       description: task?.description ?? "",
-      checked_status: task.status ?? "",
-      checkSubtasks: task.subTasks.map((subTask) => ({
+      checked_status: task?.status ?? "",
+      checkSubtasks: task?.subTasks.map((subTask) => ({
         ...subTask,
       })),
     });
@@ -99,6 +99,8 @@ function TaskDialog({
       subTasks: data.checkSubtasks,
     };
 
+    const taskId = task?.id ?? "";
+
     await updateTask({ data: transformedData, taskId, columnId, boardPath });
     toggleDialog();
   };
@@ -113,19 +115,19 @@ function TaskDialog({
   return (
     <Dialog ref={dialogRef} toggleDialog={toggleDialog}>
       <DialogPanel
-        title={title}
+        title={task?.title || ""}
         icon="grip"
         toggleDialog={toggleDialog}
         toggleShowDropdown={toggleShowDropdown}
       >
         <Form submitHandler={handleSubmit(processForm)}>
           <div className="rounded border-primary-300 bg-content_bkg text-primary-300">
-            {description}
+            {task?.description}
           </div>
 
           <FieldSet
             legend={`Subtasks ${totalChecked} of
-              ${subTasks.length}`}
+              ${task?.subTasks.length}`}
           >
             <CheckedSubtaskList fields={fields} register={register} />
           </FieldSet>
@@ -140,7 +142,7 @@ function TaskDialog({
                 required: "This field is required",
               }}
               name="checked_status"
-              value={task.status}
+              value={task?.status}
             >
               <option disabled value="">
                 -- select an option --
@@ -175,7 +177,7 @@ function TaskDialog({
             toggleShowDropdown={toggleShowDropdown}
             toggleDialog={toggleDialog}
             toggleEditDialog={toggleEditDialog}
-            taskId={taskId}
+            taskId={task?.id ?? ""}
           />
         ) : (
           ""

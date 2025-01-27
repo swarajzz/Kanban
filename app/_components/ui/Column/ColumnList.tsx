@@ -48,9 +48,7 @@ function ColumnList({
 
   const [isShowDropdown, setShowDropdown] = useState(true);
 
-  const [selectedTask, setSelectedTask] = useState<TaskProps | null>(
-    tasksState[0],
-  );
+  const [selectedTask, setSelectedTask] = useState<TaskProps | null>(null);
 
   const { dialogRef: viewDialogRef, toggleDialog: toggleViewDialog } =
     useDialogRef();
@@ -169,6 +167,7 @@ function ColumnList({
   async function onDragEnd(e: DragEndEvent) {
     setActiveColumnId(null);
     setActiveTaskId(null);
+    setSelectedTask(null);
 
     const { active, over } = e;
 
@@ -334,6 +333,8 @@ function ColumnList({
       activeTask.status = overColumn.name;
       activeTask.columnId = overColumn.id;
 
+      // setSelectedTask(activeTask);
+
       const [removedItem] = newItems[activeColumnIndex].tasks.splice(
         activeTaskIndex,
         1,
@@ -346,16 +347,14 @@ function ColumnList({
 
   return (
     <>
-      {selectedTask && (
-        <TaskDialog
-          dialogRef={viewDialogRef}
-          toggleDialog={toggleViewDialog}
-          task={selectedTask}
-          isShowDropdown={isShowDropdown}
-          toggleShowDropdown={toggleShowDropdown}
-          toggleEditDialog={toggleEditDialog}
-        />
-      )}
+      <TaskDialog
+        dialogRef={viewDialogRef}
+        toggleDialog={toggleViewDialog}
+        task={selectedTask}
+        isShowDropdown={isShowDropdown}
+        toggleShowDropdown={toggleShowDropdown}
+        toggleEditDialog={toggleEditDialog}
+      />
 
       {viewDialogRef.current && selectedTask ? (
         <EditTask
