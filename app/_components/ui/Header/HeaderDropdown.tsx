@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteBoard } from "@/app/_lib/actions";
+import { deleteBoard, signOutAction } from "@/app/_lib/actions";
 
 function TaskDropdown({
   toggleShowDropdown,
@@ -14,6 +14,10 @@ function TaskDropdown({
   function handleClick() {
     toggleShowDropdown();
     toggleDialog();
+  }
+
+  async function handleSignOut() {
+    await signOutAction();
   }
 
   return (
@@ -37,7 +41,10 @@ function TaskDropdown({
         ) : (
           ""
         )}
-        <li className="cursor-pointer text-accent-400 transition hover:text-accent-300">
+        <li
+          onClick={handleSignOut}
+          className="cursor-pointer text-accent-400 transition hover:text-accent-300"
+        >
           Sign Out
         </li>
       </ul>

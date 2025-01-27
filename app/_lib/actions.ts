@@ -12,6 +12,7 @@ import {
 } from "../_types/types";
 
 import { revalidatePath } from "next/cache";
+import { signOut } from "./auth";
 
 export async function createBoard(data: NewFormFields, userId: string) {
   const boardName = data.name.trim();
@@ -337,4 +338,8 @@ export async function getLastColumn(boardId: string) {
     orderBy: { order: "desc" },
   });
   return lastColumn;
+}
+
+export async function signOutAction() {
+  await signOut({ redirectTo: "/" });
 }
