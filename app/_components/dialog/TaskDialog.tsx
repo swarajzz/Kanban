@@ -18,6 +18,7 @@ import {
 import { updateTask } from "@/app/_lib/actions";
 import { HashLoader } from "react-spinners";
 import { useBoardStore } from "@/app/_store/store";
+import { useParams } from "next/navigation";
 
 function TaskDialog({
   dialogRef,
@@ -36,6 +37,8 @@ function TaskDialog({
 }) {
   const { id: taskId, title, description, subTasks, status: taskStatus } = task;
   const completedSubtasks = getCompletedSubtasksLength(subTasks);
+
+  const { board: boardPath } = useParams<{ board: string }>();
 
   const { columns } = useBoardStore();
 
@@ -89,7 +92,7 @@ function TaskDialog({
       subTasks: data.checkSubtasks,
     };
 
-    await updateTask({ data: transformedData, taskId, columnId });
+    await updateTask({ data: transformedData, taskId, columnId, boardPath });
     toggleDialog();
   };
 

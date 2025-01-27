@@ -15,6 +15,7 @@ import { useBoardStore } from "@/_store/store";
 import { EditFormFields } from "@/_types/types";
 import { createBoard, updateBoard } from "@/_lib/actions";
 import { getRandomPlaceholderColumn } from "@/_lib/utils/helpers";
+import { useParams } from "next/navigation";
 
 function EditBoard({
   dialogRef,
@@ -25,6 +26,7 @@ function EditBoard({
 }) {
   const { data: sessionData } = useSession();
   const { board, columns } = useBoardStore();
+  const { board: boardPath } = useParams<{ board: string }>();
 
   const {
     register,
@@ -86,7 +88,13 @@ function EditBoard({
       return;
     }
 
-    await updateBoard(data, board?.id, sessionData?.user?.id || "", false);
+    await updateBoard(
+      data,
+      board?.id,
+      sessionData?.user?.id || "",
+      false,
+      boardPath,
+    );
 
     toggleDialog();
   };

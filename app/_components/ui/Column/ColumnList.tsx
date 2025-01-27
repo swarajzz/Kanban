@@ -21,6 +21,8 @@ import { reorderColumns, reorderTasks } from "@/_lib/utils/helpers";
 import useDialogRef from "@/_hooks/useDialogRef";
 import TaskDialog from "@/_components/dialog/TaskDialog";
 import EditTask from "@/_components/dialog/EditTask";
+import { useParams } from "next/navigation";
+import { ClimbingBoxLoader } from "react-spinners";
 
 function ColumnList({
   columns,
@@ -33,6 +35,7 @@ function ColumnList({
   tasks: TaskProps[];
   userId: string;
 }) {
+  const [isLoading, setIsLoading] = useState(false);
   const [columnsState, setColumns] = useState<ColumnProps[]>(columns);
   const [tasksState, setTasks] = useState<TaskProps[]>(tasks);
   const [enableApiCall, setApiCall] = useState(false);
@@ -78,6 +81,8 @@ function ColumnList({
     }),
   );
 
+  const { board: boardPath } = useParams<{ board: string }>();
+
   useEffect(() => {
     useBoardStore.setState({ board });
     useBoardStore.setState({ columns: columnsState });
@@ -92,12 +97,14 @@ function ColumnList({
     const makeApiCall = async () => {
       if (enableApiCall) {
         try {
-          await updateBoard(data, board.id, userId, true);
+          setIsLoading(true);
+          await updateBoard(data, board.id, userId, true, boardPath);
         } catch (error) {
           console.error("Error updating the board:", error);
         } finally {
           setApiCall(false);
           setApiCallFlag(false);
+          setIsLoading(false);
         }
       }
     };
@@ -385,6 +392,13 @@ function ColumnList({
                 </SortableContext>
               </Column>
             ))}
+            {isLoading && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
+                <p className="text-white">
+                  <ClimbingBoxLoader color="#635FC7" />
+                </p>
+              </div>
+            )}
           </div>
         </SortableContext>
         {typeof window !== "undefined" &&

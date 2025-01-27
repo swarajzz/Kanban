@@ -13,6 +13,7 @@ import FormRow from "../ui/Form/FormRow";
 import Input from "../ui/Form/Input";
 import FieldSet from "../ui/Form/FieldSet";
 import { useBoardStore } from "@/app/_store/store";
+import { useParams } from "next/navigation";
 
 function EditTask({
   dialogRef,
@@ -26,6 +27,7 @@ function EditTask({
   const { subTasks: originalSubtasks, id: taskId } = task || {};
 
   const { columns } = useBoardStore();
+  const { board: boardPath } = useParams<{ board: string }>();
 
   const {
     register,
@@ -80,7 +82,7 @@ function EditTask({
   }) => {
     const columnId = getColumnId(columns ?? [], data.status);
 
-    await updateTask({ data, taskId, columnId });
+    await updateTask({ data, taskId, columnId, boardPath });
 
     toggleDialog();
   };

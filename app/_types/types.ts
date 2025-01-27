@@ -28,13 +28,15 @@ export type DataProps = {
   title: string;
   description: string;
   status: string;
-  subTasks: UpdateSubtaskProps[];
+  newSubtasks?: UpdateSubtaskProps[];
+  subTasks?: UpdateSubtaskProps[];
 };
 
 export type UpdateTaskProps = {
   data: DataProps;
   taskId?: string;
   columnId?: string;
+  boardPath: string;
 };
 
 export type UpdateBoardProps = {

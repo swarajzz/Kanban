@@ -14,6 +14,7 @@ import { UpdateSubtaskProps } from "@/_types/types";
 import { getColumnId, getRandomPlaceholder } from "@/_lib/utils/helpers";
 import { useBoardStore } from "@/_store/store";
 import { HashLoader } from "react-spinners";
+import { useParams } from "next/navigation";
 
 function NewTask({
   dialogRef,
@@ -23,6 +24,8 @@ function NewTask({
   toggleDialog: () => void;
 }) {
   const { columns } = useBoardStore();
+  const { board: boardPath } = useParams<{ board: string }>();
+
   const {
     register,
     handleSubmit,
@@ -64,14 +67,7 @@ function NewTask({
   }) => {
     const columnId = getColumnId(columns ?? [], data.status);
 
-    const transformedData = {
-      title: data.title,
-      description: data.description,
-      status: data.status,
-      subTasks: data.newSubtasks,
-    };
-
-    await createTask({ data: transformedData, columnId });
+    await createTask(data, columnId, boardPath);
     reset();
     toggleDialog();
   };

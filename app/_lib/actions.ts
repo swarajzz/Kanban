@@ -107,6 +107,7 @@ export async function updateBoard(
   boardId: string,
   userId: string,
   shouldUpdateTasks = false,
+  boardPath: string,
 ) {
   const { name, editColumns } = data;
 
@@ -165,6 +166,7 @@ export async function updateBoard(
         await Promise.all(taskUpdatePromises);
       }
     });
+    revalidatePath(`${boardPath}`);
 
     console.log("Board updated successfully");
   } catch (error) {
@@ -173,14 +175,13 @@ export async function updateBoard(
   }
 }
 
-export async function createTask({
-  data,
-  columnId,
-}: {
-  data: DataProps;
-  columnId?: string;
-}) {
-  const { subTasks, title, description, status } = data;
+export async function createTask(
+  data: DataProps,
+  columnId?: string,
+  boardPath?: string,
+) {
+  console.log(data);
+  const { title, description, status, newSubtasks: subTasks } = data;
 
   if (!columnId) return;
 
@@ -190,7 +191,7 @@ export async function createTask({
   await prisma.task.create({
     data: {
       subTasks: {
-        create: subTasks.map((subTask) => ({
+        create: subTasks?.map((subTask) => ({
           title: subTask.title.trim(),
           isCompleted: false,
         })),
@@ -207,10 +208,15 @@ export async function createTask({
     },
   });
 
-  revalidatePath("/board");
+  revalidatePath(`${boardPath}`);
 }
 
-export async function updateTask({ data, taskId, columnId }: UpdateTaskProps) {
+export async function updateTask({
+  data,
+  taskId,
+  columnId,
+  boardPath,
+}: UpdateTaskProps) {
   const { subTasks, title, description, status } = data;
 
   await prisma.task.update({
@@ -223,9 +229,9 @@ export async function updateTask({ data, taskId, columnId }: UpdateTaskProps) {
       status: status,
       subTasks: {
         deleteMany: {
-          NOT: subTasks.map(({ id }) => ({ id })),
+          NOT: subTasks?.map(({ id }) => ({ id })),
         },
-        upsert: subTasks.map((subTask) => ({
+        upsert: subTasks?.map((subTask) => ({
           where: { id: subTask.id },
           create: {
             title: subTask.title.trim(),
@@ -244,7 +250,7 @@ export async function updateTask({ data, taskId, columnId }: UpdateTaskProps) {
       },
     },
   });
-  revalidatePath("/board");
+  revalidatePath(`${boardPath}`);
 }
 
 // export async function updateTasksForColumns(
