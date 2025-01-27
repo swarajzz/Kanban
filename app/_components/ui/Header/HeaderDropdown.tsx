@@ -18,7 +18,7 @@ function TaskDropdown({
 
   return (
     <>
-      <ul className="absolute right-6 top-16 flex w-48 flex-col gap-4 rounded-lg border border-primary-400 bg-main_bkg px-4 py-6 text-primary-300 shadow-sm">
+      <ul className="border-primary-500 absolute right-6 top-16 flex w-48 flex-col gap-4 rounded-lg border border-opacity-20 bg-main_bkg px-4 py-6 text-primary-300 shadow-lg">
         {boardName ? (
           <>
             <li
