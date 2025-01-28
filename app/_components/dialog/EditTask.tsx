@@ -14,6 +14,7 @@ import Input from "../ui/Form/Input";
 import FieldSet from "../ui/Form/FieldSet";
 import { useBoardStore } from "@/app/_store/store";
 import { useParams } from "next/navigation";
+import { HashLoader } from "react-spinners";
 
 function EditTask({
   dialogRef,
@@ -169,9 +170,13 @@ function EditTask({
           </FormRow>
 
           <div className="mb-6 flex flex-col gap-5">
-            <Button type="submit" size="md" intent={"primary"}>
-              Save Changes
-            </Button>
+            {!isSubmitting ? (
+              <Button type="submit" size="md" intent={"primary"}>
+                Save Changes
+              </Button>
+            ) : (
+              <HashLoader className="self-center" color="#635FC7" size={30} />
+            )}
           </div>
         </Form>
       </DialogPanel>
