@@ -47,62 +47,6 @@ export async function createBoard(data: NewFormFields, userId: string) {
   }
 }
 
-// export async function updateBoard(
-//   data: EditFormFields,
-//   boardId: string,
-//   userId: string,
-// ) {
-//   const name = data.name;
-//   const columns = data.editColumns;
-
-//   if (!boardId) return;
-
-//   const lastColumn = await getLastColumn(boardId);
-//   const newTaskOrder = lastColumn ? lastColumn.order + 1 : 1.0;
-
-//   console.log(columns.map((column) => column.tasks));
-
-//   await prisma.board.update({
-//     where: {
-//       id: boardId,
-//     },
-//     data: {
-//       name: name,
-//       columns: {
-//         deleteMany: {
-//           NOT: columns.map(({ id }) => ({ id })),
-//         },
-//         upsert: columns.map((column) => ({
-//           where: { id: column.id },
-//           create: {
-//             name: column.name,
-//             order: newTaskOrder,
-//           },
-//           update: {
-//             name: column.name,
-//             order: column.order,
-//             // tasks: {
-//             //   updateMany: column.tasks.map((task) => ({
-//             //     where: { id: task.id },
-//             //     data: {
-//             //       order: task.order,
-//             //       // columnId: task.columnId,
-//             //     },
-//             //   })),
-//             // },
-//           },
-//         })),
-//       },
-//       user: {
-//         connect: {
-//           id: userId,
-//         },
-//       },
-//     },
-//   });
-//   revalidatePath("/board");
-// }
-
 export async function updateBoard(
   data: EditFormFields,
   boardId: string,
@@ -110,71 +54,139 @@ export async function updateBoard(
   shouldUpdateTasks = false,
   boardPath: string,
 ) {
-  const { name, editColumns } = data;
+  const name = data.name;
+  const columns = data.editColumns;
 
   if (!boardId) return;
 
   const lastColumn = await getLastColumn(boardId);
   const newTaskOrder = lastColumn ? lastColumn.order + 1 : 1.0;
 
-  try {
-    await prisma.$transaction(async (prisma) => {
-      await prisma.board.update({
-        where: { id: boardId },
-        data: { name },
-      });
-
-      const columnIds = editColumns?.map((col) => col.id);
-      await prisma.column.deleteMany({
-        where: {
-          boardId,
-          id: { notIn: columnIds },
+  await prisma.board.update({
+    where: {
+      id: boardId,
+    },
+    data: {
+      name: name,
+      columns: {
+        deleteMany: {
+          NOT: columns.map(({ id }) => ({ id })),
         },
-      });
-
-      const columnPromises = editColumns?.map((column) =>
-        prisma.column.upsert({
+        upsert: columns.map((column) => ({
           where: { id: column.id },
           create: {
-            id: column.id,
             name: column.name,
             order: newTaskOrder,
-            boardId,
           },
           update: {
             name: column.name,
             order: column.order,
           },
-        }),
-      );
+        })),
+      },
+      user: {
+        connect: {
+          id: userId,
+        },
+      },
+    },
+  });
 
-      await Promise.all(columnPromises);
-
-      if (shouldUpdateTasks) {
-        const taskUpdatePromises = editColumns?.flatMap((column) =>
-          column.tasks?.map((task) =>
-            prisma.task.update({
-              where: { id: task.id },
-              data: {
-                order: task.order,
-                columnId: column.id,
-                status: column.name,
-              },
-            }),
-          ),
+  if (shouldUpdateTasks) {
+    for (const column of columns) {
+      if (column.tasks) {
+        const taskPromises = column.tasks.map((task) =>
+          prisma.task.update({
+            where: { id: task.id },
+            data: {
+              order: task.order,
+              columnId: column.id,
+              status: column.name,
+            },
+          }),
         );
-
-        await Promise.all(taskUpdatePromises);
+        await Promise.all(taskPromises);
       }
-    });
-    revalidatePath(`${boardPath}`);
-
-    console.log("Board updated successfully");
-  } catch (error) {
-    console.error("Failed to update board:", error);
-    throw new Error("Board update failed");
+    }
   }
+
+  revalidatePath(`${boardPath}`);
 }
+
+// export async function updateBoard(
+//   data: EditFormFields,
+//   boardId: string,
+//   userId: string,
+//   shouldUpdateTasks = false,
+//   boardPath: string,
+// ) {
+//   const { name, editColumns } = data;
+
+//   if (!boardId) return;
+
+//   const lastColumn = await getLastColumn(boardId);
+//   const newTaskOrder = lastColumn ? lastColumn.order + 1 : 1.0;
+
+//   console.log(editColumns);
+
+//   try {
+//     await prisma.$transaction(async (prisma) => {
+//       await prisma.board.update({
+//         where: { id: boardId },
+//         data: { name },
+//       });
+
+//       const columnIds = editColumns?.map((col) => col.id);
+//       await prisma.column.deleteMany({
+//         where: {
+//           boardId,
+//           id: { notIn: columnIds },
+//         },
+//       });
+
+//       const columnPromises = editColumns?.map((column) =>
+//         prisma.column.upsert({
+//           where: { id: column.id },
+//           create: {
+//             id: column.id,
+//             name: column.name,
+//             order: newTaskOrder,
+//             boardId,
+//           },
+//           update: {
+//             name: column.name,
+//             order: column.order,
+//           },
+//         }),
+//       );
+
+//       await Promise.all(columnPromises);
+
+//       if (shouldUpdateTasks) {
+//         const taskUpdatePromises = editColumns?.flatMap((column) =>
+//           column.tasks?.map((task) =>
+//             prisma.task.update({
+//               where: { id: task.id },
+//               data: {
+//                 order: task.order,
+//                 columnId: column.id,
+//                 status: column.name,
+//               },
+//             }),
+//           ),
+//         );
+
+//         await Promise.all(taskUpdatePromises);
+//       }
+//     });
+//     revalidatePath(`${boardPath}`);
+
+//     console.log("Board updated successfully");
+//   } catch (error) {
+//     console.error("Failed to update board:", error);
+//     throw new Error("Board update failed");
+//   }
+// }
 
 export async function createTask(
   data: DataProps,

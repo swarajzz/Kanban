@@ -104,7 +104,9 @@ function NewBoard({
                       type="text"
                     />
                   </FormRow>
-                  <CloseIcon handleRemove={() => remove(index)} />
+                  {fields.length > 1 && (
+                    <CloseIcon handleRemove={() => remove(index)} />
+                  )}
                 </li>
               ))}
             </ul>
