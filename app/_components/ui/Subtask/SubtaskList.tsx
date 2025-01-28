@@ -21,7 +21,7 @@ interface SubtaskListProps {
   fields: FieldArrayWithId<any, any, any>[];
   register: UseFormRegister<any>;
   remove: UseFieldArrayRemove;
-  errors: FieldErrors<SubProps>;
+  errors: any;
   fieldName: string;
 }
 
@@ -39,7 +39,7 @@ function SubtaskList({
           <FormRow
             label={field.name}
             hidden={true}
-            error={errors?.subTasks?.[index]?.title?.message}
+            error={errors?.[fieldName]?.[index]?.title?.message}
           >
             <Input
               register={register}

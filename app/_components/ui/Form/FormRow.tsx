@@ -5,7 +5,7 @@ import { ReactElement } from "react";
 type FormRowProps = {
   label: string;
   hidden?: boolean;
-  error?: string | null;
+  error?: any;
   type?: string;
   children: ReactElement;
 };
@@ -17,7 +17,7 @@ function FormRow({ label, hidden, error, children, type }: FormRowProps) {
         className={`text-xs font-bold ${
           type === "checkbox"
             ? "inline-flex w-full cursor-pointer items-center"
-            : `text-theme_grey mb-2`
+            : `mb-2 text-theme_grey`
         } ${hidden ? "visually-hidden" : ""}`}
         htmlFor={children?.props?.id}
       >
