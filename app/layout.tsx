@@ -17,17 +17,18 @@ export const metadata: Metadata = {
   description: "Frontend Mentor | Kanban task management web app",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
       <body
         className={`${jakarta.className} h-full text-sm font-medium text-primary-300`}
       >
-        <SessionProvider refetchOnWindowFocus={false}>
+        <SessionProvider session={session} refetchOnWindowFocus={false}>
           <Providers>
             <main className="flex h-full">
               <Sidebar />
