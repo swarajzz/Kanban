@@ -47,6 +47,8 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model VerificationToken {
@@ -67,6 +69,7 @@ model Board {
   updatedAt DateTime @updatedAt
 
   @@unique([userId, name])
+  @@index([userId]) // Index on userId for faster lookups
 }
 
 model Column {
@@ -80,6 +83,7 @@ model Column {
   updatedAt DateTime @updatedAt
 
   @@unique([boardId, name])
+  @@index([boardId])
 }
 
 model Task {
@@ -93,6 +97,8 @@ model Task {
   columnId    String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  @@index([columnId]) // Index on columnId for faster lookups
 }
 
 model SubTask {
@@ -103,4 +109,6 @@ model SubTask {
   taskId      String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([taskId])
 }
