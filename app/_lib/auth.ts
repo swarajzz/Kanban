@@ -2,8 +2,6 @@ import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 
-import { Pool } from "@neondatabase/serverless";
-import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "@prisma/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "./prisma";
@@ -23,6 +21,9 @@ const authConfig = {
       allowDangerousEmailAccountLinking: true,
     }),
   ],
+  pages: {
+    signIn: "/auth/login",
+  },
   callbacks: {
     session({ session, user }: { session: any; user: any }) {
       session.user.id = user.id;

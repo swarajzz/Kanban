@@ -12,8 +12,12 @@ async function Sidebar() {
   const session = await auth();
   const allBoards = await getBoards(session?.user?.id || "");
 
+  if (!session) {
+    return;
+  }
+
   return (
-    <section className="bg-background-dark border-primary-500 0 hidden w-full max-w-[300px] animate-fadeOut flex-col border-r border-opacity-20 bg-content_bkg md:flex md:animate-fadeIn">
+    <section className="bg-background-dark 0 hidden w-full max-w-[300px] animate-fadeOut flex-col border-r border-primary-500 border-opacity-20 bg-content_bkg md:flex md:animate-fadeIn">
       <div className="ml-[33px] self-start">
         <Link href={"/"}>
           <Image

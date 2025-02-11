@@ -12,7 +12,7 @@ import {
 } from "../_types/types";
 
 import { revalidatePath } from "next/cache";
-import { signOut } from "./auth";
+import { signIn, signOut } from "./auth";
 
 export async function createBoard(data: NewFormFields, userId: string) {
   const boardName = data.name.trim();
@@ -354,4 +354,8 @@ export async function getLastColumn(boardId: string) {
 
 export async function signOutAction() {
   await signOut({ redirectTo: "/" });
+}
+
+export async function signInAction(provider: string) {
+  await signIn(provider, { redirectTo: "/" });
 }
