@@ -36,7 +36,7 @@ function Column({
     return (
       <section
         ref={setNodeRef}
-        className="mb-4 flex min-w-80 flex-col items-center gap-3 border-2 border-rose-500"
+        className="mb-4 flex min-w-80 flex-col items-center gap-3 border border-rose-400 rounded-lg"
         style={style}
       ></section>
     );
