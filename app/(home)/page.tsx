@@ -1,5 +1,5 @@
-import EmptyPage from "./_components/ui/EmptyPage";
-import { auth } from "./_lib/auth";
+import EmptyPage from "../_components/ui/EmptyPage";
+import { auth } from "../_lib/auth";
 
 export default async function Home() {
   const session = await auth();

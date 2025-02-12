@@ -5,7 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import Header from "@/_components/layout/Header";
 import Sidebar from "@/_components/layout/Sidebar";
 import { auth } from "./_lib/auth";
-import { Providers } from "./providers";
+import { Providers } from "@/app/_providers/providers";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],

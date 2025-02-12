@@ -2,7 +2,7 @@ import Link from "next/link";
 
 function NotFound() {
   return (
-    <main className="flex size-full flex-col items-center justify-center gap-6">
+    <main className="flex size-full flex-col items-center justify-center gap-6 bg-main_bkg">
       <h1 className="text-2xl font-semibold">
         This page could not be found :(
       </h1>
