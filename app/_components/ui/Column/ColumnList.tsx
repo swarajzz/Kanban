@@ -82,6 +82,10 @@ function ColumnList({
   const { board: boardPath } = useParams<{ board: string }>();
 
   useEffect(() => {
+    setColumns(columns);
+  }, [columns]);
+
+  useEffect(() => {
     useBoardStore.setState({ board });
     useBoardStore.setState({ columns: columnsState });
   }, [board, columnsState]);

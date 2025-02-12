@@ -34,7 +34,7 @@ export async function createBoard(data: NewFormFields, userId: string) {
         },
       },
     });
-    redirect(`/${boardName.trim().replace(/\s+/g, "-").toLowerCase()}`);
+    redirect(`board/${boardName.trim().replace(/\s+/g, "-").toLowerCase()}`);
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code === "P2002") {
@@ -110,7 +110,7 @@ export async function updateBoard(
     }
   }
 
-  revalidatePath(`${boardPath}`);
+  revalidatePath(`/board/${boardPath}`);
 }
 
 // export async function updateBoard(
@@ -179,7 +179,7 @@ export async function updateBoard(
 //         await Promise.all(taskUpdatePromises);
 //       }
 //     });
-//     revalidatePath(`${boardPath}`);
+//     revalidatePath(`/board/${boardPath}`);;
 
 //     console.log("Board updated successfully");
 //   } catch (error) {
@@ -221,7 +221,7 @@ export async function createTask(
     },
   });
 
-  revalidatePath(`${boardPath}`);
+  revalidatePath(`/board/${boardPath}`);
 }
 
 export async function updateTask({
@@ -263,7 +263,7 @@ export async function updateTask({
       },
     },
   });
-  revalidatePath(`${boardPath}`);
+  revalidatePath(`/board/${boardPath}`);
 }
 
 // export async function updateTasksForColumns(

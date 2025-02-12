@@ -5,9 +5,10 @@ import { usePathname } from "next/navigation";
 
 function BoardListItem({ board: { name } }: { board: BoardProps }) {
   const pathname = usePathname();
+  console.log(pathname);
 
   const isSelected =
-    pathname === `/${name.trim().replace(/\s+/g, "-").toLowerCase()}`;
+    pathname === `/board/${name.trim().replace(/\s+/g, "-").toLowerCase()}`;
 
   return (
     <li className={`rounded-r-full transition`}>
@@ -18,7 +19,7 @@ function BoardListItem({ board: { name } }: { board: BoardProps }) {
             ? "bg-accent-200 text-white"
             : "hover:bg-accent-201 hover:text-accent-200 dark:hover:bg-white"
         }`}
-        href={`/${name.trim().replace(/\s+/g, "-").toLowerCase()}`}
+        href={`/board/${name.trim().replace(/\s+/g, "-").toLowerCase()}`}
       >
         <LayoutDashboard width={16} height={16} className="" />
         <span className="text-[15px] font-bold">{name}</span>
