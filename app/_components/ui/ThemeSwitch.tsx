@@ -27,13 +27,19 @@ function ThemeSwitch() {
     );
 
   return (
-    <div className="flex items-center justify-center gap-3 rounded-lg bg-main_bkg px-10 py-2">
+    <div className="flex items-center justify-center gap-3 rounded-lg bg-main_bkg px-6 py-2">
       {resolvedTheme === "dark" && (
-        <Sun className="cursor-pointer" onClick={() => setTheme("light")} />
+        <Sun
+          className="h-6 w-6 cursor-pointer transition-all duration-200 hover:rotate-12 hover:scale-110 hover:text-yellow-400"
+          onClick={() => setTheme("light")}
+        />
       )}
 
       {resolvedTheme === "light" && (
-        <Moon className="cursor-pointer" onClick={() => setTheme("dark")} />
+        <Moon
+          className="h-6 w-6 cursor-pointer transition-all duration-200 hover:-rotate-12 hover:scale-110 hover:text-blue-500"
+          onClick={() => setTheme("dark")}
+        />
       )}
     </div>
   );
