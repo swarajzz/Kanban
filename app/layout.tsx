@@ -6,6 +6,7 @@ import Header from "@/_components/layout/Header";
 import Sidebar from "@/_components/layout/Sidebar";
 import { auth } from "./_lib/auth";
 import { Providers } from "@/app/_providers/providers";
+import { getBoards } from "@/_lib/data-service";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -23,6 +24,12 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
+  const allBoards = await getBoards(session?.user?.id || "");
+
+  if (!session?.user) {
+    throw new Error("User Not Found");
+  }
+
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
       <body
@@ -31,7 +38,7 @@ export default async function RootLayout({
         <SessionProvider session={session} refetchOnWindowFocus={false}>
           <Providers>
             <main className="flex h-full">
-              <Sidebar />
+              <Sidebar allBoards={allBoards} user={session.user} />
               <section className="flex size-full flex-col overflow-x-hidden">
                 <Header />
                 {children}

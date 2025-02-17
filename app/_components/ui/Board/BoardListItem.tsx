@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 
 function BoardListItem({ board: { name } }: { board: BoardProps }) {
   const pathname = usePathname();
-  console.log(pathname);
 
   const isSelected =
     pathname === `/board/${name.trim().replace(/\s+/g, "-").toLowerCase()}`;
