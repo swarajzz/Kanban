@@ -16,7 +16,7 @@ const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
 
     return (
       <dialog
-        className="relative z-10 transition delay-100 duration-300 ease-in-out"
+        className="open:animate-fade-in relative z-10 transition duration-300 ease-out"
         ref={ref}
       >
         <DialogBackdrop />
