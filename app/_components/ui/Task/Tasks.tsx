@@ -18,7 +18,7 @@ function Tasks({ task, handleTaskClick }: TasksProps) {
     <>
       <div
         onClick={() => handleTaskClick(task)}
-        className="flex size-full items-center gap-1 p-3"
+        className="flex size-full items-center gap-1 p-4"
       >
         <GripVertical />
 
