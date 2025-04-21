@@ -9,6 +9,7 @@ import { EditMenuIcon } from "@/public/svgs";
 import useDialogRef from "@/_hooks/useDialogRef";
 import EditBoard from "../dialog/EditBoard";
 import { useBoardStore } from "@/_store/store";
+import { useSession } from "next-auth/react";
 
 export default function Header() {
   const params = useParams<{ board: string }>();
@@ -17,6 +18,7 @@ export default function Header() {
   const { dialogRef: boardDialogRef, toggleDialog: toggleBoardDialog } =
     useDialogRef();
   const [isShowDropdown, setShowDropdown] = useState(false);
+  const session = useSession();
 
   const { board } = useBoardStore();
 
@@ -29,41 +31,46 @@ export default function Header() {
       <h1 className="text-xl font-bold text-theme_white">
         {!Object.keys(params).length ? "Turn Chaos into Clarity" : board?.name}
       </h1>
-      <div className="flex items-center gap-5">
-        {Object.keys(params).length ? (
-          <Button onClick={toggleTaskDialog} size="md" intent={"primary"}>
-            + Add new task
-          </Button>
-        ) : (
-          ""
-        )}
 
-        <NewTask dialogRef={taskDialogRef} toggleDialog={toggleTaskDialog} />
+      {session?.status === "authenticated" ? (
+        <div className="flex items-center gap-5">
+          {Object.keys(params).length ? (
+            <Button onClick={toggleTaskDialog} size="md" intent={"primary"}>
+              + Add new task
+            </Button>
+          ) : (
+            ""
+          )}
 
-        <div
-          className="cursor-pointer"
-          onClick={() => setShowDropdown((prev) => !prev)}
-        >
-          <Image src={EditMenuIcon} alt="ellipses icon" />
+          <NewTask dialogRef={taskDialogRef} toggleDialog={toggleTaskDialog} />
+
+          <div
+            className="cursor-pointer"
+            onClick={() => setShowDropdown((prev) => !prev)}
+          >
+            <Image src={EditMenuIcon} alt="ellipses icon" />
+          </div>
+
+          {isShowDropdown ? (
+            <>
+              <HeaderDropdown
+                toggleShowDropdown={toggleShowDropdown}
+                boardName={board?.name}
+                toggleDialog={toggleBoardDialog}
+              />
+            </>
+          ) : (
+            ""
+          )}
+
+          <EditBoard
+            dialogRef={boardDialogRef}
+            toggleDialog={toggleBoardDialog}
+          />
         </div>
-
-        {isShowDropdown ? (
-          <>
-            <HeaderDropdown
-              toggleShowDropdown={toggleShowDropdown}
-              boardName={board?.name}
-              toggleDialog={toggleBoardDialog}
-            />
-          </>
-        ) : (
-          ""
-        )}
-
-        <EditBoard
-          dialogRef={boardDialogRef}
-          toggleDialog={toggleBoardDialog}
-        />
-      </div>
+      ) : (
+        ""
+      )}
     </header>
   );
 }
