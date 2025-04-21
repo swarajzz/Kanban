@@ -19,6 +19,7 @@ import { updateTask } from "@/app/_lib/actions";
 import { HashLoader } from "react-spinners";
 import { useBoardStore } from "@/app/_store/store";
 import { useParams } from "next/navigation";
+import { toast } from "sonner";
 
 function TaskDialog({
   dialogRef,
@@ -101,8 +102,23 @@ function TaskDialog({
 
     const taskId = task?.id ?? "";
 
-    await updateTask({ data: transformedData, taskId, columnId, boardPath });
-    toggleDialog();
+    try {
+      const res = await updateTask({
+        data: transformedData,
+        taskId,
+        columnId,
+        boardPath,
+      });
+
+      if (!res.success) {
+        toast.error(`Failed to update task: ${res.message}`);
+      } else {
+        toggleDialog();
+        toast.success("Task updated successfully!");
+      }
+    } catch {
+      toast.error("Something went wrong while updating the task.");
+    }
   };
 
   const handleInputChanges = (

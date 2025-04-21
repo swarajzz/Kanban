@@ -17,6 +17,8 @@ import { signIn, signOut } from "./auth";
 export async function createBoard(data: NewFormFields, userId: string) {
   const boardName = data.name.trim();
   const columns = data.columns;
+  const slug = boardName.replace(/\s+/g, "-").toLowerCase();
+
   try {
     await prisma.board.create({
       data: {
@@ -34,83 +36,25 @@ export async function createBoard(data: NewFormFields, userId: string) {
         },
       },
     });
-    redirect(`board/${boardName.trim().replace(/\s+/g, "-").toLowerCase()}`);
+
+    return { success: true, boardPath: `/board/${slug}` };
   } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code === "P2002") {
-        throw new Error(
+    console.log(e);
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError &&
+      e.code === "P2002"
+    ) {
+      return {
+        success: false,
+        message:
           "A board with this name already exists. Please choose a different name.",
-        );
-      }
+      };
     }
-    throw e;
+    return {
+      success: false,
+      message: "Something went wrong while creating the board.",
+    };
   }
-}
-
-export async function updateBoard(
-  data: EditFormFields,
-  boardId: string,
-  userId: string,
-  shouldUpdateTasks = false,
-  boardPath: string,
-) {
-  const name = data.name;
-  const columns = data.editColumns;
-
-  if (!boardId) return;
-
-  const lastColumn = await getLastColumn(boardId);
-  const newTaskOrder = lastColumn ? lastColumn.order + 1 : 1.0;
-
-  await prisma.board.update({
-    where: {
-      id: boardId,
-    },
-    data: {
-      name: name,
-      columns: {
-        deleteMany: {
-          NOT: columns.map(({ id }) => ({ id })),
-        },
-        upsert: columns.map((column) => ({
-          where: { id: column.id },
-          create: {
-            name: column.name,
-            order: newTaskOrder,
-          },
-          update: {
-            name: column.name,
-            order: column.order,
-          },
-        })),
-      },
-      user: {
-        connect: {
-          id: userId,
-        },
-      },
-    },
-  });
-
-  if (shouldUpdateTasks) {
-    for (const column of columns) {
-      if (column.tasks) {
-        const taskPromises = column.tasks.map((task) =>
-          prisma.task.update({
-            where: { id: task.id },
-            data: {
-              order: task.order,
-              columnId: column.id,
-              status: column.name,
-            },
-          }),
-        );
-        await Promise.all(taskPromises);
-      }
-    }
-  }
-
-  revalidatePath(`/board/${boardPath}`);
 }
 
 // export async function updateBoard(
@@ -187,41 +131,123 @@ export async function updateBoard(
 //     throw new Error("Board update failed");
 //   }
 // }
+export async function updateBoard(
+  data: EditFormFields,
+  boardId: string,
+  userId: string,
+  shouldUpdateTasks = false,
+  boardPath: string,
+): Promise<{ success: true } | { success: false; message: string }> {
+  try {
+    if (!boardId) {
+      return { success: false, message: "Board ID is required." };
+    }
+
+    const name = data.name;
+    const columns = data.editColumns;
+
+    const lastColumn = await getLastColumn(boardId);
+    const newTaskOrder = lastColumn ? lastColumn.order + 1 : 1.0;
+
+    await prisma.board.update({
+      where: { id: boardId },
+      data: {
+        name,
+        columns: {
+          deleteMany: {
+            NOT: columns.map(({ id }) => ({ id })),
+          },
+          upsert: columns.map((column) => ({
+            where: { id: column.id },
+            create: {
+              name: column.name,
+              order: newTaskOrder,
+            },
+            update: {
+              name: column.name,
+              order: column.order,
+            },
+          })),
+        },
+        user: {
+          connect: { id: userId },
+        },
+      },
+    });
+
+    if (shouldUpdateTasks) {
+      for (const column of columns) {
+        if (column.tasks) {
+          const taskPromises = column.tasks.map((task) =>
+            prisma.task.update({
+              where: { id: task.id },
+              data: {
+                order: task.order,
+                columnId: column.id,
+                status: column.name,
+              },
+            }),
+          );
+          await Promise.all(taskPromises);
+        }
+      }
+    }
+
+    revalidatePath(`/board/${boardPath}`);
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating board:", error);
+
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Something went wrong.",
+    };
+  }
+}
 
 export async function createTask(
   data: DataProps,
   columnId?: string,
   boardPath?: string,
 ) {
-  console.log(data);
   const { title, description, status, newSubtasks: subTasks } = data;
 
-  if (!columnId) return;
+  if (!columnId) return { success: false, message: "Column ID is required." };
 
   const lastTask = await getLastTask(columnId);
   const newTaskOrder = lastTask ? lastTask.order + 1 : 1.0;
 
-  await prisma.task.create({
-    data: {
-      subTasks: {
-        create: subTasks?.map((subTask) => ({
-          title: subTask.title.trim(),
-          isCompleted: false,
-        })),
-      },
-      title: title.trim(),
-      description: description,
-      status: status,
-      order: newTaskOrder,
-      column: {
-        connect: {
-          id: columnId,
+  try {
+    await prisma.task.create({
+      data: {
+        subTasks: {
+          create: subTasks?.map((subTask) => ({
+            title: subTask.title.trim(),
+            isCompleted: false,
+          })),
+        },
+        title: title.trim(),
+        description: description,
+        status: status,
+        order: newTaskOrder,
+        column: {
+          connect: {
+            id: columnId,
+          },
         },
       },
-    },
-  });
+    });
 
-  revalidatePath(`/board/${boardPath}`);
+    revalidatePath(`/board/${boardPath}`);
+    return { success: true };
+  } catch (error) {
+    console.error("Error creating task:", error);
+
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Something went wrong.",
+    };
+  }
 }
 
 export async function updateTask({
@@ -232,38 +258,48 @@ export async function updateTask({
 }: UpdateTaskProps) {
   const { subTasks, title, description, status } = data;
 
-  await prisma.task.update({
-    where: {
-      id: taskId,
-    },
-    data: {
-      title: title.trim(),
-      description: description,
-      status: status,
-      subTasks: {
-        deleteMany: {
-          NOT: subTasks?.map(({ id }) => ({ id })),
-        },
-        upsert: subTasks?.map((subTask) => ({
-          where: { id: subTask.id },
-          create: {
-            title: subTask.title.trim(),
-            isCompleted: subTask.isCompleted,
-          },
-          update: {
-            title: subTask.title,
-            isCompleted: subTask.isCompleted,
-          },
-        })),
+  try {
+    await prisma.task.update({
+      where: {
+        id: taskId,
       },
-      column: {
-        connect: {
-          id: columnId,
+      data: {
+        title: title.trim(),
+        description: description,
+        status: status,
+        subTasks: {
+          deleteMany: {
+            NOT: subTasks?.map(({ id }) => ({ id })),
+          },
+          upsert: subTasks?.map((subTask) => ({
+            where: { id: subTask.id },
+            create: {
+              title: subTask.title.trim(),
+              isCompleted: subTask.isCompleted,
+            },
+            update: {
+              title: subTask.title,
+              isCompleted: subTask.isCompleted,
+            },
+          })),
+        },
+        column: {
+          connect: {
+            id: columnId,
+          },
         },
       },
-    },
-  });
-  revalidatePath(`/board/${boardPath}`);
+    });
+    revalidatePath(`/board/${boardPath}`);
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating task:", error);
+
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Something went wrong.",
+    };
+  }
 }
 
 // export async function updateTasksForColumns(
@@ -319,21 +355,44 @@ export async function updateTask({
 export async function deleteBoard(boardName: string) {
   const board = await getBoard(boardName);
 
-  await prisma.board.delete({
-    where: {
-      id: board.id,
-    },
-  });
-  redirect("/");
+  try {
+    await prisma.board.delete({
+      where: { id: board.id },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting board:", error);
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while deleting the board.",
+    };
+  }
 }
 
-export async function deleteTask(taskId: string) {
-  await prisma.task.delete({
-    where: {
-      id: taskId,
-    },
-  });
-  revalidatePath("/board");
+export async function deleteTask(
+  taskId: string,
+): Promise<{ success: true } | { success: false; message: string }> {
+  try {
+    await prisma.task.delete({
+      where: { id: taskId },
+    });
+
+    revalidatePath("/board");
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting task:", error);
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while deleting the task.",
+    };
+  }
 }
 
 export async function getLastTask(columnId: string) {

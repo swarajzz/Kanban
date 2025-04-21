@@ -16,13 +16,14 @@ import { createPortal } from "react-dom";
 import TaskItem from "../Task/TaskItem";
 import { BoardProps, ColumnProps, TaskProps } from "@/_types/types";
 import { useBoardStore } from "@/_store/store";
-import { updateBoard, updateTask } from "@/_lib/actions";
+import { updateBoard } from "@/_lib/actions";
 import { reorderColumns, reorderTasks } from "@/_lib/utils/helpers";
 import useDialogRef from "@/_hooks/useDialogRef";
 import TaskDialog from "@/_components/dialog/TaskDialog";
 import EditTask from "@/_components/dialog/EditTask";
 import { useParams } from "next/navigation";
 import { ClimbingBoxLoader } from "react-spinners";
+import { toast } from "sonner";
 
 function ColumnList({
   columns,
@@ -101,8 +102,9 @@ function ColumnList({
         try {
           setIsLoading(true);
           await updateBoard(data, board.id, userId, true, boardPath);
+          toast.success("Board updated successfully");
         } catch (error) {
-          console.error("Error updating the board:", error);
+          toast.error(`Error updating the board: ${error}`);
         } finally {
           setApiCall(false);
           setApiCallFlag(false);

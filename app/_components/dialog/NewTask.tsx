@@ -15,6 +15,7 @@ import { getColumnId, getRandomPlaceholder } from "@/_lib/utils/helpers";
 import { useBoardStore } from "@/_store/store";
 import { HashLoader } from "react-spinners";
 import { useParams } from "next/navigation";
+import { toast } from "sonner";
 
 function NewTask({
   dialogRef,
@@ -67,9 +68,19 @@ function NewTask({
   }) => {
     const columnId = getColumnId(columns ?? [], data.status);
 
-    await createTask(data, columnId, boardPath);
-    reset();
-    toggleDialog();
+    try {
+      const res = await createTask(data, columnId, boardPath);
+      
+      if (!res.success) {
+        toast.error(`Error creating task: ${res.message}`);
+      } else {
+        toggleDialog();
+        reset();
+        toast.success("Task created successfully!");
+      }
+    } catch (error) {
+      toast.error("Something went wrong while creating the task.");
+    }
   };
 
   return (

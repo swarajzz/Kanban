@@ -8,6 +8,7 @@ import { auth } from "./_lib/auth";
 import { Providers } from "@/app/_providers/providers";
 import { getBoards } from "@/_lib/data-service";
 import SidebarMain from "@/_components/layout/SidebarMain";
+import { Toaster } from "sonner";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -30,6 +31,7 @@ export default async function RootLayout({
       <body
         className={`${jakarta.className} h-full text-sm font-medium text-primary-300`}
       >
+      <Toaster />
         <SessionProvider session={session} refetchOnWindowFocus={false}>
           <Providers>
             <main className="flex h-full">

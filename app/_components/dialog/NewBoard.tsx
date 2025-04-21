@@ -15,6 +15,8 @@ import { useBoardStore } from "@/_store/store";
 import { NewFormFields } from "@/_types/types";
 import { createBoard } from "@/_lib/actions";
 import { getRandomPlaceholderColumn } from "@/_lib/utils/helpers";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 function NewBoard({
   dialogRef,
@@ -25,6 +27,7 @@ function NewBoard({
 }) {
   const { data: sessionData } = useSession();
   const { board, columns } = useBoardStore();
+  const router = useRouter();
 
   const {
     register,
@@ -66,7 +69,19 @@ function NewBoard({
       return;
     }
 
-    await createBoard(data, sessionData?.user?.id);
+    try {
+      const res = await createBoard(data, sessionData.user.id);
+      console.log(res);
+      if (res.success && res.boardPath) {
+        toggleDialog();
+        router.push(res.boardPath);
+        toast.success("Board created successfully!");
+      } else {
+        toast.error(`Error creating board: ${res.message}`);
+      }
+    } catch (error) {
+      toast.error("Something went wrong while updating the board.");
+    }
   };
 
   return (

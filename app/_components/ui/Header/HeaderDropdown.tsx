@@ -2,6 +2,8 @@
 
 import { deleteBoard, signOutAction } from "@/app/_lib/actions";
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 function TaskDropdown({
   toggleShowDropdown,
@@ -12,7 +14,8 @@ function TaskDropdown({
   boardName: string | undefined;
   toggleDialog: () => void;
 }) {
-  toggleShowDropdown;
+  const router = useRouter();
+
   function handleClick() {
     toggleShowDropdown();
     toggleDialog();
@@ -36,7 +39,16 @@ function TaskDropdown({
             </li>
             <li
               className="cursor-pointer text-accent-400 transition hover:text-accent-300"
-              onClick={() => deleteBoard(boardName)}
+              onClick={async () => {
+                const res = await deleteBoard(boardName);
+
+                if (res.success) {
+                  router.push("/");
+                  toast.success("Board deleted!");
+                } else {
+                  toast.error(`Failed to delete board: ${res.message}`);
+                }
+              }}
             >
               Delete Board
             </li>

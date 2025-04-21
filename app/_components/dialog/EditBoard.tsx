@@ -16,6 +16,7 @@ import { EditFormFields } from "@/_types/types";
 import { createBoard, updateBoard } from "@/_lib/actions";
 import { getRandomPlaceholderColumn } from "@/_lib/utils/helpers";
 import { useParams } from "next/navigation";
+import { toast } from "sonner";
 
 function EditBoard({
   dialogRef,
@@ -88,13 +89,23 @@ function EditBoard({
       return;
     }
 
-    await updateBoard(
-      data,
-      board?.id,
-      sessionData?.user?.id || "",
-      false,
-      boardPath,
-    );
+    try {
+      const res = await updateBoard(
+        data,
+        board?.id,
+        sessionData?.user?.id || "",
+        false,
+        boardPath,
+      );
+
+      if (!res.success) {
+        toast.error(`Error updating board: ${res.message}`);
+      } else {
+        toast.success("Board updated successfully!");
+      }
+    } catch (error) {
+      toast.error("Something went wrong while updating the board.");
+    }
 
     toggleDialog();
   };

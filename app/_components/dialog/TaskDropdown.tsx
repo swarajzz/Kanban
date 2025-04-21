@@ -1,4 +1,5 @@
 import { deleteTask } from "@/app/_lib/actions";
+import { toast } from "sonner";
 
 function TaskDropdown({
   toggleShowDropdown,
@@ -28,7 +29,16 @@ function TaskDropdown({
         </li>
         <li
           className="cursor-pointer text-accent-400 transition hover:text-accent-300"
-          onClick={() => deleteTask(taskId)}
+          onClick={async () => {
+            const res = await deleteTask(taskId);
+      
+            if (res.success) {
+              toggleDialog();
+              toast.success('Task deleted successfully!');
+            } else {
+              toast.error(`Failed to delete task: ${res.message}`);
+            }
+          }}
         >
           Delete Task
         </li>

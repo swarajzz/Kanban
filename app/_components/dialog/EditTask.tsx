@@ -15,6 +15,7 @@ import FieldSet from "../ui/Form/FieldSet";
 import { useBoardStore } from "@/app/_store/store";
 import { useParams } from "next/navigation";
 import { HashLoader } from "react-spinners";
+import { toast } from "sonner";
 
 function EditTask({
   dialogRef,
@@ -83,9 +84,23 @@ function EditTask({
   }) => {
     const columnId = getColumnId(columns ?? [], data.status);
 
-    await updateTask({ data, taskId, columnId, boardPath });
+    try {
+      const res = await updateTask({
+        data,
+        taskId,
+        columnId,
+        boardPath,
+      });
 
-    toggleDialog();
+      if (!res.success) {
+        toast.error(`Failed to update task: ${res.message}`);
+      } else {
+        toggleDialog();
+        toast.success("Task updated successfully!");
+      }
+    } catch {
+      toast.error("Something went wrong while updating the board.");
+    }
   };
 
   return (
