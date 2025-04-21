@@ -28,14 +28,14 @@ export default async function Login() {
 
                 const provider = formData.get("provider");
 
-                if (provider === "google") {
+                if (provider === "Google") {
                   await signInAction("google");
-                } else if (provider === "github") {
+                } else if (provider === "Github") {
                   await signInAction("github");
                 }
               }}
             >
-              <SignInButton provider="google" color="blue" />
+              <SignInButton provider="Google" color="blue" />
               <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-neutral-700"></div>
@@ -47,7 +47,7 @@ export default async function Login() {
                 </div>
               </div>
 
-              <SignInButton provider="github" color="gray" />
+              <SignInButton provider="Github" color="gray" />
             </form>
           </div>
 

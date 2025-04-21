@@ -15,8 +15,12 @@ function SignInButton(props: { provider: string; color: string }) {
         className={`absolute inset-0 w-2 ${props.color === "blue" ? "bg-blue-500" : "bg-gray-900"} transition-all duration-[250ms] ease-out group-hover:w-full`}
       ></div>
       <div className="relative flex items-center justify-center space-x-4 text-neutral-300 transition-colors duration-[250ms] group-hover:text-neutral-50">
-        <Mail className="h-5 w-5" />
-        <span className="font-medium">Continue with {props.provider}</span>
+        {props.provider === "Google" ? (
+          <Mail className="h-5 w-5" />
+        ) : (
+          <Github className="h-5 w-5" />
+        )}
+        <span className="font-medium">{props.provider}</span>
       </div>
     </button>
   );
