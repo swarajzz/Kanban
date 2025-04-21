@@ -78,10 +78,12 @@ function Sidebar({ allBoards, user }: { allBoards: BoardProps[]; user: User }) {
 
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="mb-10 flex items-center gap-2 transition-colors hover:text-primary-500"
+              className="group mb-10 flex items-center gap-2 transition-colors hover:text-primary-500"
             >
-              <EyeOff className="h-5 w-5" />
-              <span className="text-base">Hide Sidebar</span>
+              <EyeOff className="h-5 w-5 transition-transform duration-200 group-hover:scale-110" />
+              <span className="text-base underline-offset-2 transition duration-200 group-hover:underline">
+                Hide Sidebar
+              </span>
             </button>
           </div>
         </section>
